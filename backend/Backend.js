@@ -24,9 +24,97 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+//kategóriák lekérdezése
+app.get('/kategoria', (req, res) => {
+        const sql=`SELECT kategoria_nev from kategoria`
+        pool.query(sql, (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        if (result.length===0){
+            return res.status(404).json({error:"Nincs adat"})
+        }
+
+        return res.status(200).json(result)
+        })
+})
+
+//Kérdések lekérése kategória és könnyű nehézségi szint szerint
+app.post('/kerdesekKonnyu', (req, res) => {
+        const {kategoria} =req.body
+        const sql=`
+                SELECT * 
+                from kerdesek
+                where kerdesek_kategoria = ? 
+                AND kerdesek_nehezseg = 1 
+                ORDER BY rand()
+                LIMIT 3`
+        pool.query(sql,[kategoria], (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        if (result.length===0){
+            return res.status(404).json({error:"Nincs adat"})
+        }
+
+        return res.status(200).json(result)
+        })
+})
+
+//Kérdések lekérése kategória és közepes nehézségi szint szerint
+app.post('/kerdesekKozepes', (req, res) => {
+        const {kategoria} =req.body
+        const sql=`
+                SELECT * 
+                from kerdesek
+                where kerdesek_kategoria = ? 
+                AND kerdesek_nehezseg = 2 
+                ORDER BY rand()
+                LIMIT 3`
+        pool.query(sql,[kategoria], (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        if (result.length===0){
+            return res.status(404).json({error:"Nincs adat"})
+        }
+
+        return res.status(200).json(result)
+        })
+})
+
+//Kérdések lekérése kategória és nehéz nehézségi szint szerint
+app.post('/kerdesekNehez', (req, res) => {
+        const {kategoria} =req.body
+        const sql=`
+                SELECT * 
+                from kerdesek
+                where kerdesek_kategoria = ? 
+                AND kerdesek_nehezseg = 3 
+                ORDER BY rand()
+                LIMIT 4`
+        pool.query(sql,[kategoria], (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        if (result.length===0){
+            return res.status(404).json({error:"Nincs adat"})
+        }
+
+        return res.status(200).json(result)
+        })
+})
+
+//
 
 
-    
+
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
