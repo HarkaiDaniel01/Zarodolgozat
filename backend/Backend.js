@@ -5,7 +5,8 @@ const cors = require('cors')
 const app = express()
 const port = 3000
 
-app.use(cors())
+//Konnyu kerdes=111db  Kozepes=132db  Nehez=57db kerdes van az adatbazisban az 500 bol
+//1-80 ,2-86 ,3-74 ,4-84 ,5-76
 app.use(express.json())
 
 const pool = mysql.createPool({
