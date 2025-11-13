@@ -13,7 +13,7 @@ const pool = mysql.createPool({
         host: 'localhost',
         user: 'root',
         password: '',
-        database: 'zarodolgozat'
+        database: 'zarodolgozat_kvizjatek'
         })
 function handleValidationErrors(req, res) {
     const errors = validationResult(req)
