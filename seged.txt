@@ -1,5 +1,2 @@
-<<<<<<< HEAD
 hello szia!!!!
-=======
 hello szia
->>>>>>> 56944415d3867c8770e9ec0a993a7199fc00028e
