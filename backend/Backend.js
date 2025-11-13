@@ -13,7 +13,7 @@ const pool = mysql.createPool({
         host: 'localhost',
         user: 'root',
         password: '',
-        database: 'zarodolgozat'
+        database: 'zarodolgozat_kvizjatek'
         })
 function handleValidationErrors(req, res) {
     const errors = validationResult(req)
@@ -109,12 +109,6 @@ app.post('/kerdesekNehez', (req, res) => {
         return res.status(200).json(result)
         })
 })
-
-//
-
-
-
-
 
 
 app.listen(port, () => {
