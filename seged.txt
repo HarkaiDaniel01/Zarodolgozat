@@ -3,8 +3,5 @@ hello szia
 ooo Gergő!
 Ide is írok
 hog rider!!!!
-<<<<<<< HEAD
 szia dani!!!!!
-=======
 ajjajj
->>>>>>> c7e032723da06da132bc5189e526e9dd712a40df
