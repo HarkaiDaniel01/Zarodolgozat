@@ -5,7 +5,9 @@ const cors = require('cors')
 const app = express()
 const port = 3000
 
+app.use(cors)
 app.use(express.json())
+app.use("/kepek",express.static("kepek"))
 
 const pool = mysql.createPool({
         host: 'localhost',
@@ -23,6 +25,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+//Dani végpontjai
 //kategóriák lekérdezése
 app.get('/kategoria', (req, res) => {
         const sql=`SELECT kategoria_nev from kategoria`
@@ -107,6 +110,10 @@ app.post('/kerdesekNehez', (req, res) => {
         return res.status(200).json(result)
         })
 })
+
+
+
+//Gergő végpontjai
 //jatekosnev felvitele
 //javitas alatt
 app.post('/ujJatekos', 
