@@ -108,6 +108,7 @@ app.post('/kerdesekNehez', (req, res) => {
         })
 })
 //jatekosnev felvitele
+//javitas alatt
 app.post('/ujJatekos', 
     body('jatekos_nev').isLength({min:1}).withMessage('A játékos név megadása kötelező!'),
     (req, res) => {
