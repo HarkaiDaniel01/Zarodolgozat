@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 //Dani végpontjai
 //kategóriák lekérdezése
 app.get('/kategoria', (req, res) => {
-        const sql=`SELECT kategoria_nev from kategoria`
+        const sql=`SELECT kategoria_id,kategoria_nev from kategoria`
         pool.query(sql, (err, result) => {
         if (err) {
             console.log(err)
@@ -180,7 +180,7 @@ app.post('/ujJatekos',
         const validationError=handleValidationErrors(req,res)
         if (validationError) return validationError
         const {jatekos_nev} =req.body
-        const sql=`INSERT INTO jatekosok (jatekos_nev) VALUES (?)`
+        const sql=`INSERT INTO jatekosok (jatekos_nev) VALUES (null,?,"",0,0,)`
         pool.query(sql,[jatekos_nev], (err, result) => {
         if (err) {
             console.log(err)
@@ -189,7 +189,61 @@ app.post('/ujJatekos',
         return res.status(201).json({message:"Sikeres játékot! :) "})
         })
 })
+//kategoria modositasa
+//UPDATE `kategoria` SET `kategoria_id`='[value-1]',`kategoria_nev`='[value-2]' WHERE 1
+app.put('/kategoriaModositasa/:id',
+    body('kategoria_nev').isLength({ min: 1 }).withMessage('A kategória név megadása kötelező!'),
+    (req, res) => {
+        const validationError = handleValidationErrors(req, res);
+        if (validationError) return validationError;
+        const { id } = req.params;
+        const { kategoria_nev } = req.body;
+        console.log("Módosítás:", { kategoria_nev, id });
+        const sql = `UPDATE kategoria SET kategoria_nev = ? WHERE kategoria_id = ?`;
+        pool.query(sql, [kategoria_nev, id], (err) => {
+            if (err) {
+                console.error('Adatbázis hiba:', err);
+                return res.status(500).json({ error: "Adatbázis hiba történt." });
+            }
+            return res.status(200).json({ message: "Sikeres módosítás! 😊" });
+        });
+    }
+);
+app.post('/kategoriaFeltoltes',
+    body('kategoria_nev').isLength({ min: 1 }).withMessage('A kategória név megadása kötelező!'),
+    (req, res) => {
+        const validationError = handleValidationErrors(req, res);
+        if (validationError) return validationError;
+        const { kategoria_nev} = req.body;
+        console.log("Feltölt:", {kategoria_nev});
+        const sql = `insert into kategoria values (null,?)`;
+        pool.query(sql, [kategoria_nev], (err) => {
+            if (err) {
+                console.error('Adatbázis hiba:', err);
+                return res.status(500).json({ error: "Adatbázis hiba történt." });
+            }
+            return res.status(200).json({ message: "Sikeres Feltöltés! 😊" });
+        });
+    }
+);
+app.delete('/kategoriaTorles/:kategoria_id',
+    param('kategoria_id').isLength({ min: 1 }).withMessage('A kategória id megadása kötelező!'),
+    (req, res) => {
+        const validationError = handleValidationErrors(req, res);
+        if (validationError) return validationError;
+        const { kategoria_id } = req.params;
+        console.log("Töröl:", {kategoria_id});
+        const sql = `delete from kategoria where kategoria_id=?`;
+        pool.query(sql, [kategoria_id], (err) => {
+            if (err) {
+                console.error('Adatbázis hiba:', err);
+                return res.status(500).json({ error: "Adatbázis hiba történt." });
+            }
+            return res.status(200).json({ message: "Sikeres Törlés! ☠️" });
+        });
+    }
+);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`);
 })
