@@ -163,7 +163,7 @@ router.get("/", (req, res) => {
                FROM kerdesek
                INNER JOIN kategoria ON kerdesek_kategoria=kategoria_id
                INNER JOIN nehezseg ON kerdesek_nehezseg=nehezseg_id
-               Order by kategoria_nev`;
+               Order by kerdesek_id`;
 
   pool.query(sql, (err, result) => {
     if (err) {
