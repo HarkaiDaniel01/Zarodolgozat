@@ -27,16 +27,16 @@ app.get("/", (req, res) => {
 
 //Dani végpontjai
 //kategóriák lekérdezése
-app.get("/kategoria", (req, res) => {
-  const sql = `SELECT kategoria_id,kategoria_nev from kategoria`;
-  pool.query(sql, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Hiba" });
-    }
-    if (result.length === 0) {
-      return res.status(404).json({ error: "Nincs adat" });
-    }
+app.get('/kategoria', (req, res) => {
+        const sql=`SELECT kategoria_id, kategoria_nev from kategoria`
+        pool.query(sql, (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        if (result.length===0){
+            return res.status(404).json({error:"Nincs adat"})
+        }
 
     return res.status(200).json(result);
   });
