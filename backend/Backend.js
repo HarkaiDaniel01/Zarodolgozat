@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 //Dani végpontjai
 //kategóriák lekérdezése
 app.get('/kategoria', (req, res) => {
-        const sql=`SELECT kategoria_nev from kategoria`
+        const sql=`SELECT kategoria_id, kategoria_nev from kategoria`
         pool.query(sql, (err, result) => {
         if (err) {
             console.log(err)
