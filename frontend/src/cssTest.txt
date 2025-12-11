@@ -1,9 +1,15 @@
 h1,h2 {
   text-align: center;
   font-family: Cambria, Cochin;
-  color: rgb(64, 64, 171);
+  color: #5E4CFF;
   font-weight: bold;
   font-size: 32px;
+
+}
+
+body {
+  background-color: #121212;
+  
 }
 
 .kartya{
@@ -73,6 +79,10 @@ input{
   background-color: white;
   justify-content: center;
   margin-top: 150px;
+  background: linear-gradient(to bottom, #4CFF7C, #29CA54);
+  opacity: 0.9;
+
+
 
 }
 
@@ -86,6 +96,9 @@ input{
   border: 1px solid #000000;  
   margin-bottom: 15px;
   height: 56px;
+
+  background: linear-gradient(to bottom, #433434, #A98282);
+  color: white;
   
   display: flex;              
   align-items: center;
@@ -137,6 +150,7 @@ input{
   background-color: #f0f0f0;  
   transform: translateY(-2px); 
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  border: 3px solid #5E4CFF;
 }
 
 .gombDoboz {
@@ -144,9 +158,9 @@ input{
   width: 300px;
 }
 
-body {
+/*body {
   background-color: #f4f4f7;
-}
+}*/
 
 h4 {
   text-align: center;
