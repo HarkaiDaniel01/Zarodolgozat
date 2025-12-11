@@ -230,12 +230,12 @@ const Kategoria=()=>{
                         <button key={index} className="gomb" onClick={() => kategoriaValaszt(elem.kategoria_id)}>{ikonok[index]} {elem.kategoria_nev}</button>
                     
                 ))}
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Programozás</button>
+                {/*<button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Programozás</button>
                 <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[7]} Filmek</button>
                 <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[8]} Rajzfilmek</button>
                 <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[9]} Környezetvédelem</button>
                 <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Informatika</button>
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[10]} Anime</button>
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[10]} Anime</button>*/}
 
 
 
