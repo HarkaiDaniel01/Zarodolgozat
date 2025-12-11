@@ -1,0 +1,22 @@
+const Nehezseg=async ()=>{
+        try{
+            const response=await fetch(Cim.Cim+"/kategoria")
+            const data=await response.json()
+            //alert(JSON.stringify(data))
+            //console.log(data)
+            if (response.ok)
+                {
+                    setAdatok(data)
+                    setTolt(false)}
+            else 
+                {
+                    setHiba(true)
+                    setTolt(false)
+                }
+            }
+        catch (error){
+            console.log(error)
+            setHiba(true)
+        }
+        
+    }
