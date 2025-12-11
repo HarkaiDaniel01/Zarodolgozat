@@ -1,0 +1,267 @@
+import { useState,useEffect } from "react"
+import Cim from "../Cim"
+import Kerdesek from "./Kerdesek"
+import Swal from "sweetalert2"
+
+const Kategoria=()=>{
+    const [adatok,setAdatok]=useState([])
+    const [tolt,setTolt]=useState(true)
+    const [hiba,setHiba]=useState(false)
+    const [kerdesek, setKerdesek] = useState([])
+    const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false)
+    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎲", "💻", "🎬", "📺", "🌳", "🐱‍👤"])
+
+ 
+    const kategoriaValaszt = async (kategoriaId) => {
+        //alert(`Választott kategória: ${kategoriaId}`)
+
+
+        const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
+        const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
+        const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+
+        const kerdesek = [...konnyu, ...kozepes, ...nehez]
+        setKerdesek(kerdesek)
+
+
+        /*{kerdesek.map((elem,index)=>(
+                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
+                            A: ${elem.kerdesek_helyesValasz}\n
+                            B: ${elem.kerdesek_helytelenValasz1}\n
+                            c: ${elem.kerdesek_helytelenValasz2}\n
+                            D: ${elem.kerdesek_helytelenValasz3}`)
+                    ))}*/
+
+
+        
+        setKerdesekBetoltve(true)
+        
+        
+
+    }
+
+    const fejlesztesAlatt = () => {
+        
+        Swal.fire({
+              title: `Fejlesztés alatt`,
+              html: ``,
+              icon: `info`,
+              confirmButtonText: `Oké`
+            });
+        
+
+    }
+
+    const kategoriaValasztVegyes = async () => {
+        //alert(`Választott kategória: ${kategoriaId}`)
+
+
+        const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes")
+        const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes")
+        const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes")
+
+        const kerdesek = [...konnyu, ...kozepes, ...nehez]
+        setKerdesek(kerdesek)
+
+
+        /*{kerdesek.map((elem,index)=>(
+                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
+                            A: ${elem.kerdesek_helyesValasz}\n
+                            B: ${elem.kerdesek_helytelenValasz1}\n
+                            c: ${elem.kerdesek_helytelenValasz2}\n
+                            D: ${elem.kerdesek_helytelenValasz3}`)
+                    ))}*/
+
+
+        
+        setKerdesekBetoltve(true)
+        
+        
+
+    }
+
+    const KerdesekLetoltese= async(kategoriaId, vegpont)=>{
+
+        try{
+
+            let bemenet = {
+                "kategoria" : kategoriaId
+            }
+
+            const response=await fetch(Cim.Cim+ vegpont, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(bemenet)
+            })
+
+            const data=await response.json()
+            //alert(JSON.stringify(data))
+            //console.log(data)
+            if (response.ok)
+                {
+                    
+                    /*{data.map((elem,index)=>(
+                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
+                            A: ${elem.kerdesek_helyesValasz}\n
+                            B: ${elem.kerdesek_helytelenValasz1}\n
+                            c: ${elem.kerdesek_helytelenValasz2}\n
+                            D: ${elem.kerdesek_helytelenValasz3}`)
+                    ))}*/
+
+                    return data
+
+                    //if (vegpont === "/kerdesekKonnyu") KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
+                    //if (vegpont === "/kerdesekKozepes") KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+                    
+                    }
+
+                    
+            else 
+                {
+                    
+                }
+            }
+            
+        catch (error){
+            console.log(error)
+            
+        }
+    }
+
+    const KerdesekLetolteseVegyes= async(vegpont)=>{
+
+        try{
+
+            const response=await fetch(Cim.Cim+ vegpont, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            })
+
+            const data=await response.json()
+            //alert(JSON.stringify(data))
+            //console.log(data)
+            if (response.ok)
+                {
+                    
+                    /*{data.map((elem,index)=>(
+                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
+                            A: ${elem.kerdesek_helyesValasz}\n
+                            B: ${elem.kerdesek_helytelenValasz1}\n
+                            c: ${elem.kerdesek_helytelenValasz2}\n
+                            D: ${elem.kerdesek_helytelenValasz3}`)
+                    ))}*/
+
+                    return data
+
+                    //if (vegpont === "/kerdesekKonnyu") KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
+                    //if (vegpont === "/kerdesekKozepes") KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+                    
+                    }
+
+                    
+            else 
+                {
+                    
+                }
+            }
+            
+        catch (error){
+            console.log(error)
+            
+        }
+    }
+
+
+
+
+    const leToltes=async ()=>{
+        try{
+            const response=await fetch(Cim.Cim + "/kategoria")
+            const data=await response.json()
+            //alert(JSON.stringify(data))
+            //console.log(data)
+            if (response.ok)
+                {
+                    setAdatok(data)
+                    setTolt(false)
+                }
+            else 
+                {
+                    setHiba(true)
+                    setTolt(false)
+                }
+            }
+        catch (error){
+            console.log(error)
+            setHiba(true)
+        }
+        
+    }
+
+    useEffect(()=>{
+        leToltes()
+    })
+
+    if (tolt)
+        return (
+            <div style={{textAlign:"center"}}>Adatok betöltése folyamatban...</div>
+                )
+    else if (hiba)
+        return (
+            <div>Hiba</div>
+                )       
+    
+    else return (
+
+
+        <div>
+            
+        {!kerdesekBetoltve ? (<div className="doboz" >
+
+                <h1>Válassz kategóriát!</h1>
+                <div className="gombDoboz">
+                {adatok.map((elem,index)=>(
+                    
+                        <button key={index} className="gomb" onClick={() => kategoriaValaszt(elem.kategoria_id)}>{ikonok[index]} {elem.kategoria_nev}</button>
+                    
+                ))}
+                {/*<button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Programozás</button>
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[7]} Filmek</button>
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[8]} Rajzfilmek</button>
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[9]} Környezetvédelem</button>
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Informatika</button>
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[10]} Anime</button>*/}
+
+
+
+
+                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Programozás</button>
+                <button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[5]} Vegyes</button>
+
+                </div>
+
+                
+
+            </div>) : <Kerdesek kerdesek={kerdesek} kerdesekBetoltve = {setKerdesekBetoltve}/>}
+
+        
+            
+            
+
+            
+
+
+            
+            
+
+
+
+        </div>
+    )
+}
+export default Kategoria

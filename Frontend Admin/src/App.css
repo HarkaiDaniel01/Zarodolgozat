@@ -1,0 +1,949 @@
+/* =========================================
+   Root Variables - #00A21D Színpaletta
+   ========================================= */
+:root {
+  /* Elsődleges zöld színek */
+  --primary-green: #00A21D;
+  --primary-green-dark: #006B13;
+  --primary-green-darker: #004B0D;
+  --primary-green-light: #B8D9A3;
+  --primary-green-lighter: #D4E8C7;
+  --primary-green-pale: #E6F3DC;
+  
+  /* Kiegészítő színek */
+  --accent-yellow: #FFEA64;
+  --accent-pink: #FFC0CB;
+  --danger-color: #EF4444;
+  --warning-color: #F59E0B;
+  
+  /* UI alapok */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+
+  /* Light mode */
+  --body-bg: linear-gradient(135deg, #F5F8E8 0%, #FFFEF7 100%);
+  --body-text: #374151;
+  --surface-bg: white;
+  --surface-bg-alt: #F9FAFB;
+  --surface-border: #D1D5DB;
+  --surface-hover: #E6F3DC;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --body-bg: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  --body-text: #e5e7eb;
+  --surface-bg: #374151;
+  --surface-bg-alt: #1f2937;
+  --surface-border: #4b5563;
+  --surface-hover: #4b5563;
+} 
+
+/* =========================================
+   Global Styles
+   ========================================= */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--body-bg);
+  color: var(--body-text);
+  font-family: var(--font-family);
+  transition: background 0.3s, color 0.3s;
+}
+
+.nav {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+  border-radius: var(--border-radius);
+  margin: 1rem 1rem;
+}
+
+.nav a {
+  color: #1f2937;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav a.active {
+  background-color: white;
+  color: var(--primary-green);
+}
+
+/* =========================================
+   Background Gradients
+   ========================================= */
+.light-bg-gradient {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+}
+
+.dark-bg-gradient {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+}
+
+.custom-navbar {
+  border: none !important;
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: #1f2937 !important;
+  font-weight: 600;
+}
+
+.custom-navbar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #6BA03E !important;
+  border-radius: 8px;
+}
+
+body {
+  background: linear-gradient(135deg, #F5F8E8 0%, #FFFEF7 100%);
+  color: #374151;
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: #e5e7eb;
+}
+
+body.dark-mode .felvitel {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  color: #ffffff;
+  border-color: #4b5563;
+}
+
+body.dark-mode .kerdes-tabla,
+body.dark-mode .kategoria-tabla {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark-mode .kerdes-tabla thead tr,
+body.dark-mode .kategoria-tabla thead tr {
+  background-color: #4b5563;
+}
+
+body.dark-mode .kerdes-tabla tbody tr,
+body.dark-mode .kategoria-tabla tbody tr {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+body.dark-mode .kerdes-tabla tbody tr:nth-of-type(even),
+body.dark-mode .kategoria-tabla tbody tr:nth-of-type(even) {
+  background-color: #1f2937;
+}
+
+body.dark-mode .kerdes-tabla tbody tr:hover,
+body.dark-mode .kategoria-tabla tbody tr:hover {
+  background-color: #4b5563;
+}
+
+body.dark-mode .modal-content {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode .form-control {
+  background-color: white;
+  color: black;
+  border-color: #4b5563;
+}
+
+body.dark-mode label,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+  color: #000000;
+}
+
+body.dark-mode .custom-navbar {
+  background: #1f2937 !important;
+}
+
+body.dark-mode .custom-navbar .navbar-brand,
+body.dark-mode .custom-navbar .nav-link {
+  color: #000000 !important;
+}
+
+body.dark-mode .szures-container {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+/* Theme Switch Toggle */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #6BA03E;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #374151;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.container {
+  padding-top: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-align: center;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  color: #6BA03E;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* --- Forms --- */
+.felvitel {
+  background: linear-gradient(135deg, #FFFEF7 0%, #F5F8E8 100%);
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  border-radius: 16px;
+  padding: 2rem;
+  font-size: 16px;
+  margin: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="password"],
+.form-control {
+  background-color: white;
+  color: #1f2937;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+input:focus,
+.form-control:focus {
+  outline: none;
+  border-color: #6BA03E;
+  box-shadow: 0 0 0 3px rgba(107, 160, 62, 0.1);
+}
+
+.urlapDoboz {
+  border: 2px solid var(--success-color);
+  text-align: center;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  max-width: 600px;
+  background-color: var(--light-background);
+}
+/* --- Buttons --- */
+.gomb, .btn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 8px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-success, .zoldGomb {
+  background-color: #6BA03E;
+  color: white;
+}
+.btn-success:hover, .zoldGomb:hover {
+  background-color: #5a8a32;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 160, 62, 0.3);
+}
+
+.btn-danger {
+  background-color: #EF4444;
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-warning {
+  background-color: #F59E0B;
+  color: white;
+}
+.btn-warning:hover {
+  background-color: #D97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-primary {
+    background-color: #FFEA64;
+    color: #1f2937;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background-color: #FFE033;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 234, 100, 0.4);
+}
+
+
+/* --- Table --- */
+.kerdes-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.95em;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  min-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.kerdes-tabla thead tr {
+  background-color: #6BA03E;
+  color: white;
+  text-align: left;
+  font-weight: 600;
+}
+
+.kerdes-tabla th,
+.kerdes-tabla td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.kerdes-tabla tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  background-color: white;
+}
+
+.kerdes-tabla tbody tr:nth-of-type(even) {
+  background-color: #F9FAFB;
+}
+
+.kerdes-tabla tbody tr:last-of-type {
+  border-bottom: 2px solid #6BA03E;
+}
+
+.kerdes-tabla tbody tr:hover {
+  background-color: #F0F9EB;
+  color: #374151;
+}
+
+/* --- Szűrés --- */
+.szures-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E5E7EB;
+}
+
+.szures-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.szuro-elem {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Táblázat Container --- */
+.tabla-container {
+  overflow-x: auto;
+}
+.gombszures {
+  margin-bottom: -15px;
+}
+
+/* --- Dark Mode Table --- */
+body.dark-mode table {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark-mode table thead tr {
+  background-color: #4b5563;
+  color: white;
+}
+
+body.dark-mode table tbody tr {
+  background-color: #374151;
+  color: #e5e7eb;
+  border-bottom: 1px solid #4b5563;
+}
+
+body.dark-mode table tbody tr:nth-of-type(even) {
+  background-color: #1f2937;
+}
+
+body.dark-mode table tbody tr:hover {
+  background-color: #4b5563;
+}
+
+body.dark-mode table th,
+body.dark-mode table td {
+  background-color: #374151;
+  color: #e5e7eb;
+  border-color: #4b5563;
+}
+
+body.dark-mode table thead th {
+  background-color: #4b5563;
+}
+
+/* --- Modal --- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  width: 600px;
+  max-width: 90%;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  color: #374151;
+}
+
+.modal-content h2 {
+  color: #6BA03E;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* --- Dropdowns --- */
+.lenyilo, select.form-control, select {
+  background-color: white;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 2px 0;
+  width: 100%;
+  transition: all 0.2s;
+}
+.lenyilo:focus, select.form-control:focus, select:focus {
+  outline: none;
+  border-color: #6BA03E;
+  box-shadow: 0 0 0 3px rgba(107, 160, 62, 0.1);
+}
+
+/* --- Cards (for other pages) --- */
+/* --- Cards (for other pages) --- */
+.kartya {
+  background-color: var(--light-background);
+  border: 1px solid var(--primary-color);
+  margin: 20px auto;
+  padding: 30px;
+  font-size: 18px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+}
+
+.szoveg {
+  text-align: justify;
+  line-height: 1.6;
+}
+
+.datum {
+  color: var(--primary-color);
+  font-size: smaller;
+}
+
+.ki {
+  color: var(--success-color);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.nev {
+  color: var(--warning-color);
+  text-align: right;
+}
+
+/* --- Kategória Oldal Specifikus Stílusok --- */
+
+.kategoria-form {
+  background-color: var(--light-background);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 2rem;
+  box-shadow: var(--box-shadow);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.kategoria-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 1em;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  min-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+.kategoriafejlec{
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+.kategoria-tabla thead tr {
+  background-color: #6BA03E;
+  color: white;
+  text-align: left;
+  font-weight: 600;
+}
+
+.kategoria-tabla th,
+.kategoria-tabla td {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 20px;
+}
+
+.kategoria-tabla td,
+.kategoria-tabla th {
+  text-align: center;
+}
+
+.kategoria-tabla tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  background-color: white;
+}
+
+.kategoria-tabla tbody tr:nth-of-type(even) {
+  background-color: #F9FAFB;
+}
+
+.kategoria-tabla tbody tr:last-of-type {
+  border-bottom: 2px solid #6BA03E;
+}
+
+.kategoria-tabla tbody tr:hover {
+  background-color: #F0F9EB;
+  color: #374151;
+}
+
+.kategoria-tabla .muveletek {
+  text-align: right;
+}
+
+.kategoria-tabla .muveletek button {
+  margin-left: 10px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1000px) {
+  .kartya, .urlapDoboz {
+    margin: 10px;
+    padding: 15px;
+  }
+  .felvitel {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+/* --- Modern Login Page Styles --- */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%);
+  padding: 2rem;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-title {
+  color: #1f2937;
+  font-size: 1.875rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  pointer-events: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #1f2937;
+  background-color: #f9fafb;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  color: #1f2937;
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+}
+
+.form-control::placeholder {
+  color: #9ca3af;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #e5e7eb;
+}
+
+body.dark-mode .form-input::placeholder {
+  color: #e5e7eb;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  border: 1px solid #fecaca;
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: #6BA03E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.login-button:hover {
+  background-color: #5a8a32;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 160, 62, 0.4);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+.forgot-password {
+  display: block;
+  text-align: center;
+  color: #6BA03E;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgot-password:hover {
+  color: #5a8a32;
+  text-decoration: underline;
+}
+
+/* --- Registration Page Styles --- */
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%);
+  padding: 2rem;
+}
+
+.register-button {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: #6BA03E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.register-button:hover {
+  background-color: #5a8a32;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 160, 62, 0.4);
+}
+
+.register-button:active {
+  transform: translateY(0);
+}
+
+/* --- Dashboard Page Styles --- */
+.dashboard-container {
+  min-height: 80vh;
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.dashboard-title {
+  color: #1f2937;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  animation: Bold;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dashboard-subtitle {
+  color: #374151;
+  font-size: 1.125rem;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.dashboard-card {
+  background: var(--light-background);
+  border: 2px solid rgbsa(11, 68, 18, 0.1);
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(11, 68, 18, 0.3);
+  border-color: var(--primary-color);
+}
+
+.card-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  color: #1f2937 !important;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.card-description {
+  color: #374151 !important;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+body.dark-mode .dashboard-title {
+  color: #e5e7eb;
+}
+
+body.dark-mode .dashboard-subtitle {
+  color: #d1d5db;
+}
+
+body.dark-mode .card-title {
+  color: #1f2937 !important;
+}
+
+body.dark-mode .card-description {
+  color: #374151 !important;
+}
+
+@media (max-width: 768px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+  }
+}
