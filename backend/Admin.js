@@ -54,7 +54,7 @@ router.post('/bejelentkezes',
       const token = jwt.sign(
         { id: user.jatekos_id, username: user.jatekos_nev, admin: user.jatekos_admin },
         JWT_SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: '1h' }
       );
       
       return res.status(200).json({ 

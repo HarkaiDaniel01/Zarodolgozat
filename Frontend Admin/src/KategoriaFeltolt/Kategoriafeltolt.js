@@ -13,6 +13,36 @@ const Kategoriafeltolt = () => {
   const [modalNyitva, setModalNyitva] = useState(false);
   const [szerkesztettKerdes, setSzerkesztettKerdes] = useState({});
 
+  // Inline styles for responsive card design
+  const styles = `
+    .kategoria-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+    
+    @media (max-width: 768px) {
+      .kategoria-cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .kategoria-cards-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .kategoria-card-buttons {
+        flex-direction: column;
+      }
+      .kategoria-card-buttons button {
+        width: 100%;
+      }
+    }
+  `;
+
   const leToltes = async () => {
     try {
       const response = await fetch(Cim.Cim + "/kategoria");
@@ -177,81 +207,159 @@ const Kategoriafeltolt = () => {
   if (hiba) return <div>Hiba történt az adatok betöltése közben.</div>;
 
   return (
-    <div style={{
-      background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
-      minHeight: '100vh',
-      padding: '2rem',
-      borderRadius:'15px',
-    }}>
-      <div className="felvitel" style={{ maxWidth: '1400px',minWidth:'400px', margin: '0 auto' }}>
-        <h1>Kategória kezelése</h1>
+    <div>
+      <style>{styles}</style>
+      <div style={{
+        background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+        minHeight: '100vh',
+        padding: '1rem',
+        borderRadius:'15px',
+      }}>
+        <div className="felvitel" style={{ 
+          maxWidth: '1400px',
+          width: '100%', 
+          margin: '0 auto',
+          padding: '0 1rem'
+        }}>
+          <h1 style={{
+            fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+            textAlign: 'center',
+            marginBottom: '1.5rem'
+          }}>Kategória kezelése</h1>
 
-      <div className="kategoria-form" style={{
-      background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%)',
-      minHeight: '1vh',
-      padding: '2rem',
-      borderRadius:'15px',
-    }}>
-        <form onSubmit={felvitelFuggveny} className="forms" >
-          <div className="mb-3">
-            <label>Új kategória neve:</label>
-            <input
-              type="text"
-              className="form-control"
-              value={kategoria}
-              onChange={(e) => setKategoria(e.target.value)}
-              required
-              placeholder="Pl.: Történelem"
-            />
+        <div className="kategoria-form" style={{
+          background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%)',
+          minHeight: '1vh',
+          padding: '1.5rem',
+          borderRadius:'15px',
+        }}>
+          <form onSubmit={felvitelFuggveny} className="forms" >
+            <div className="mb-3">
+              <label>Új kategória neve:</label>
+              <input
+                type="text"
+                className="form-control"
+                value={kategoria}
+                onChange={(e) => setKategoria(e.target.value)}
+                required
+                placeholder="Pl.: Történelem"
+              />
+            </div>
+            <button className="btn btn-success gomb" type="submit">
+              Hozzáadás
+            </button>
+          </form>
+        </div>
+
+        <hr />
+
+        <h2 style={{
+          fontSize: 'clamp(1.25rem, 3vw, 2rem)',
+          textAlign: 'center',
+          margin: '2rem 0 1.5rem'
+        }}>Kategóriák listája</h2>
+        
+        <div className="kategoria-cards-container">
+          {adatok.map((elem) => (
+            <div
+              key={elem.kategoria_id}
+              style={{
+                backgroundColor: darkMode ? "#374151" : "#ffffff",
+                borderRadius: "16px",
+                padding: "1.5rem",
+                boxShadow: darkMode 
+                  ? "0 4px 12px rgba(0, 0, 0, 0.3)" 
+                  : "0 2px 8px rgba(0, 0, 0, 0.1)",
+                border: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                cursor: "default"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow = darkMode 
+                  ? "0 8px 24px rgba(0, 0, 0, 0.4)" 
+                  : "0 4px 16px rgba(0, 0, 0, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = darkMode 
+                  ? "0 4px 12px rgba(0, 0, 0, 0.3)" 
+                  : "0 2px 8px rgba(0, 0, 0, 0.1)";
+              }}
+            >
+              {/* Card Header */}
+              <div style={{
+                marginBottom: "1rem",
+                paddingBottom: "1rem",
+                borderBottom: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb"
+              }}>
+                <div style={{
+                  fontSize: "0.75rem",
+                  color: darkMode ? "#9ca3af" : "#6b7280",
+                  marginBottom: "0.25rem"
+                }}>
+                  ID: {elem.kategoria_id}
+                </div>
+                <div style={{
+                  fontSize: "1.25rem",
+                  fontWeight: "600",
+                  color: darkMode ? "#e5e7eb" : "#1f2937",
+                  wordBreak: "break-word"
+                }}>
+                  {elem.kategoria_nev}
+                </div>
+              </div>
+
+              {/* Card Actions */}
+              <div className="kategoria-card-buttons" style={{
+                display: "flex",
+                gap: "0.75rem",
+                flexWrap: "wrap"
+              }}>
+                <button
+                  className="btn btn-warning"
+                  style={{
+                    flex: "1",
+                    minWidth: "100px",
+                    fontSize: "0.875rem",
+                    padding: "0.5rem 1rem"
+                  }}
+                  onClick={() => {
+                    setSzerkesztettKerdes(elem);
+                    setModalNyitva(true);
+                  }}
+                >
+                  ✏️ MÓDOSÍTÁS
+                </button>
+                <button
+                  className="btn btn-danger"
+                  style={{
+                    flex: "1",
+                    minWidth: "100px",
+                    fontSize: "0.875rem",
+                    padding: "0.5rem 1rem"
+                  }}
+                  onClick={() =>
+                    torlesFuggveny(elem.kategoria_id, elem.kategoria_nev)
+                  }
+                >
+                  🗑️ TÖRLÉS
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {adatok.length === 0 && (
+          <div style={{ 
+            textAlign: "center", 
+            padding: "2rem", 
+            color: darkMode ? "#9ca3af" : "#6B7280",
+            fontSize: "1.1rem"
+          }}>
+            Nincsenek kategóriák.
           </div>
-          <button className="btn btn-success gomb" type="submit">
-            Hozzáadás
-          </button>
-        </form>
-      </div>
-
-      <hr />
-
-      <h2>Kategóriák listája</h2>
-      <div className="tabla-container" style={{ maxWidth: '1000px',minWidth:'400px', margin: '0 auto' }}>
-        <table className="kategoria-tabla">
-          <thead>
-            <tr>
-              <th className="kategoriafejlec">Kategória név</th>
-              <th className="kategoriafejlec">Módosítás</th>
-              <th className="kategoriafejlec">Törlés</th>
-            </tr>
-          </thead>
-          <tbody>
-            {adatok.map((elem) => (
-              <tr key={elem.kategoria_id}>
-                <td>{elem.kategoria_nev}</td>
-                <td>
-                  <button
-                    className="btn btn-warning w-100"
-                    onClick={() => {
-                      setSzerkesztettKerdes(elem);
-                      setModalNyitva(true);
-                    }}
-                  >
-                    MÓDOSÍTÁS
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className="btn btn-danger w-100"
-                    onClick={() =>
-                      torlesFuggveny(elem.kategoria_id, elem.kategoria_nev)
-                    }
-                  >
-                    TÖRLÉS
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        )}
 
       {modalNyitva && (
         <div className="modal">
@@ -290,6 +398,7 @@ const Kategoriafeltolt = () => {
           </div>
         </div>
       )}
+        </div>
       </div>
     </div>
   );
