@@ -32,6 +32,8 @@ const Kerdesfeltolt = () => {
   const [siker, setSiker] = useState(false);
   const [szurtAdatok, setSzurtAdatok] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(20);
 
   // ADATOK BETÖLTÉSE
   useEffect(() => {
@@ -215,6 +217,7 @@ const Kerdesfeltolt = () => {
     });
     const data = await res.json();
     setSzurtAdatok(data);
+    setCurrentPage(1); // Oldalszám visszaállítása szűréskor
   } catch (err) {
     console.error(err);
   }
@@ -222,6 +225,13 @@ const Kerdesfeltolt = () => {
 
   if (tolt) return <div style={{ textAlign: "center" }}>Adatok betöltése...</div>;
   if (hiba) return <div>Hiba történt az adatok betöltése során.</div>;
+
+  // Lapozás
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = szurtAdatok.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div style={{
@@ -352,72 +362,54 @@ const Kerdesfeltolt = () => {
       </div>
 
       {/* LISTA */}
-      <div className="row">
-        <div className="col-12">
-          <div className="tabla-container">
-            <table className="kerdes-tabla">
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Kérdés</th>
-                  <th>A</th>
-                  <th>B</th>
-                  <th>C</th>
-                  <th>D</th>
-                  <th>Kategória</th>
-                  <th>Leírás</th>
-                  <th>Nehézség</th>
-                  <th>Törlés</th>
-                  <th>Módosítás</th>
-                </tr>
-              </thead>
-              <tbody>
-                {szurtAdatok.map((elem) => (
-                  <tr key={elem.kerdesek_id}>
-                    <td data-label="Id">{elem.kerdesek_id}</td>
-                    <td data-label="Kérdés">{elem.kerdesek_kerdes}</td>
-                    <td data-label="A">{elem.kerdesek_helyesValasz}</td>
-                    <td data-label="B">{elem.kerdesek_helytelenValasz1}</td>
-                    <td data-label="C">{elem.kerdesek_helytelenValasz2}</td>
-                    <td data-label="D">{elem.kerdesek_helytelenValasz3}</td>
-                    <td data-label="Kategória">{elem.kategoria_nev}</td>
-                    <td data-label="Leírás">{elem.kerdesek_leiras}</td>
-                    <td data-label="Nehézség">{elem.nehezseg_szint}</td>
-                    <td data-label="Törlés">
-                      <button
-                        className="btn btn-danger w-100"
-                        onClick={() =>
-                          torlesFuggveny(elem.kerdesek_id, elem.kerdesek_kerdes)
-                        }
-                      >
-                        TÖRLÉS
-                      </button>
-                    </td>
-                    <td data-label="Módosítás">
-                      <button
-                        className="btn btn-warning w-100"
-                        onClick={() => {
-                          // Megkeressük a kategória ID-t a név alapján
-                          const kategoriaObj = kategoriak.find(k => k.kategoria_nev === elem.kategoria_nev);
-                          const nehezsegObj = nehezsegek.find(n => n.nehezseg_szint === elem.nehezseg_szint);
-                          
-                          setSzerkesztettKerdes({
-                            ...elem,
-                            kerdesek_kategoria: kategoriaObj ? kategoriaObj.kategoria_id : "",
-                            kerdesek_nehezseg: nehezsegObj ? nehezsegObj.nehezseg_id : ""
-                          });
-                          setModalNyitva(true);
-                        }}
-                      >
-                        MÓDOSÍTÁS
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="kerdes-grid">
+        {currentItems.map((elem) => (
+          <div className="kerdes-kartya" key={elem.kerdesek_id}>
+            <h3>{elem.kerdesek_kerdes}</h3>
+            <p><strong>Helyes válasz:</strong> {elem.kerdesek_helyesValasz}</p>
+            <p><strong>Helytelen válasz 1:</strong> {elem.kerdesek_helytelenValasz1}</p>
+            <p><strong>Helytelen válasz 2:</strong> {elem.kerdesek_helytelenValasz2}</p>
+            <p><strong>Helytelen válasz 3:</strong> {elem.kerdesek_helytelenValasz3}</p>
+            <p><strong>Kategória:</strong> {elem.kategoria_nev}</p>
+            <p><strong>Nehézség:</strong> {elem.nehezseg_szint}</p>
+            <p><strong>Leírás:</strong> {elem.kerdesek_leiras}</p>
+            <div className="kartya-gombok">
+              <button
+                className="btn btn-danger w-100"
+                onClick={() =>
+                  torlesFuggveny(elem.kerdesek_id, elem.kerdesek_kerdes)
+                }
+              >
+                TÖRLÉS
+              </button>
+              <button
+                className="btn btn-warning w-100"
+                onClick={() => {
+                  const kategoriaObj = kategoriak.find(k => k.kategoria_nev === elem.kategoria_nev);
+                  const nehezsegObj = nehezsegek.find(n => n.nehezseg_szint === elem.nehezseg_szint);
+                  
+                  setSzerkesztettKerdes({
+                    ...elem,
+                    kerdesek_kategoria: kategoriaObj ? kategoriaObj.kategoria_id : "",
+                    kerdesek_nehezseg: nehezsegObj ? nehezsegObj.nehezseg_id : ""
+                  });
+                  setModalNyitva(true);
+                }}
+              >
+                MÓDOSÍTÁS
+              </button>
+            </div>
           </div>
-        </div>
+        ))}
+      </div>
+
+      {/* LAPOZÁS */}
+      <div className="pagination">
+        {Array.from({ length: Math.ceil(szurtAdatok.length / itemsPerPage) }, (_, i) => (
+          <button key={i + 1} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
+            {i + 1}
+          </button>
+        ))}
       </div>
 
       {/* MODAL */}

@@ -653,6 +653,69 @@ body.dark-mode table thead th {
   margin-left: 10px;
 }
 
+/* --- Kérdés Grid --- */
+.kerdes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.kerdes-kartya {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.kerdes-kartya:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.kerdes-kartya h3 {
+  font-size: 1.2rem;
+  color: #6BA03E;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.kerdes-kartya p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.kerdes-kartya p strong {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.kartya-gombok {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+body.dark-mode .kerdes-kartya {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+body.dark-mode .kerdes-kartya h3 {
+  color: #a5d6a7;
+}
+
+body.dark-mode .kerdes-kartya p {
+  color: #e5e7eb;
+}
+
+body.dark-mode .kerdes-kartya p strong {
+  color: #ffffff;
+}
+
 /* --- Responsive --- */
 @media (max-width: 1000px) {
   .kartya, .urlapDoboz {
@@ -963,12 +1026,49 @@ body.dark-mode .card-description {
   color: white !important;
 }
 
-@media (max-width: 768px) {
-  .dashboard-cards {
-    grid-template-columns: 1fr;
-  }
-  
-  .dashboard-title {
-    font-size: 2rem;
-  }
+/* --- Pagination --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  background-color: white;
+  border: 1px solid #ddd;
+  color: #6BA03E;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  margin: 0 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background-color: #6BA03E;
+  color: white;
+  border: 1px solid #6BA03E;
+}
+
+.pagination button:hover:not(.active) {
+  background-color: #f0f9eb;
+}
+
+body.dark-mode .pagination button {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+body.dark-mode .pagination button.active {
+  background-color: #a5d6a7;
+  color: #1f2937;
+  border-color: #a5d6a7;
+}
+
+body.dark-mode .pagination button:hover:not(.active) {
+  background-color: #4b5563;
 }
