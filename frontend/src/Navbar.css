@@ -1,0 +1,96 @@
+/* --- Navbar container --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #667eea;
+  padding: 10px 20px;
+  color: #fff;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- Bal oldali hamburger és menü --- */
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.hamburger {
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 20px;
+  display: none; /* desktopon elrejtve */
+}
+
+.menu {
+  display: flex;
+  gap: 15px;
+}
+
+.menu.open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background-color: #764ba2;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.link {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Jobb oldali gombok --- */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loginButton, .logoutButton {
+  background-color: #fff;
+  color: #667eea;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.loginButton:hover, .logoutButton:hover {
+  background-color: #e2e8f0;
+}
+
+/* --- Responsive (mobil) --- */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .menu.open {
+    display: flex;
+  }
+}
