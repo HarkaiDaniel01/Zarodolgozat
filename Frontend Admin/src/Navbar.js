@@ -1,6 +1,7 @@
 // Navbar komponens
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { logout, checkTokenAndLogout } from './utils/authUtils';
 
 const Navbar = () => {
   const [bejelentkezve, setBejelentkezve] = useState(false);
@@ -10,6 +11,13 @@ const Navbar = () => {
 
   useEffect(() => {
     const checkLogin = () => {
+      // Token ellenőrzés először
+      if (!checkTokenAndLogout(navigate)) {
+        setBejelentkezve(false);
+        setIsAdmin(false);
+        return;
+      }
+      
       const loginStatus = localStorage.getItem("bejelentkezve");
       const userType = localStorage.getItem("userType");
       setBejelentkezve(loginStatus === "true");
@@ -39,10 +47,9 @@ const Navbar = () => {
   }, []);
 
   const kijelentkezes = () => {
-    localStorage.removeItem("bejelentkezve");
-    localStorage.removeItem("felhasznalo");
     setBejelentkezve(false);
-    navigate("/bejelentkezes");
+    setIsAdmin(false);
+    logout(navigate);
   };
 
   const toggleDarkMode = () => {
@@ -59,11 +66,23 @@ const Navbar = () => {
   };
 
   const refreshAdminStatus = async () => {
+    // Előbb ellenőrizzük a tokent
+    if (!checkTokenAndLogout(navigate)) {
+      return;
+    }
+    
     const felhasznalo = localStorage.getItem("felhasznalo");
     if (!felhasznalo) return;
 
     try {
       const response = await fetch(`http://localhost:3000/admin/check-admin/${felhasznalo}`);
+      
+      // Ha 401 vagy 403, akkor lejárt a token
+      if (response.status === 401 || response.status === 403) {
+        logout(navigate);
+        return;
+      }
+      
       const data = await response.json();
       
       if (response.ok) {
@@ -90,7 +109,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg custom-navbar">
-      <div className="nav container-fluid">
+      <div className="container-fluid">
         <Link className="navbar-brand" to={isAdmin ? "/" : "/usermenu"}>Kvízjáték</Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -138,7 +157,8 @@ const Navbar = () => {
                     cursor: 'pointer',
                     padding: '0.5rem 1rem',
                     transition: 'all 0.3s ease',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    marginLeft: '10px'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = 'var(--danger-color)';
@@ -153,11 +173,8 @@ const Navbar = () => {
                   Kijelentkezés 🚪
                 </button>
               </li>
-            ) : (
-              <li className="nav-item">
-                <Link className="nav-link" to="/bejelentkezes">Bejelentkezés 🚪</Link>
-              </li>
-            )}
+            ) : null
+            }
           </ul>
         </div>
       </div>

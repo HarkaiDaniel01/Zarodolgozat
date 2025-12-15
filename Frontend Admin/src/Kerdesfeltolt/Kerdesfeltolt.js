@@ -31,6 +31,7 @@ const Kerdesfeltolt = () => {
   const [hiba, setHiba] = useState(false);
   const [siker, setSiker] = useState(false);
   const [szurtAdatok, setSzurtAdatok] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
 
   // ADATOK BETÖLTÉSE
   useEffect(() => {
@@ -59,6 +60,16 @@ const Kerdesfeltolt = () => {
       }
     };
     betoltes();
+    
+    // Dark mode ellenőrzés
+    const checkDarkMode = () => {
+      setDarkMode(document.body.classList.contains('dark-mode'));
+    };
+    
+    checkDarkMode();
+    window.addEventListener('darkModeChanged', checkDarkMode);
+    
+    return () => window.removeEventListener('darkModeChanged', checkDarkMode);
   }, [siker]);
 
   // KÉRDÉS FELVITELE
@@ -214,7 +225,7 @@ const Kerdesfeltolt = () => {
 
   return (
     <div style={{
-      background: 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+      background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
       minHeight: '100vh',
       padding: '2rem',
       borderRadius:'15px',

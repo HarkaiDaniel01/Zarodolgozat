@@ -4,7 +4,8 @@
   "description": "",
   "main": "Backend.js",
   "scripts": {
-    "start": "nodemon Backend.js"
+    "start": "nodemon Backend.js",
+    "dev": "nodemon Backend.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

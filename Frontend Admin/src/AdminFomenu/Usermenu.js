@@ -52,8 +52,8 @@ const Usermenu = () => {
     return (
         <div style={{
             background: darkMode 
-                ? 'linear-gradient(135deg, #374151 0%, #1f2937 100%)'
-                : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+            ? 'linear-gradient(135deg, #4CAF50, #8B4513)'
+            : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
             height: '85vh',
             display: 'flex',
             alignItems: 'center',

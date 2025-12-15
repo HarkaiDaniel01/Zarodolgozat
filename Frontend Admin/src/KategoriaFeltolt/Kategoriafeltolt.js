@@ -8,6 +8,7 @@ const Kategoriafeltolt = () => {
   const [hiba, setHiba] = useState(false);
   const [siker, setSiker] = useState(false);
   const [adatok, setAdatok] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
 
   const [modalNyitva, setModalNyitva] = useState(false);
   const [szerkesztettKerdes, setSzerkesztettKerdes] = useState({});
@@ -32,6 +33,16 @@ const Kategoriafeltolt = () => {
 
   useEffect(() => {
     leToltes();
+    
+    // Dark mode ellenőrzés
+    const checkDarkMode = () => {
+      setDarkMode(document.body.classList.contains('dark-mode'));
+    };
+    
+    checkDarkMode();
+    window.addEventListener('darkModeChanged', checkDarkMode);
+    
+    return () => window.removeEventListener('darkModeChanged', checkDarkMode);
   }, [siker]);
 
   // FELVITEL
@@ -167,7 +178,7 @@ const Kategoriafeltolt = () => {
 
   return (
     <div style={{
-      background: 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+      background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
       minHeight: '100vh',
       padding: '2rem',
       borderRadius:'15px',
@@ -176,7 +187,7 @@ const Kategoriafeltolt = () => {
         <h1>Kategória kezelése</h1>
 
       <div className="kategoria-form" style={{
-      background: 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%)',
+      background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%)',
       minHeight: '1vh',
       padding: '2rem',
       borderRadius:'15px',

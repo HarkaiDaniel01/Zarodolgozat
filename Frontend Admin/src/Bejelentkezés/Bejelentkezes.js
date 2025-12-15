@@ -29,6 +29,8 @@ const Bejelentkezés = () => {
                 console.log("Admin érték:", data.jatekos_admin);
                 localStorage.setItem("bejelentkezve", "true");
                 localStorage.setItem("felhasznalo", jatekos_nev);
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("tokenExpiry", Date.now() + 60 * 60 * 1000); // 1 óra
                 localStorage.setItem("userType", data.jatekos_admin === 1 ? "admin" : "user");
                 window.dispatchEvent(new Event('storage'));
                 window.dispatchEvent(new Event('userTypeChanged'));

@@ -29,12 +29,7 @@ const Menu1 = () => {
             </div>
             
             <div className="dashboard-cards">
-                <Link to="/kerdeskezel" className="dashboard-card" style={{
-                    background: 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
-                    minHeight: '1vh',
-                    padding: '2rem',
-                    borderRadius:'15px',
-                    }}>
+                <Link to="/kerdeskezel" className="dashboard-card">
                     <div className="card-icon">
                         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="30" cy="30" r="30" fill="white" fillOpacity="0.9"/>
@@ -45,11 +40,7 @@ const Menu1 = () => {
                     <p className="card-description">Kérdések felvitele, módosítása és törlése</p>
                 </Link>
 
-                <Link to="/kategoriakezel" className="dashboard-card" style={{
-                    background: 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
-                    minHeight: '1vh',
-                    padding: '2rem',
-                    borderRadius:'15px', }}>
+                <Link to="/kategoriakezel" className="dashboard-card">
                     <div className="card-icon">
                         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="30" cy="30" r="30" fill="white" fillOpacity="0.9"/>
@@ -59,11 +50,7 @@ const Menu1 = () => {
                     <h2 className="card-title">Kategória kezelése</h2>
                     <p className="card-description">Kategóriák felvitele, módosítása és törlése</p>
                 </Link>
-                <Link to="/engedelykeres" className="dashboard-card" style={{
-                    background: 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
-                    minHeight: '1vh',
-                    padding: '2rem',
-                    borderRadius:'15px', }}>
+                <Link to="/engedelykeres" className="dashboard-card">
                     <div className="card-icon">
                         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="30" cy="30" r="30" fill="white" fillOpacity="0.9"/>
