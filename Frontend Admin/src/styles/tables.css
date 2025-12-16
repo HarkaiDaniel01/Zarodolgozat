@@ -1,0 +1,218 @@
+/* --- Table --- */
+.kerdes-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.95em;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  min-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.kerdes-tabla thead tr {
+  background-color: #6BA03E;
+  color: white;
+  text-align: left;
+  font-weight: 600;
+}
+
+.kerdes-tabla th,
+.kerdes-tabla td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.kerdes-tabla tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  background-color: white;
+}
+
+.kerdes-tabla tbody tr:nth-of-type(even) {
+  background-color: #F9FAFB;
+}
+
+.kerdes-tabla tbody tr:last-of-type {
+  border-bottom: 2px solid #6BA03E;
+}
+
+.kerdes-tabla tbody tr:hover {
+  background-color: #F0F9EB;
+  color: #374151;
+}
+
+/* --- Szűrés --- */
+.szures-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E5E7EB;
+}
+
+.szures-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.szuro-elem {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Táblázat Container --- */
+.tabla-container {
+  overflow-x: auto;
+}
+.gombszures {
+  margin-bottom: -15px;
+}
+
+/* --- Kategória Oldal Specifikus Stílusok --- */
+
+.kategoria-form {
+  background-color: var(--light-background);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 2rem;
+  box-shadow: var(--box-shadow);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.kategoria-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 1em;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  min-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+.kategoriafejlec{
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+.kategoria-tabla thead tr {
+  background-color: #6BA03E;
+  color: white;
+  text-align: left;
+  font-weight: 600;
+}
+
+.kategoria-tabla th,
+.kategoria-tabla td {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 20px;
+}
+
+.kategoria-tabla td,
+.kategoria-tabla th {
+  text-align: center;
+}
+
+.kategoria-tabla tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  background-color: white;
+}
+
+.kategoria-tabla tbody tr:nth-of-type(even) {
+  background-color: #F9FAFB;
+}
+
+.kategoria-tabla tbody tr:last-of-type {
+  border-bottom: 2px solid #6BA03E;
+}
+
+.kategoria-tabla tbody tr:hover {
+  background-color: #F0F9EB;
+  color: #374151;
+}
+
+.kategoria-tabla .muveletek {
+  text-align: right;
+}
+
+.kategoria-tabla .muveletek button {
+  margin-left: 10px;
+}
+
+/* --- Dark Mode Table --- */
+body.dark-mode table {
+  background: linear-gradient(135deg, #4CAF50, #8B4513);
+  color: #e5e7eb;
+}
+
+body.dark-mode table thead tr {
+  background-color: #4b5563;
+  color: white;
+}
+
+body.dark-mode table tbody tr {
+  background-color: #374151;
+  color: #e5e7eb;
+  border-bottom: 1px solid #4b5563;
+}
+
+body.dark-mode table tbody tr:nth-of-type(even) {
+  background-color: #1f2937;
+}
+
+body.dark-mode table tbody tr:hover {
+  background-color: #4b5563;
+}
+
+body.dark-mode table th,
+body.dark-mode table td {
+  background-color: #374151;
+  color: #e5e7eb;
+  border-color: #4b5563;
+}
+
+body.dark-mode table thead th {
+  background-color: #4b5563;
+}
+
+body.dark-mode .kerdes-tabla,
+body.dark-mode .kategoria-tabla {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark-mode .kerdes-tabla thead tr,
+body.dark-mode .kategoria-tabla thead tr {
+  background-color: #4b5563;
+}
+
+body.dark-mode .kerdes-tabla tbody tr,
+body.dark-mode .kategoria-tabla tbody tr {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+body.dark-mode .kerdes-tabla tbody tr:nth-of-type(even),
+body.dark-mode .kategoria-tabla tbody tr:nth-of-type(even) {
+  background-color: #1f2937;
+}
+
+body.dark-mode .kerdes-tabla tbody tr:hover,
+body.dark-mode .kategoria-tabla tbody tr:hover {
+  background-color: #4b5563;
+}
+
+body.dark-mode .szures-container {
+  background: #374151;
+  border-color: #4b5563;
+}

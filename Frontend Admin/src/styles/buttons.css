@@ -1,0 +1,52 @@
+/* --- Buttons --- */
+.gomb, .btn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 8px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-success, .zoldGomb {
+  background-color: #6BA03E;
+  color: white;
+}
+.btn-success:hover, .zoldGomb:hover {
+  background-color: #5a8a32;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 160, 62, 0.3);
+}
+
+.btn-danger {
+  background-color: #EF4444;
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-warning {
+  background-color: #F59E0B;
+  color: white;
+}
+.btn-warning:hover {
+  background-color: #D97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-primary {
+    background-color: #FFEA64;
+    color: #1f2937;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background-color: #FFE033;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 234, 100, 0.4);
+}

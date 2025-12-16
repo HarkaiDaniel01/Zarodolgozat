@@ -1,0 +1,93 @@
+/* --- Forms --- */
+.felvitel {
+  background: linear-gradient(135deg, #FFFEF7 0%, #F5F8E8 100%);
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  border-radius: 16px;
+  padding: 2rem;
+  font-size: 16px;
+  margin: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="password"],
+.form-control {
+  background-color: white;
+  color: #1f2937;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+input:focus,
+.form-control:focus {
+  outline: none;
+  border-color: #6BA03E;
+  box-shadow: 0 0 0 3px rgba(107, 160, 62, 0.1);
+}
+
+.urlapDoboz {
+  border: 2px solid var(--success-color);
+  text-align: center;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  max-width: 600px;
+  background-color: var(--light-background);
+}
+
+/* --- Dropdowns --- */
+.lenyilo, select.form-control, select {
+  background-color: white;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 2px 0;
+  width: 100%;
+  transition: all 0.2s;
+}
+.lenyilo:focus, select.form-control:focus, select:focus {
+  outline: none;
+  border-color: #6BA03E;
+  box-shadow: 0 0 0 3px rgba(107, 160, 62, 0.1);
+}
+
+body.dark-mode .felvitel {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  color: #ffffff;
+  border-color: #4b5563;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode .form-control {
+  background-color: #9ca3af;
+  color: #000000;
+  border-color: #4b5563;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #000000;
+}
+
+body.dark-mode .form-input::placeholder {
+  color: #000000;
+}

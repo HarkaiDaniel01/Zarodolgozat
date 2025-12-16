@@ -1,0 +1,41 @@
+/* =========================================
+   Root Variables - #00A21D Színpaletta
+   ========================================= */
+:root {
+  /* Elsődleges zöld színek */
+  --primary-green: #00A21D;
+  --primary-green-dark: #006B13;
+  --primary-green-darker: #004B0D;
+  --primary-green-light: #B8D9A3;
+  --primary-green-lighter: #D4E8C7;
+  --primary-green-pale: #E6F3DC;
+  
+  /* Kiegészítő színek */
+  --accent-yellow: #FFEA64;
+  --accent-pink: #FFC0CB;
+  --danger-color: #EF4444;
+  --warning-color: #F59E0B;
+  
+  /* UI alapok */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+
+  /* Light mode */
+  --body-bg: linear-gradient(135deg, #F5F8E8 0%, #FFFEF7 100%);
+  --body-text: #374151;
+  --surface-bg: white;
+  --surface-bg-alt: #F9FAFB;
+  --surface-border: #D1D5DB;
+  --surface-hover: #E6F3DC;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --body-bg: linear-gradient(135deg, #CF0000 0%, #5B0114 100%);
+  --body-text: #e5e7eb;
+  --surface-bg: #8B0000;
+  --surface-bg-alt: #5B0114;
+  --surface-border: #CF0000;
+  --surface-hover: #A00000;
+} 

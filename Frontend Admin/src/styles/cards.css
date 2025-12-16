@@ -1,0 +1,95 @@
+/* --- Cards (for other pages) --- */
+.kartya {
+  background-color: var(--light-background);
+  border: 1px solid var(--primary-color);
+  margin: 20px auto;
+  padding: 30px;
+  font-size: 18px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+}
+
+.szoveg {
+  text-align: justify;
+  line-height: 1.6;
+}
+
+.datum {
+  color: var(--primary-color);
+  font-size: smaller;
+}
+
+.ki {
+  color: var(--success-color);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.nev {
+  color: var(--warning-color);
+  text-align: right;
+}
+
+/* --- Kérdés Grid --- */
+.kerdes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.kerdes-kartya {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.kerdes-kartya:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.kerdes-kartya h3 {
+  font-size: 1.2rem;
+  color: #6BA03E;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.kerdes-kartya p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.kerdes-kartya p strong {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.kartya-gombok {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+body.dark-mode .kerdes-kartya {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+body.dark-mode .kerdes-kartya h3 {
+  color: #a5d6a7;
+}
+
+body.dark-mode .kerdes-kartya p {
+  color: #e5e7eb;
+}
+
+body.dark-mode .kerdes-kartya p strong {
+  color: #ffffff;
+}

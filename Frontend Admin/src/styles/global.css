@@ -1,0 +1,201 @@
+/* =========================================
+   Global Styles
+   ========================================= */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--body-bg);
+  color: var(--body-text);
+  font-family: var(--font-family);
+  transition: background 0.3s, color 0.3s;
+}
+
+.nav {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+  border-radius: var(--border-radius);
+  margin: 1rem 1rem;
+}
+
+.dark.navbar {
+  background: linear-gradient(135deg, #4CAF50, #8B4513);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+  border-radius: var(--border-radius);
+  margin: 1rem 1rem;
+}
+
+.nav a {
+  color: #1f2937;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav a.active {
+  background-color: white;
+  color: var(--primary-green);
+}
+
+/* =========================================
+   Background Gradients
+   ========================================= */
+.light-bg-gradient {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+}
+
+.dark-bg-gradient {
+  background:linear-gradient( 135deg, #4CAF50 0%, #8B4513 70%);
+}
+.dark.navbar{
+  background-color:linear-gradient( 135deg, #4CAF50, #8B4513);
+}
+.custom-navbar {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 1rem;
+  border: none !important;
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: #1f2937 !important;
+  font-weight: 600;
+}
+
+.custom-navbar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #6BA03E !important;
+  border-radius: 8px;
+}
+
+body {
+  background: linear-gradient(135deg, #F5F8E8 0%, #FFFEF7 100%);
+  color: #374151;
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  background: linear-gradient(135deg, #4CAF50 0%, #514a13 50%, #442107 80%);
+  color: #e5e7eb;
+}
+
+body.dark-mode .custom-navbar {
+  background: linear-gradient(135deg, #4CAF50, #8B4513);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode .custom-navbar .navbar-brand,
+body.dark-mode .custom-navbar .nav-link {
+  color: #000000 !important;
+}
+
+/* Theme Switch Toggle */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #6BA03E;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #374151;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.container {
+  padding-top: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-align: center;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  color: #6BA03E;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+body.dark-mode label,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+  color: #000000;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1000px) {
+  .kartya, .urlapDoboz {
+    margin: 10px;
+    padding: 15px;
+  }
+  .felvitel {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
