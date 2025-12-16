@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Nov 13. 17:52
+-- Létrehozás ideje: 2025. Dec 16. 08:55
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -26,6 +26,20 @@ USE `zarodolgozat_kvizjatek`;
 -- --------------------------------------------------------
 
 --
+-- Tábla szerkezet ehhez a táblához `eredmenyek`
+--
+
+CREATE TABLE `eredmenyek` (
+  `Eredmenyek_id` int(11) NOT NULL,
+  `Eredmenyek_pont` int(11) NOT NULL,
+  `Eredmenyek_jatekos` int(11) NOT NULL,
+  `Eredmenyek_datum` date NOT NULL,
+  `Eredmenyek_kategoria` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `jatekos`
 --
 
@@ -33,9 +47,16 @@ CREATE TABLE `jatekos` (
   `jatekos_id` int(11) NOT NULL,
   `jatekos_nev` varchar(50) NOT NULL,
   `jatekos_jelszo` varchar(255) NOT NULL,
-  `jatekos_pontszam` int(11) NOT NULL,
   `jatekos_admin` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `jatekos`
+--
+
+INSERT INTO `jatekos` (`jatekos_id`, `jatekos_nev`, `jatekos_jelszo`, `jatekos_admin`) VALUES
+(8, 'Admin', '$2b$10$H5QJ1pp3hKp73FkCo0FNT.oZArjGCCoSTBD/un/Fqn4SHOrZ53R.6', 1),
+(14, 'Firefox_User', '$2b$10$UYCm2zuvEuyEK4oAHKpjp.3yeY90lsjIuoGf6l/u0wj6aHCnYHRYe', 0);
 
 -- --------------------------------------------------------
 
@@ -82,7 +103,6 @@ CREATE TABLE `kerdesek` (
 --
 
 INSERT INTO `kerdesek` (`kerdesek_id`, `kerdesek_kerdes`, `kerdesek_helyesValasz`, `kerdesek_helytelenValasz1`, `kerdesek_helytelenValasz2`, `kerdesek_helytelenValasz3`, `kerdesek_kategoria`, `kerdesek_leiras`, `kerdesek_nehezseg`) VALUES
-
 (1, 'Mikor volt a tatárjárás?', '1241', '1526', '1703', '1848', 1, 'A magyar történelem egyik sorsfordító eseménye.', 1),
 (2, 'Ki volt az első magyar király?', 'Szent István', 'Károly Róbert', 'Hunyadi János', 'IV. Béla', 1, 'A keresztény magyar állam megalapítója.', 1),
 (3, 'Melyik évben volt a mohácsi csata?', '1526', '1456', '1701', '1849', 1, 'A magyar történelem egyik legnagyobb veresége.', 1),
@@ -610,6 +630,14 @@ INSERT INTO `nehezseg` (`nehezseg_id`, `nehezseg_szint`) VALUES
 --
 
 --
+-- A tábla indexei `eredmenyek`
+--
+ALTER TABLE `eredmenyek`
+  ADD PRIMARY KEY (`Eredmenyek_id`),
+  ADD KEY `Eredmenyek_jatekos` (`Eredmenyek_jatekos`,`Eredmenyek_kategoria`),
+  ADD KEY `Eredmenyek_kategoria` (`Eredmenyek_kategoria`);
+
+--
 -- A tábla indexei `jatekos`
 --
 ALTER TABLE `jatekos`
@@ -641,22 +669,28 @@ ALTER TABLE `nehezseg`
 --
 
 --
+-- AUTO_INCREMENT a táblához `eredmenyek`
+--
+ALTER TABLE `eredmenyek`
+  MODIFY `Eredmenyek_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT a táblához `jatekos`
 --
 ALTER TABLE `jatekos`
-  MODIFY `jatekos_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `jatekos_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT a táblához `kategoria`
 --
 ALTER TABLE `kategoria`
-  MODIFY `kategoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `kategoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT a táblához `kerdesek`
 --
 ALTER TABLE `kerdesek`
-  MODIFY `kerdesek_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
+  MODIFY `kerdesek_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=502;
 
 --
 -- AUTO_INCREMENT a táblához `nehezseg`
@@ -667,6 +701,13 @@ ALTER TABLE `nehezseg`
 --
 -- Megkötések a kiírt táblákhoz
 --
+
+--
+-- Megkötések a táblához `eredmenyek`
+--
+ALTER TABLE `eredmenyek`
+  ADD CONSTRAINT `eredmenyek_ibfk_1` FOREIGN KEY (`Eredmenyek_jatekos`) REFERENCES `jatekos` (`jatekos_id`),
+  ADD CONSTRAINT `eredmenyek_ibfk_2` FOREIGN KEY (`Eredmenyek_kategoria`) REFERENCES `kategoria` (`kategoria_id`);
 
 --
 -- Megkötések a táblához `kerdesek`
