@@ -31,7 +31,7 @@ const Navbar = () => {
     setToken(null);
     setRole(null);
 
-    navigate("/menu1");
+    navigate("/login");
   };
 
   const toggleMenu = () => {
@@ -56,9 +56,9 @@ const Navbar = () => {
             </Link>
           )}
 
-          {loggedIn && role === "user" && (
-            <Link to="/user" className="link" onClick={() => setMenuOpen(false)}>
-              User menü
+          {loggedIn && (
+            <Link to="/felhasznalo" className="link" onClick={() => setMenuOpen(false)}>
+              Profil
             </Link>
           )}
         </div>

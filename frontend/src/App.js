@@ -9,6 +9,7 @@ import './App.css'
 import 'sweetalert2/dist/sweetalert2.min.css';
 import Login from './Login';
 import Register from './Register';
+import Felhasznalo from './Felhasznalo';
 
 
 
@@ -27,6 +28,8 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/register" element={<Register/>} />
+
+          <Route path="/felhasznalo" element={<Felhasznalo/>} />
           
         </Routes>
       </div>

@@ -19,10 +19,13 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch(Cim.Cim + '/login/register', {
+      const response = await fetch(`${Cim.Cim}/admin/regisztracio`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ 
+          "jatekos_nev" : username,
+          "jatekos_jelszo" : password
+        }),
       });
 
       if (!response.ok) {
@@ -31,7 +34,7 @@ const Register = () => {
       }
 
       alert('Sikeres regisztráció!');
-      navigate('/'); // vissza a login oldalra
+      navigate('/login'); // vissza a login oldalra
     } catch (err) {
       setError(err.message);
     }

@@ -42,6 +42,7 @@ app.get('/kategoria', (req, res) => {
   });
 });
 
+
 //Kérdések lekérése kategória és könnyű nehézségi szint szerint
 app.post("/kerdesekKonnyu", (req, res) => {
   const { kategoria } = req.body;
@@ -158,6 +159,72 @@ app.get("/kerdesekNehezVegyes", (req, res) => {
                 where kerdesek_nehezseg = 3 
                 ORDER BY rand()
                 LIMIT 4`;
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Nincs adat" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//eredmények lekérése
+app.post("/eredmenyek", (req, res) => {
+  const {jatekosId} = req.body;
+
+  const sql = `
+                SELECT jatekos_nev, Eredmenyek_datum, kategoria_nev, Eredmenyek_pont  
+                FROM eredmenyek 
+                INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
+                INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
+                where Eredmenyek_jatekos = ?
+                ORDER BY Eredmenyek_id DESC
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//Játékos nevének lekérése
+app.post("/jatekos", (req, res) => {
+  const {jatekosId} = req.body;
+  
+  const sql = `
+                SELECT jatekos_nev 
+                FROM jatekos 
+                where jatekos_id = ? LIMIT 1
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Nincs adat" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//nehéz kérdések
+app.get("/nehezVegyes", (req, res) => {
+  const sql = `SELECT * 
+                from kerdesek
+                where kerdesek_nehezseg = 3 
+                ORDER BY rand()
+                LIMIT 10`;
   pool.query(sql, (err, result) => {
     if (err) {
       console.log(err);

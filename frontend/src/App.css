@@ -1,9 +1,17 @@
-h1,h2 {
+h2 {
   text-align: center;
   font-family: Cambria, Cochin;
   color: rgb(64, 64, 171);
   font-weight: bold;
   font-size: 32px;
+}
+
+h1{
+  text-align: center;
+  font-family: Cambria, Cochin;
+  color: rgb(64, 64, 171);
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
 .kartya{
@@ -85,7 +93,7 @@ input{
   background-color: #ffffff;  
   border: 1px solid #000000;  
   margin-bottom: 15px;
-  height: 56px;
+  min-height: 56px;
   
   display: flex;              
   align-items: center;
@@ -218,6 +226,11 @@ h4 {
 i {
   color: rgb(64, 64, 171);
 }
+
+td, th {
+  text-align: center;
+}
+
 
 .swal2-success-line-tip, .swal2-success-line-long {
   font-size: 16px !important;

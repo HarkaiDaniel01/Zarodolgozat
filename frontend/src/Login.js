@@ -12,10 +12,13 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch(Cim.Cim + '/login/login', {
+      const response = await fetch(Cim.Cim+'/admin/bejelentkezes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ 
+          "jatekos_nev" : username, 
+          "jatekos_jelszo" : password
+        }),
       });
 
       if (!response.ok) {
@@ -27,10 +30,9 @@ const Login = () => {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
-      localStorage.setItem('userid', data.userid);
+      localStorage.setItem('userid', data.user.id);
 
-      alert(data.userid);
-      navigate('/menu1');
+      navigate('/felhasznalo');
     } catch (err) {
       setError(err.message);
     }

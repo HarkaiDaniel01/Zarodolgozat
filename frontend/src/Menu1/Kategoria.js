@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react"
 import Cim from "../Cim"
 import Kerdesek from "./Kerdesek"
-import Swal from "sweetalert2"
+//import Swal from "sweetalert2"
 
 const Kategoria=()=>{
     const [adatok,setAdatok]=useState([])
@@ -9,7 +9,7 @@ const Kategoria=()=>{
     const [hiba,setHiba]=useState(false)
     const [kerdesek, setKerdesek] = useState([])
     const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false)
-    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎲", "💻", "🎬", "📺", "🌳", "🐱‍👤"])
+    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠"])
 
  
     const kategoriaValaszt = async (kategoriaId) => {
@@ -40,7 +40,7 @@ const Kategoria=()=>{
 
     }
 
-    const fejlesztesAlatt = () => {
+    /*const fejlesztesAlatt = () => {
         
         Swal.fire({
               title: `Fejlesztés alatt`,
@@ -50,7 +50,7 @@ const Kategoria=()=>{
             });
         
 
-    }
+    }*/
 
     const kategoriaValasztVegyes = async () => {
         //alert(`Választott kategória: ${kategoriaId}`)
@@ -78,6 +78,49 @@ const Kategoria=()=>{
         
         
 
+    }
+
+    const kategoriaValasztNehez= async () => {
+
+
+        try{
+
+            const response=await fetch(Cim.Cim+ `/nehezVegyes`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            })
+
+            const data=await response.json()
+            //alert(JSON.stringify(data))
+            //console.log(data)
+            if (response.ok)
+                {
+                    
+                
+
+                    setKerdesek(data)
+                    setKerdesekBetoltve(true)
+
+                    
+                }
+
+                    
+            else 
+                {
+                    
+                }
+            }
+            
+        catch (error){
+            console.log(error)
+            
+        }
+ 
+        
+    
     }
 
     const KerdesekLetoltese= async(kategoriaId, vegpont)=>{
@@ -221,7 +264,7 @@ const Kategoria=()=>{
 
         <div>
             
-        {!kerdesekBetoltve ? (<div className="doboz" >
+        {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"100px"}} >
 
                 <h1>Válassz kategóriát!</h1>
                 <div className="gombDoboz">
@@ -230,18 +273,9 @@ const Kategoria=()=>{
                         <button key={index} className="gomb" onClick={() => kategoriaValaszt(elem.kategoria_id)}>{ikonok[index]} {elem.kategoria_nev}</button>
                     
                 ))}
-                {/*<button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Programozás</button>
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[7]} Filmek</button>
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[8]} Rajzfilmek</button>
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[9]} Környezetvédelem</button>
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Informatika</button>
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[10]} Anime</button>*/}
 
-
-
-
-                <button className="gomb" onClick={() => fejlesztesAlatt()}>{ikonok[6]} Programozás</button>
-                <button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[5]} Vegyes</button>
+                <button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[6]} Vegyes</button>
+                <button className="gomb" onClick={() => kategoriaValasztNehez()}>{ikonok[7]} Géniusz</button>
 
                 </div>
 
