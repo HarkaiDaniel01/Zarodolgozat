@@ -177,7 +177,7 @@ app.post("/eredmenyek", (req, res) => {
   const {jatekosId} = req.body;
 
   const sql = `
-                SELECT jatekos_nev, Eredmenyek_datum, kategoria_nev, Eredmenyek_pont  
+                SELECT Eredmenyek_id, jatekos_nev, Eredmenyek_datum, kategoria_nev, Eredmenyek_pont  
                 FROM eredmenyek 
                 INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
                 INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
@@ -194,6 +194,20 @@ app.post("/eredmenyek", (req, res) => {
     return res.status(200).json(result);
   });
 });
+
+//eredmények törlése
+app.delete('/eredmenyTorles/:eredmenyek_id', (req, res) => {
+        const {eredmenyek_id} =req.params
+        const sql=`delete from eredmenyek where Eredmenyek_id=?`
+        pool.query(sql,[eredmenyek_id], (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+       
+        return res.status(200).json({message:"Sikeres törlés"})
+        })
+})
 
 //Játékos nevének lekérése
 app.post("/jatekos", (req, res) => {
@@ -217,6 +231,26 @@ app.post("/jatekos", (req, res) => {
     return res.status(200).json(result);
   });
 });
+
+//eredmény felvitele
+app.post('/eredmenyFelvitel', (req, res) => {
+
+        if (handleValidationErrors(req,res)) return 
+
+        const {nyeremeny, jatekos, kategoria} =req.body
+        const sql=`insert into eredmenyek values (null,?,?,default,?)`
+        pool.query(sql,[nyeremeny, jatekos, kategoria], (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        
+        return res.status(200).json({message:"Sikeres felvitel"})
+        })
+})
+
+
+
 
 //nehéz kérdések
 app.get("/nehezVegyes", (req, res) => {

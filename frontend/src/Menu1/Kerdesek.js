@@ -1,8 +1,10 @@
 import Swal from "sweetalert2"
 import {useState,  useEffect } from "react"
 import 'sweetalert2/dist/sweetalert2.min.css';
+import Cim from "../Cim";
+import { useNavigate } from 'react-router-dom';
 
-const Kerdesek = ({kerdesek, kerdesekBetoltve}) => {
+const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
     const [szamlalo, setSzamlalo] = useState(0)
     const [valaszok, setValaszok] = useState([])
@@ -20,6 +22,10 @@ const Kerdesek = ({kerdesek, kerdesekBetoltve}) => {
     const [szazalek, setSzazalek] = useState([])
     const [megjeloltValasz, setMegjeloltValasz] = useState()
     const [valaszMegjelolve, setValaszMegjelolve] = useState(false)
+
+    const [jatekosId, setJatekosId] = useState(null)
+
+    const navigate = useNavigate();
 
 
 
@@ -182,8 +188,11 @@ const Kerdesek = ({kerdesek, kerdesekBetoltve}) => {
             A helyes válasz: ${kerdesek[szamlalo].kerdesek_helyesValasz}
             Magyarázat: ${kerdesek[szamlalo].kerdesek_leiras}
             `)*/
-            showAlert("Sajnos nem nyertél! 😿", `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}`, "error", "Vissza a kategóriákhoz 🚪")
             
+            eredmenyMentes();
+
+
+
             setSzamlalo(0)
             setPontszam(0)
 
@@ -214,6 +223,64 @@ const Kerdesek = ({kerdesek, kerdesekBetoltve}) => {
     }).then((result) => {
         if (result.isConfirmed) {
             kerdesekBetoltve(false)
+        }
+    });
+    }
+
+    const eredmenyMentes = () => {
+
+        /*showAlert(
+            "Sajnos nem nyertél! 😿", 
+            `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}`, 
+            "error", 
+            "Vissza a kategóriákhoz 🚪"
+        )*/
+
+
+
+
+        Swal.fire({
+      title: `Sajnos nem nyertél! 😿`,
+      html: `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}<br></br>${pontszam} Ft-ot nyertél! <br></br>El szeretnéd menteni az eredményt?`,
+      icon: `warning`,
+      confirmButtonText: `Igen`,
+      cancelButtonText: 'Nem',
+      showCancelButton: true
+    }).then( async(result) => {
+        if (result.isConfirmed) {
+
+            if (jatekosId != null) {
+
+                const bemenet={
+                    "nyeremeny" : pontszam,
+                    "jatekos" : jatekosId,
+                    "kategoria": kategoria
+                }
+
+                const response=await fetch(Cim.Cim+"/eredmenyFelvitel", {
+                                method: "post",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(bemenet)
+                            })
+
+                if (response.ok) {
+                        alert("ok")
+                } else {
+                        alert("hiba")
+                }
+
+
+            } else {
+                navigate("/login")
+            }
+            
+            
+
+
+
+
         }
     });
     }
@@ -319,6 +386,11 @@ const Kerdesek = ({kerdesek, kerdesekBetoltve}) => {
         valaszKever()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[szamlalo])
+
+    useEffect(()=>{
+        const jatekos = localStorage.getItem("userid")
+        setJatekosId(jatekos)
+    },[])
 
     if (szamlalo < kerdesek.length) {
 

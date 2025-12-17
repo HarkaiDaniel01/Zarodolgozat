@@ -87,6 +87,32 @@ const Felhasznalo = () => {
             
             
         }
+
+        const eredmenyTorles = async (eredmeny_id) => {
+
+            const biztos=window.confirm(`Biztosan törölni szeretnéd az erdményt?`)
+            if (biztos){
+            //alert("Jó")
+                const response=await fetch(Cim.Cim+"/eredmenyTorles/"+eredmeny_id,{
+                    method: "delete",
+                    headers: {
+                        "Content-Type": "application/json"
+                            }
+                   })
+                const data=await response.json()
+                if (response.ok){
+                    alert(data["message"])
+                }
+                else{
+                    alert(data["error"])
+                }
+            }
+
+            leToltes();
+
+
+
+        }
     
     useEffect(()=>{
         const jatekos = localStorage.getItem("userid")
@@ -122,6 +148,7 @@ const Felhasznalo = () => {
                 <thead>
                     <tr>
                     <th>Dátum</th>
+                    <th>Időpont</th>
                     <th>Kategória</th>
                     <th>Nyeremény</th>
                     <th>Törlés</th>
@@ -133,9 +160,10 @@ const Felhasznalo = () => {
                     
                         <tr>
                             <td>{elem.Eredmenyek_datum.split('T')[0]}</td>
+                            <td>{elem.Eredmenyek_datum.split('T')[1].split('.')[0]}</td>
                             <td>{elem.kategoria_nev}</td>
                             <td>{elem.Eredmenyek_pont} Ft</td>
-                            <td><button className="btn btn-danger">Törlés</button></td>
+                            <td><button className="btn btn-danger" onClick={()=>eredmenyTorles(elem.Eredmenyek_id)}>Törlés</button></td>
 
 
                         </tr>

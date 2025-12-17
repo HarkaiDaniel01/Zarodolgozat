@@ -10,11 +10,13 @@ const Kategoria=()=>{
     const [kerdesek, setKerdesek] = useState([])
     const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false)
     const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠"])
+    const [kategoria, setKategoria] = useState(0)
 
  
     const kategoriaValaszt = async (kategoriaId) => {
         //alert(`Választott kategória: ${kategoriaId}`)
 
+        setKategoria(kategoriaId)
 
         const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
         const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
@@ -281,7 +283,7 @@ const Kategoria=()=>{
 
                 
 
-            </div>) : <Kerdesek kerdesek={kerdesek} kerdesekBetoltve = {setKerdesekBetoltve}/>}
+            </div>) : <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve = {setKerdesekBetoltve}/>}
 
         
             
