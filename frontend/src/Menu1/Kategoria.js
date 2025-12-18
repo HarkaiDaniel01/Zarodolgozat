@@ -9,24 +9,29 @@ const Kategoria=()=>{
     const [hiba,setHiba]=useState(false)
     const [kerdesek, setKerdesek] = useState([])
     const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false)
-    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠"])
+    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠", "🖥️"])
     const [kategoria, setKategoria] = useState(0)
 
  
-    const kategoriaValaszt = async (kategoriaId) => {
+    const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
         //alert(`Választott kategória: ${kategoriaId}`)
 
-        setKategoria(kategoriaId)
+        if (kategoriaNev === "Vegyes") {
+            kategoriaValasztVegyes(kategoriaId)
+        } else if (kategoriaNev === "Géniusz") {
+            kategoriaValasztNehez(kategoriaId)
+        } else {
+            setKategoria(kategoriaId)
 
-        const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
-        const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
-        const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+            const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
+            const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
+            const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
 
-        const kerdesek = [...konnyu, ...kozepes, ...nehez]
-        setKerdesek(kerdesek)
+            const kerdesek = [...konnyu, ...kozepes, ...nehez]
+            setKerdesek(kerdesek)
 
 
-        /*{kerdesek.map((elem,index)=>(
+            /*{kerdesek.map((elem,index)=>(
                         alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
                             A: ${elem.kerdesek_helyesValasz}\n
                             B: ${elem.kerdesek_helytelenValasz1}\n
@@ -36,10 +41,9 @@ const Kategoria=()=>{
 
 
         
-        setKerdesekBetoltve(true)
+            setKerdesekBetoltve(true)
         
-        
-
+        }
     }
 
     /*const fejlesztesAlatt = () => {
@@ -54,10 +58,10 @@ const Kategoria=()=>{
 
     }*/
 
-    const kategoriaValasztVegyes = async () => {
+    const kategoriaValasztVegyes = async (kategoriaId) => {
         //alert(`Választott kategória: ${kategoriaId}`)
 
-
+        setKategoria(kategoriaId)
         const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes")
         const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes")
         const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes")
@@ -82,8 +86,9 @@ const Kategoria=()=>{
 
     }
 
-    const kategoriaValasztNehez= async () => {
+    const kategoriaValasztNehez= async (kategoriaId) => {
 
+        setKategoria(kategoriaId)
 
         try{
 
@@ -272,12 +277,12 @@ const Kategoria=()=>{
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
                     
-                        <button key={index} className="gomb" onClick={() => kategoriaValaszt(elem.kategoria_id)}>{ikonok[index]} {elem.kategoria_nev}</button>
+                        <button key={index} className="gomb" onClick={() => kategoriaValaszt(elem.kategoria_id, elem.kategoria_nev)}>{ikonok[index]} {elem.kategoria_nev}</button>
                     
                 ))}
 
-                <button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[6]} Vegyes</button>
-                <button className="gomb" onClick={() => kategoriaValasztNehez()}>{ikonok[7]} Géniusz</button>
+                {/*<button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[6]} Vegyes</button>
+                <button className="gomb" onClick={() => kategoriaValasztNehez()}>{ikonok[7]} Géniusz</button>*/}
 
                 </div>
 
