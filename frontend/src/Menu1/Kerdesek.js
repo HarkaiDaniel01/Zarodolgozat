@@ -182,7 +182,10 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             Magyarázat: ${kerdesek[szamlalo].kerdesek_leiras}
             `)*/
             
-            eredmenyMentes();
+            eredmenyMentes(
+                `Sajnos nem nyertél! 😿`,
+                `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}<br></br>${pontszam} Ft-ot nyertél! <br></br>El szeretnéd menteni az eredményt?`,
+                `warning`);
 
 
 
@@ -220,7 +223,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     });
     }
 
-    const eredmenyMentes = () => {
+    const eredmenyMentes = (cim, tartalom, ikon) => {
 
         /*showAlert(
             "Sajnos nem nyertél! 😿", 
@@ -233,9 +236,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
 
         Swal.fire({
-      title: `Sajnos nem nyertél! 😿`,
-      html: `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}<br></br>${pontszam} Ft-ot nyertél! <br></br>El szeretnéd menteni az eredményt?`,
-      icon: `warning`,
+      title: cim,
+      html: tartalom,
+      icon: ikon,
       confirmButtonText: `Igen`,
       cancelButtonText: 'Nem',
       showCancelButton: true
@@ -268,11 +271,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             } else {
                 navigate("/login")
             }
-            
-            
-
-
-
 
         }
     });
@@ -468,7 +466,11 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         
 
     } else {
-        showAlert("Gratulálunk!", "Gratulálunk! 🏆😻🎉🥳🏆<br>Az összes kérdést helyesen válaszoltad meg és megnyerted a főnyereményt!", "success", "Vissza a kategóriákhoz")
+        //showAlert("Gratulálunk!", "Gratulálunk! 🏆😻🎉🥳🏆<br>Az összes kérdést helyesen válaszoltad meg és megnyerted a főnyereményt!", "success", "Tovább")
+        eredmenyMentes(
+            "Gratulálunk!",
+            `Gratulálunk! 🏆😻🎉🥳🏆<br>Az összes kérdést helyesen válaszoltad meg és megnyerted a főnyereményt!"<br></br>${pontszam} Ft-ot nyertél! <br></br>El szeretnéd menteni az eredményt?`,
+            "success")
         setSzamlalo(0)
         kerdesekBetoltve(false)
     }
