@@ -209,14 +209,14 @@ const Felhasznalobeallitas = () => {
       <div style={{ 
         maxWidth: "800px", 
         margin: "0 auto",
-        backgroundColor: darkMode ? "#374151" : "white",
+        backgroundColor: darkMode ? "#001F25" : "#E0F2F1",
         borderRadius: "16px",
         padding: "1.5rem",
         boxShadow: darkMode ? "0 4px 16px rgba(0, 0, 0, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)"
       }}>
         <div
           style={{
-            backgroundColor: darkMode ? "#1f2937" : "white",
+            backgroundColor: darkMode ? "#001F25" : "#E0F2F1",
             borderRadius: "24px",
             padding: "2rem",
             marginBottom: "2rem",

@@ -12,7 +12,7 @@ body {
 }
 
 .nav {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+  background: linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 1rem 2rem;
   display: flex;
@@ -21,10 +21,11 @@ body {
   border-bottom: none;
   border-radius: var(--border-radius);
   margin: 1rem 1rem;
+  color:white;
 }
 
 .dark.navbar {
-  background: linear-gradient(135deg, #4CAF50, #8B4513);
+  background: linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 1rem 2rem;
   display: flex;
@@ -61,17 +62,17 @@ body {
    Background Gradients
    ========================================= */
 .light-bg-gradient {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+  background: linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%);
 }
 
 .dark-bg-gradient {
-  background:linear-gradient( 135deg, #4CAF50 0%, #8B4513 70%);
+  background: linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%);
 }
 .dark.navbar{
-  background-color:linear-gradient( 135deg, #4CAF50, #8B4513);
+  background: linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%);
 }
 .custom-navbar {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-yellow) 50%, var(--accent-pink) 100%);
+  background: linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 1rem 2rem;
   border-radius: var(--border-radius);
@@ -81,19 +82,19 @@ body {
 
 .custom-navbar .navbar-brand,
 .custom-navbar .nav-link {
-  color: #1f2937 !important;
+  color: #ffffff !important;
   font-weight: 600;
 }
 
 .custom-navbar .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.9);
-  color: #6BA03E !important;
+  color: #66A5AD !important;
   border-radius: 8px;
 }
 
 body {
-  background: linear-gradient(135deg, #F5F8E8 0%, #FFFEF7 100%);
-  color: #374151;
+  background: linear-gradient(120deg,#053842 0%, #0c6469 50%, #3A6B72 100%);
+  color: #ffffff;
   font-family: var(--font-family);
   margin: 0;
   padding: 0;
@@ -104,18 +105,18 @@ body {
 }
 
 body.dark-mode {
-  background: linear-gradient(135deg, #4CAF50 0%, #514a13 50%, #442107 80%);
+  background: linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%);
   color: #e5e7eb;
 }
 
 body.dark-mode .custom-navbar {
-  background: linear-gradient(135deg, #4CAF50, #8B4513);
+  background: linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 body.dark-mode .custom-navbar .navbar-brand,
 body.dark-mode .custom-navbar .nav-link {
-  color: #000000 !important;
+  color: #ffffff !important;
 }
 
 /* Theme Switch Toggle */
@@ -139,7 +140,7 @@ body.dark-mode .custom-navbar .nav-link {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #6BA03E;
+  background-color: #66A5AD;
   transition: 0.4s;
   border-radius: 24px;
 }
@@ -157,7 +158,7 @@ body.dark-mode .custom-navbar .nav-link {
 }
 
 input:checked + .slider {
-  background-color: #374151;
+  background-color: #133d46;
 }
 
 input:checked + .slider:before {
@@ -171,7 +172,7 @@ input:checked + .slider:before {
 h1, h2, h3, h4, h5, h6 {
   text-align: center;
   font-family: 'Segoe UI', 'Roboto', sans-serif;
-  color: #6BA03E;
+  color: #ffffff;
   margin-bottom: 1.5rem;
   font-weight: 600;
 }
@@ -180,7 +181,7 @@ body.dark-mode label,
 body.dark-mode h1,
 body.dark-mode h2,
 body.dark-mode h3 {
-  color: #000000;
+  color: #2cb3ba;
 }
 
 /* --- Responsive --- */

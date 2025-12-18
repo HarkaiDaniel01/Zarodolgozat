@@ -235,7 +235,7 @@ const Kerdesfeltolt = () => {
 
   return (
     <div style={{
-      background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+      background: darkMode ? 'linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%)' : 'linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%)',
       minHeight: '100vh',
       padding: '2rem',
       borderRadius:'15px',
@@ -339,23 +339,23 @@ const Kerdesfeltolt = () => {
 
       {/* SZŰRÉS */}
       <div className="szures-container">
-        <h2>Kérdés lista</h2>
+        <label style={{fontSize:'25px', fontWeight:'bold' }}>Kérdés lista</label>
         <div className="szures-controls">
           <div className="szuro-elem">
-            <label>Kategória alapján:</label>
+            <label style={{marginBottom:'-5px'}}>Kategória alapján:</label>
             <Kategoriaalapjankeres
               value={kategoriaKivalasztott}
               onChange={(ertek) => setKategoriaKivalasztott(ertek)}
             />
           </div>
           <div className="szuro-elem">
-            <label>Nehézség alapján:</label>
+            <label style={{marginBottom:'-5px'}}>Nehézség alapján:</label>
             <Nehezsegalapjankeres
               value={nehezsegKivalasztott}
               onChange={(ertek) => setNehezsegKivalasztott(ertek)}
             />
           </div>
-          <button className="gombszures btn btn-primary" onClick={szuresFuggveny}>
+          <button style={{marginBottom:'-5px'}} className="gombszures btn btn-primary" onClick={szuresFuggveny}>
             Szűrés
           </button>
         </div>

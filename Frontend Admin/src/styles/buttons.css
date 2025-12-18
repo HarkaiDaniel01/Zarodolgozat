@@ -11,11 +11,12 @@
 }
 
 .btn-success, .zoldGomb {
-  background-color: #6BA03E;
-  color: white;
+  background-color: #66A5AD ;
+  color: #FFFFFF;
+  font-weight: bold;
 }
 .btn-success:hover, .zoldGomb:hover {
-  background-color: #5a8a32;
+  background-color: #242f34;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(107, 160, 62, 0.3);
 }
@@ -41,7 +42,7 @@
 }
 
 .btn-primary {
-    background-color: #FFEA64;
+    background-color: #28807c;
     color: #1f2937;
     font-weight: 600;
 }

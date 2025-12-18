@@ -299,14 +299,14 @@ const Engedelykeres = () => {
         width: "100%",
         overflow: "auto",
         margin: "0 auto",
-        backgroundColor: darkMode ? "#374151" : "white",
+        backgroundColor: darkMode ? "#001F25" : "#E0F2F1",
         borderRadius: "16px",
         padding: "1rem",
         boxShadow: darkMode ? "0 4px 16px rgba(0, 0, 0, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)"
       }}>
         <div
           style={{
-            backgroundColor: darkMode ? "#1f2937" : "white",
+            backgroundColor: darkMode ? "#001F25" : "#E0F2F1",
             borderRadius: "24px",
             padding: "1rem",
             marginBottom: "1rem",
@@ -327,7 +327,7 @@ const Engedelykeres = () => {
               <div
                 key={elem.jatekos_id}
                 style={{
-                  backgroundColor: darkMode ? "#374151" : "#f9fafb",
+                  backgroundColor: darkMode ? "#033742ff" : "#E0F2F1",
                   borderRadius: "16px",
                   padding: "1.5rem",
                   boxShadow: darkMode 
@@ -335,7 +335,8 @@ const Engedelykeres = () => {
                     : "0 2px 8px rgba(0, 0, 0, 0.1)",
                   border: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb",
                   transition: "transform 0.2s, box-shadow 0.2s",
-                  cursor: "default"
+                  cursor: "default",
+                  
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-4px)";
@@ -358,18 +359,20 @@ const Engedelykeres = () => {
                   marginBottom: "1rem",
                   paddingBottom: "1rem",
                   borderBottom: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb"
+                  
                 }}>
                   <div>
                     <div style={{
                       fontSize: "0.75rem",
                       color: darkMode ? "#9ca3af" : "#6b7280",
-                      marginBottom: "0.25rem"
+                      marginBottom: "0.25rem",
+                      fontWeight: "bold"
                     }}>
                       ID: {elem.jatekos_id}
                     </div>
                     <div style={{
                       fontSize: "1.25rem",
-                      fontWeight: "600",
+                      fontWeight: "bold",
                       color: darkMode ? "#e5e7eb" : "#1f2937"
                     }}>
                       {elem.jatekos_nev}

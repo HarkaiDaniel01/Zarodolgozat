@@ -22,20 +22,10 @@
   --font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
 
   /* Light mode */
-  --body-bg: linear-gradient(135deg, #F5F8E8 0%, #FFFEF7 100%);
+  --body-bg:linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%) ;
   --body-text: #374151;
   --surface-bg: white;
   --surface-bg-alt: #F9FAFB;
   --surface-border: #D1D5DB;
   --surface-hover: #E6F3DC;
 }
-
-/* Dark Mode Variables */
-body.dark-mode {
-  --body-bg: linear-gradient(135deg, #CF0000 0%, #5B0114 100%);
-  --body-text: #e5e7eb;
-  --surface-bg: #8B0000;
-  --surface-bg-alt: #5B0114;
-  --surface-border: #CF0000;
-  --surface-hover: #A00000;
-} 

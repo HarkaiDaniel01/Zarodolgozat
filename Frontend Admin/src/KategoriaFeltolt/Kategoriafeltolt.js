@@ -210,7 +210,7 @@ const Kategoriafeltolt = () => {
     <div>
       <style>{styles}</style>
       <div style={{
-        background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+        background: darkMode ? 'linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%)' : 'linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%)',
         minHeight: '100vh',
         padding: '1rem',
         borderRadius:'15px',
@@ -228,7 +228,7 @@ const Kategoriafeltolt = () => {
           }}>Kategória kezelése</h1>
 
         <div className="kategoria-form" style={{
-          background: darkMode ? 'linear-gradient(135deg, #4CAF50, #8B4513)' : 'linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%)',
+          background: darkMode ? 'linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%)' : 'linear-gradient(135deg, #134E5E 0%, #71B1B6 50%, #E0F2F1 100%)',
           minHeight: '1vh',
           padding: '1.5rem',
           borderRadius:'15px',
@@ -264,7 +264,7 @@ const Kategoriafeltolt = () => {
             <div
               key={elem.kategoria_id}
               style={{
-                backgroundColor: darkMode ? "#374151" : "#ffffff",
+                backgroundColor: darkMode ? "#001F25" : "#E0F2F1",
                 borderRadius: "16px",
                 padding: "1.5rem",
                 boxShadow: darkMode 

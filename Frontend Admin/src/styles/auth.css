@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%);
+  background: linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%);
   padding: 2rem;
 }
 
@@ -116,7 +116,7 @@
 .login-button {
   width: 100%;
   padding: 0.875rem;
-  background-color: #6BA03E;
+  background-color: #66A5AD;
   color: white;
   border: none;
   border-radius: 8px;
@@ -128,7 +128,7 @@
 }
 
 .login-button:hover {
-  background-color: #5a8a32;
+  background-color: #66A5AD;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(107, 160, 62, 0.4);
 }
@@ -140,14 +140,14 @@
 .forgot-password {
   display: block;
   text-align: center;
-  color: #6BA03E;
+  color: #66A5AD;
   font-size: 0.875rem;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .forgot-password:hover {
-  color: #5a8a32;
+  color: #66A5AD;
   text-decoration: underline;
 }
 
@@ -157,14 +157,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6BA03E 0%, #FFEA64 50%, #FFC0CB 100%);
+  background: linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%);
   padding: 2rem;
 }
 
 .register-button {
   width: 100%;
   padding: 0.875rem;
-  background-color: #6BA03E;
+  background-color: #66A5AD;
   color: white;
   border: none;
   border-radius: 8px;
@@ -176,7 +176,7 @@
 }
 
 .register-button:hover {
-  background-color: #5a8a32;
+  background-color: #66A5AD;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(107, 160, 62, 0.4);
 }

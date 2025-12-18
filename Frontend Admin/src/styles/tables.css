@@ -45,12 +45,13 @@
 
 /* --- Szűrés --- */
 .szures-container {
-  background: white;
+  background:#E0F2F1;
   padding: 1.5rem;
   border-radius: 12px;
   margin-bottom: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border: 1px solid #E5E7EB;
+  color: #000000 !important;
 }
 
 .szures-controls {
@@ -59,11 +60,18 @@
   gap: 1.5rem;
   align-items: center;
   justify-content: center;
+  color: #000000;
 }
 
 .szuro-elem {
   display: flex;
   flex-direction: column;
+  color: #000000;
+}
+
+.szures-container label {
+  color: #000000;
+  text-align: center;
 }
 
 /* --- Táblázat Container --- */
@@ -213,6 +221,6 @@ body.dark-mode .kategoria-tabla tbody tr:hover {
 }
 
 body.dark-mode .szures-container {
-  background: #374151;
+  background: #001F25;
   border-color: #4b5563;
 }

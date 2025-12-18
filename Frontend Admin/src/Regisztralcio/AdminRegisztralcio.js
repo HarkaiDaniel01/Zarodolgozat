@@ -50,7 +50,7 @@ const AdminRegisztralcio = () => {
             <div className="login-card">
                 <div className="login-icon">
                     <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="25" cy="25" r="25" fill="#00A21D"/>
+                        <circle cx="25" cy="25" r="25" fill="#66A5AD"/>
                         <path d="M25 12C18.93 12 14 16.93 14 23C14 29.07 18.93 34 25 34C31.07 34 36 29.07 36 23C36 16.93 31.07 12 25 12ZM30 24H26V28H24V24H20V22H24V18H26V22H30V24Z" fill="white"/>
                     </svg>
                 </div>

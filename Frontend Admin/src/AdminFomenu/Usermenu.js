@@ -52,8 +52,8 @@ const Usermenu = () => {
     return (
         <div style={{
             background: darkMode 
-            ? 'linear-gradient(135deg, #4CAF50, #8B4513)'
-            : 'linear-gradient(135deg, #00A21D 0%, #FFEA64 50%, #FFC0CB 100%)',
+            ? 'linear-gradient(135deg, #033639 50%, #3A6B72 100%)'
+            : 'linear-gradient(135deg, #003B46 0%, #07575B 50%, #66A5AD 100%)',
             height: '85vh',
             display: 'flex',
             alignItems: 'center',
@@ -63,7 +63,8 @@ const Usermenu = () => {
             borderRadius:'15px'
         }}>
             <div style={{
-                background: darkMode ? '#1f2937' : 'white',
+                 /* linear-gradient(135deg, #001F25 0%, #033639 50%, #3A6B72 100%) */
+                background: darkMode ? '#001F25' : '#b2d8deff',
                 borderRadius: '24px',
                 padding: '2rem',
                 maxWidth: '550px',
@@ -73,8 +74,8 @@ const Usermenu = () => {
             }}>
                 <div style={{ marginBottom: '1.5rem' }}>
                     <svg width="60" height="60" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: '0 auto' }}>
-                        <circle cx="40" cy="40" r="40" fill="#00A21D" fillOpacity="0.1"/>
-                        <path d="M40 20C28.96 20 20 28.96 20 40C20 51.04 28.96 60 40 60C51.04 60 60 51.04 60 40C60 28.96 51.04 20 40 20ZM40 28C44.42 28 48 31.58 48 36C48 40.42 44.42 44 40 44C35.58 44 32 40.42 32 36C32 31.58 35.58 28 40 28ZM40 52.8C34 52.8 28.72 49.84 25.6 45.28C25.68 40.62 35.32 38.04 40 38.04C44.66 38.04 54.32 40.62 54.4 45.28C51.28 49.84 46 52.8 40 52.8Z" fill="#00A21D"/>
+                        <circle cx="40" cy="40" r="40" fill="#66A5AD" fillOpacity="0.1"/>
+                        <path d="M40 20C28.96 20 20 28.96 20 40C20 51.04 28.96 60 40 60C51.04 60 60 51.04 60 40C60 28.96 51.04 20 40 20ZM40 28C44.42 28 48 31.58 48 36C48 40.42 44.42 44 40 44C35.58 44 32 40.42 32 36C32 31.58 35.58 28 40 28ZM40 52.8C34 52.8 28.72 49.84 25.6 45.28C25.68 40.62 35.32 38.04 40 38.04C44.66 38.04 54.32 40.62 54.4 45.28C51.28 49.84 46 52.8 40 52.8Z" fill="#66A5AD"/>
                     </svg>
                 </div>
                 
@@ -93,7 +94,7 @@ const Usermenu = () => {
                     marginBottom: '1.5rem',
                     lineHeight: '1.6'
                 }}>
-                    Jelenleg <strong style={{ color: '#00A21D' }}>felhasználói</strong> hozzáféréssel rendelkezel.
+                    Jelenleg <strong style={{ color: '#66A5AD'}}>felhasználói</strong> hozzáféréssel rendelkezel.
                 </p>
 
                 <div style={{
