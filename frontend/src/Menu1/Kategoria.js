@@ -277,7 +277,7 @@ const Kategoria=()=>{
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
                     
-                        <button key={index} className="gomb" onClick={() => kategoriaValaszt(elem.kategoria_id, elem.kategoria_nev)}>{ikonok[index]} {elem.kategoria_nev}</button>
+                        <button key={index} className="kategoriaGomb" onClick={() => kategoriaValaszt(elem.kategoria_id, elem.kategoria_nev)}>{ikonok[index]} {elem.kategoria_nev}</button>
                     
                 ))}
 

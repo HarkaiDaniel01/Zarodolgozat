@@ -84,7 +84,7 @@ input{
 
 }
 
-.gomb {
+.gombDoboz > .gomb {
   width: 300px;              
   padding: 12px 20px;         
   font-size: 20px;
@@ -103,22 +103,22 @@ input{
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
 
-  opacity: 1;
+  opacity: 0;
   transition: opacity 0.5s ease-in;
-  
+  animation: fadeIn 1s ease forwards;
 }
 
-/*@keyframes fadeIn {
+
+
+.gombDoboz > .gomb:nth-child(1) { animation-delay: 0.5s; }
+.gombDoboz > .gomb:nth-child(2) { animation-delay: 1s; }
+.gombDoboz > .gomb:nth-child(3) { animation-delay: 1.5s; }
+.gombDoboz > .gomb:nth-child(4) { animation-delay: 2s; }
+
+@keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}*/
-
-.gomb:nth-child(1) { transition-delay: 0s; }
-.gomb:nth-child(2) { transition-delay: 0.2s; }
-.gomb:nth-child(3) { transition-delay: 0.4s; }
-.gomb:nth-child(4) { transition-delay: 0.6s; }
-
-
+}
 
 
 .gombLetiltva {
@@ -141,7 +141,37 @@ input{
   box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
 }
 
+.kategoriaGomb {
+  width: 300px;              
+  padding: 12px 20px;         
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 20px;        
+  background-color: #ffffff;  
+  border: 1px solid #000000;  
+  margin-bottom: 15px;
+  min-height: 56px;
+  
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                  
+  
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+  animation: fadeIn 1s ease forwards;
+}
+
 .gomb:hover {
+  background-color: #f0f0f0;  
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.kategoriaGomb:hover {
   background-color: #f0f0f0;  
   transform: translateY(-2px); 
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);

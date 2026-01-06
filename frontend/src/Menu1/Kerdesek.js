@@ -13,6 +13,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     const [betuk] = useState(["A", "B", "C", "D"])
     const [helyesValasz, setHelyesValasz] = useState()
     const [helytelenValaszMarad, setHelytelenValaszMarad] = useState()
+    const [nyeremenyek, setNyeremenyek] = useState([0, 5000, 50000, 100000, 500000, 750000, 1500000, 2000000, 10000000, 15000000, 50000000])
 
     const [telefonSegitsegAktiv, setTelefonSegitsegAktiv] = useState(true)
     const [felezoMegjelol, setFelezoMegjelol] = useState(false)
@@ -179,8 +180,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         setTimeout(() => {
             if (valasz === kerdesek[szamlalo].kerdesek_helyesValasz) {
 
-            
+            if (szamlalo == 9) setPontszam(nyeremenyek[10])
             szamlaloNovel()
+            
             //valaszKever()
         }
         else {
@@ -331,8 +333,10 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         
         setTolt(true)
 
-        switch (szamlalo + 1) {
-            case 1: setPontszam(0);break;
+        setPontszam(nyeremenyek[szamlalo])
+
+        /*switch (szamlalo + 1) {
+            case 1: setPontszam(5000);break;
             case 2: setPontszam(50000);break;
             case 3: setPontszam(100000);break;
             case 4: setPontszam(500000);break;
@@ -342,7 +346,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             case 8: setPontszam(10000000);break;
             case 9: setPontszam(15000000);break;
             default: setPontszam(50000000);break;
-        }
+        }*/
     }
 
     /*const helytelenValasz = () => {

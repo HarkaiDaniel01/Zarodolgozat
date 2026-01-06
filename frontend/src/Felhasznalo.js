@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Cim from "./Cim";
+import { useNavigate } from "react-router-dom";
 
 const Felhasznalo = () => {
 
@@ -8,6 +9,8 @@ const Felhasznalo = () => {
     const [tolt,setTolt]=useState(true)
     const [hiba,setHiba]=useState(false)
     const [jatekosNev, setJatekosNev] = useState()
+
+    const navigate = useNavigate();
 
     const leToltes=async ()=>{
             
@@ -113,6 +116,7 @@ const Felhasznalo = () => {
 
 
         }
+
     
     useEffect(()=>{
         const jatekos = localStorage.getItem("userid")
@@ -183,7 +187,7 @@ const Felhasznalo = () => {
             <button style={{margin:"30px auto", display: "flex"}} className="btn btn-danger">Profil törlése</button>
 
 
-        
+
         </div>
         
 
