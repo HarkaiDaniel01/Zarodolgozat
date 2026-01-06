@@ -43,9 +43,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
         showAlert("Helyes válasz! 😺", "", "success", "Következő kérdés 🏆")
         setSzamlalo(szamlalo + 1)
-
-        
-
     }
 
     const telefonSegitseg = () => {
@@ -88,10 +85,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             showAlert(`${nevek[rand]} a vonalban!`, `${szoveg[rand]}: <b>${telefonValasz}</b>`, "info", "Köszönöm a segítséget! 💖")
             setTelefonSegitsegAktiv(false)
         }
-        
-
-        
-
     }
 
     const kozonsegSegitseg = () => {
