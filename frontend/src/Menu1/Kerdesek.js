@@ -101,38 +101,46 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                 esely = 30
                 maradekSzazalek = 70
             }
-            
+
             const helyes = esely + Math.floor(Math.random() * maradekSzazalek)
             let szazalekTomb = ["0%", "0%", "0%", "0%"]
             const helyesIndex = valaszok.indexOf(kerdesek[szamlalo].kerdesek_helyesValasz)
             let maradek = 100 - helyes
-            let index = 0
+
+            if (!felezoMegjelol) {
+
+                let index = 0
             
-            while (maradek > 0) {
+                while (maradek > 0) {
 
+                    if (index === helyesIndex) {
+                        szazalekTomb[index] = helyes + "%"
+                    } 
+
+                    else if (index === 3 || (index === 2 && helyesIndex === 3)) {
+                        szazalekTomb[index] = maradek + "%"
+                        maradek = 0
+                    }
+                    else {
+                        let rand = Math.floor(Math.random() * maradek)
+                        szazalekTomb[index] = rand + "%"
+                        maradek -= rand
+                    }
+
+                    if (index === 3) maradek = 0
+                    index++
+
+                }
+
+                szazalekTomb[helyesIndex] = helyes + "%"
+            } else {
                 
-
-                if (index === helyesIndex) {
-                    szazalekTomb[index] = helyes + "%"
-                    
-                } 
-
-                else if (index === 3 || (index === 2 && helyesIndex === 3)) {
-                    szazalekTomb[index] = maradek + "%"
-                    maradek = 0
+                for (let i = 0; i < 4; i++) {
+                    if (i === helyesIndex) szazalekTomb[i] = helyes + "%"
+                    else szazalekTomb[i] = maradek + "%"
                 }
-                else {
-                    let rand = Math.floor(Math.random() * maradek)
-                    szazalekTomb[index] = rand + "%"
-                    maradek -= rand
-                }
-
-                if (index === 3) maradek = 0
-                index++
-
             }
 
-            szazalekTomb[helyesIndex] = helyes + "%"
             setKozonsegMegjelol(true)
             setSzazalek(szazalekTomb)
             setKozonsegSegitsegAktiv(false)
