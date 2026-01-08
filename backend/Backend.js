@@ -61,7 +61,7 @@ app.post("/kerdesekKonnyu", (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ error: "Nincs adat" });
     }
-
+    
     return res.status(200).json(result);
   });
 });
