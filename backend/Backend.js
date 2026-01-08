@@ -195,6 +195,25 @@ app.post("/eredmenyek", (req, res) => {
   });
 });
 
+app.post("/osszesNyeremeny", (req, res) => {
+  const {jatekosId} = req.body;
+
+  const sql = `
+                SELECT SUM(Eredmenyek_pont) AS ossz
+                FROM eredmenyek
+                where Eredmenyek_jatekos = ?
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
 //eredmények törlése
 app.delete('/eredmenyTorles/:eredmenyek_id', (req, res) => {
         const {eredmenyek_id} =req.params

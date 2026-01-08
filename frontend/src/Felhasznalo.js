@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Cim from "./Cim";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 const Felhasznalo = () => {
 
@@ -9,8 +9,9 @@ const Felhasznalo = () => {
     const [tolt,setTolt]=useState(true)
     const [hiba,setHiba]=useState(false)
     const [jatekosNev, setJatekosNev] = useState()
+    const [osszes, setOsszes] = useState(0)
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const leToltes=async ()=>{
             
@@ -28,21 +29,19 @@ const Felhasznalo = () => {
                             },
                             body: JSON.stringify(bemenet)
                         })
+
             
                         const data=await response.json()
                         if (response.ok)
-                            {
-                                
-
+                            {   
                                 setAdatok(data)
                                 setTolt(false)
-                                
                             }
             
-                            else {
-                                setHiba(true)
-                                setTolt(false)
-                            }
+                        else {
+                            setHiba(true)
+                            setTolt(false)
+                        }
                         
                 } catch (error){
                     console.log(error)
@@ -86,6 +85,43 @@ const Felhasznalo = () => {
                     setHiba(true)
                 }
             }
+        }
+
+        const osszNyeremenyBetolt=async ()=>{
+            
+            if (jatekosId != null) {
+                try{
+            
+                        let bemenet = {
+                            "jatekosId" : jatekosId
+                        }
+            
+                        const response=await fetch(Cim.Cim+ "/osszesNyeremeny", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(bemenet)
+                        })
+            
+                        const data=await response.json()
+                        if (response.ok)
+                            {
+                                
+                                if (data[0].ossz !== undefined) setOsszes(data[0].ossz)
+                                    else setOsszes(0)
+                                
+
+                                
+                                
+                            }
+            
+                        
+                } catch (error){
+                    console.log(error)
+                    setHiba(true)
+                }
+            }
 
             
             
@@ -112,6 +148,7 @@ const Felhasznalo = () => {
             }
 
             leToltes();
+            osszNyeremenyBetolt();
 
 
 
@@ -127,6 +164,7 @@ const Felhasznalo = () => {
     useEffect(()=>{
         nevBetolt()
         leToltes()
+        osszNyeremenyBetolt()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[jatekosId])
 
@@ -148,7 +186,7 @@ const Felhasznalo = () => {
 
             <h4 style={{marginTop : "30px"}}>Eredmények:</h4>
 
-            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <table class="table table-striped table-bordered">
+            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                     <th>Dátum</th>
@@ -175,9 +213,12 @@ const Felhasznalo = () => {
                 ))}
                 </tbody>
 
-            </table>}
-
+            </table>
             
+            
+            }
+
+            <h4>Összes nyeremény: {osszes} Ft</h4>
             
             
 

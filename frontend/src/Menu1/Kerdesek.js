@@ -13,7 +13,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     const [betuk] = useState(["A", "B", "C", "D"])
     const [helyesValasz, setHelyesValasz] = useState()
     const [helytelenValaszMarad, setHelytelenValaszMarad] = useState()
-    const [nyeremenyek, setNyeremenyek] = useState([0, 5000, 50000, 100000, 500000, 750000, 1500000, 2000000, 10000000, 15000000, 50000000])
+    const [nyeremenyek] = useState([0, 5000, 50000, 100000, 500000, 750000, 1500000, 2000000, 10000000, 15000000, 50000000])
 
     const [telefonSegitsegAktiv, setTelefonSegitsegAktiv] = useState(true)
     const [felezoMegjelol, setFelezoMegjelol] = useState(false)
@@ -181,7 +181,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         setTimeout(() => {
             if (valasz === kerdesek[szamlalo].kerdesek_helyesValasz) {
 
-            if (szamlalo == 9) setPontszam(nyeremenyek[10])
+            if (szamlalo === 9) setPontszam(nyeremenyek[10])
             szamlaloNovel()
             
             //valaszKever()
