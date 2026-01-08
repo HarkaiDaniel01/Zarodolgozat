@@ -291,6 +291,21 @@ app.get("/nehezVegyes", (req, res) => {
   });
 });
 
+app.get("/rekordok", (req, res) => {
+  const sql = `SELECT jatekos_id, jatekos_nev, SUM(Eredmenyek_pont) AS eredmeny FROM eredmenyek INNER JOIN jatekos On Eredmenyek_jatekos = jatekos_id GROUP BY jatekos_nev ORDER BY eredmeny DESC;`;
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Nincs adat" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
 //Gergő végpontjai  
 //=========Admin végpontjai===========
 const Admin = require('./Admin');

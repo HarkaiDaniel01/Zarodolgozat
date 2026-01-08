@@ -262,6 +262,7 @@ td, th {
 }
 
 
+
 .swal2-success-line-tip, .swal2-success-line-long {
   font-size: 16px !important;
 }
@@ -303,6 +304,16 @@ td, th {
   background: #ddd;
   transition: 0.2s;
   
+}
+
+.sorKijelolve td {
+  font-weight: bold;
+  color: Blue;
+}
+
+.nincsKijeloles {
+  font-weight: normal;
+  color: black;
 }
 
 

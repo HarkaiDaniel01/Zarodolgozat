@@ -10,6 +10,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import Login from './Login';
 import Register from './Register';
 import Felhasznalo from './Felhasznalo';
+import Rekordok from './Rekordok'
 
 
 
@@ -30,6 +31,8 @@ function App() {
           <Route path="/register" element={<Register/>} />
 
           <Route path="/felhasznalo" element={<Felhasznalo/>} />
+
+          <Route path="/rekordok" element={<Rekordok/>} />
           
         </Routes>
       </div>

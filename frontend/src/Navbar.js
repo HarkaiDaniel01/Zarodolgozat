@@ -62,6 +62,12 @@ const Navbar = () => {
               Profil
             </Link>
           )}
+
+          {loggedIn && (
+            <Link to="/rekordok" className="link" onClick={() => setMenuOpen(false)}>
+              Rekordok
+            </Link>
+          )}
         </div>
       </div>
 

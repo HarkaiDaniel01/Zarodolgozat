@@ -107,8 +107,8 @@ const Felhasznalo = () => {
                         const data=await response.json()
                         if (response.ok)
                             {
-                                
-                                if (data[0].ossz !== undefined) setOsszes(data[0].ossz)
+                                console.log(osszes)
+                                if (data[0].ossz !== undefined && data[0].ossz !== null && data[0].ossz !== 0) setOsszes(data[0].ossz)
                                     else setOsszes(0)
                                 
 

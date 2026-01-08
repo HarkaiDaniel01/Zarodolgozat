@@ -279,6 +279,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
 
             } else {
+                localStorage.setItem("taroltEredmeny", JSON.stringify({ePont: pontszam, eKat: kategoria}))
                 navigate("/login")
             }
 

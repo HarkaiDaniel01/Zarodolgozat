@@ -32,6 +32,37 @@ const Login = () => {
       localStorage.setItem('role', data.role);
       localStorage.setItem('userid', data.user.id);
 
+      const taroltEredmeny = localStorage.getItem("taroltEredmeny");
+
+      if (taroltEredmeny) {
+        const {ePont, eKat} = JSON.parse(taroltEredmeny);
+
+        const bemenet={
+          "nyeremeny" : ePont,
+          "jatekos" : data.user.id,
+          "kategoria": eKat
+        }
+        
+        const response=await fetch(Cim.Cim+"/eredmenyFelvitel", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(bemenet)
+        })
+        
+        if (response.ok) {
+          alert("ok")
+        } else {
+          alert("hiba")
+        }
+
+
+        localStorage.removeItem("taroltEredmeny")
+      }
+
+
+
       navigate('/felhasznalo');
     } catch (err) {
       setError(err.message);
