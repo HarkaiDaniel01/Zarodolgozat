@@ -316,6 +316,9 @@ td, th {
   color: black;
 }
 
+.grafikon {
+  text-align: center;
+}
 
 
 
@@ -341,6 +344,7 @@ td, th {
   }
 
 }
+
 
 @media (max-width: 768px) {
   .doboz {

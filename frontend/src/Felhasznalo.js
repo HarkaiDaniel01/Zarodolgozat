@@ -1,15 +1,30 @@
 import { useEffect, useState } from "react";
 import Cim from "./Cim";
+import React from "react";
+import MyPlot from "./MyPlot";
+import { data } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 
 const Felhasznalo = () => {
 
     const [jatekosId, setJatekosId] = useState(null);
     const [adatok,setAdatok]=useState([])
+
     const [tolt,setTolt]=useState(true)
     const [hiba,setHiba]=useState(false)
+
+    const [grafikonTolt,setGrafikonTolt]=useState(true)
+    const [grafikonHiba,setGrafikonHiba]=useState(false)
+
+    const [osszEredmenyTolt,setOsszEredmenyTolt]=useState(true)
+    const [OsszEredmenyHiba,setOsszEredmenyHiba]=useState(false)
+
+
+
     const [jatekosNev, setJatekosNev] = useState()
     const [osszes, setOsszes] = useState(0)
+    const [datumokTomb, setDatumokTomb] = useState([])
+    const [eredmenyekTomb, setEredmenyekTomb] = useState([])
 
     //const navigate = useNavigate();
 
@@ -34,13 +49,65 @@ const Felhasznalo = () => {
                         const data=await response.json()
                         if (response.ok)
                             {   
+
                                 setAdatok(data)
                                 setTolt(false)
+                                
                             }
             
                         else {
                             setHiba(true)
                             setTolt(false)
+                        }
+                        
+                } catch (error){
+                    console.log(error)
+                    setHiba(true)
+                }
+            }
+
+            
+            
+        }
+
+        const EredmenyekNaponkentleToltes=async ()=>{
+            
+            if (jatekosId != null) {
+                try{
+            
+                        let bemenet = {
+                            "jatekosId" : jatekosId
+                        }
+            
+                        const response=await fetch(Cim.Cim+ "/eredmenyekNaponkent", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(bemenet)
+                        })
+
+            
+                        const data=await response.json()
+                        if (response.ok)
+                            {   
+
+                                const datumTomb = data.map(sor => sor.nap)
+                                const eredmenyTomb = data.map(sor => sor.eredmeny)
+                                const egyHet = []
+
+                                console.log(Date(Date.now()))
+                                
+                                setDatumokTomb(datumTomb)
+                                setEredmenyekTomb(eredmenyTomb)
+
+                                setGrafikonTolt(false)
+                                
+                            }
+            
+                        else {
+                            setGrafikonHiba(true)
+                            setGrafikonTolt(false)
                         }
                         
                 } catch (error){
@@ -109,12 +176,14 @@ const Felhasznalo = () => {
                             {
                                 console.log(osszes)
                                 if (data[0].ossz !== undefined && data[0].ossz !== null && data[0].ossz !== 0) setOsszes(data[0].ossz)
-                                    else setOsszes(0)
-                                
-
-                                
-                                
+                                    else setOsszes(0) 
+                                setOsszEredmenyTolt(false)
                             }
+
+                        else {
+                            setOsszEredmenyHiba(true)
+                            setOsszEredmenyTolt(false)
+                        }
             
                         
                 } catch (error){
@@ -165,15 +234,16 @@ const Felhasznalo = () => {
         nevBetolt()
         leToltes()
         osszNyeremenyBetolt()
+        EredmenyekNaponkentleToltes()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[jatekosId])
 
 
-    if (tolt)
+    if (tolt || grafikonTolt || osszEredmenyTolt)
         return (
             <div style={{textAlign:"center"}}>Adatok betöltése folyamatban...</div>
                 )
-    else if (hiba)
+    else if (hiba || grafikonHiba || OsszEredmenyHiba)
         return (
             <div>Hiba</div>
                 )       
@@ -219,6 +289,10 @@ const Felhasznalo = () => {
             }
 
             <h4>Összes nyeremény: {osszes} Ft</h4>
+
+            <div className="grafikon">
+                <MyPlot datum={datumokTomb} eredmeny={eredmenyekTomb}/>
+            </div>
             
             
 

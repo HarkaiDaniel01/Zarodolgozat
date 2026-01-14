@@ -182,7 +182,7 @@ app.post("/eredmenyek", (req, res) => {
                 INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
                 INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
                 where Eredmenyek_jatekos = ?
-                ORDER BY Eredmenyek_id DESC
+                ORDER BY Eredmenyek_datum DESC
               `;
 
   pool.query(sql, [jatekosId], (err, result) => {
@@ -268,9 +268,6 @@ app.post('/eredmenyFelvitel', (req, res) => {
         })
 })
 
-
-
-
 //nehéz kérdések
 app.get("/nehezVegyes", (req, res) => {
   const sql = `SELECT * 
@@ -291,6 +288,7 @@ app.get("/nehezVegyes", (req, res) => {
   });
 });
 
+//Összes játékos rekordja
 app.get("/rekordok", (req, res) => {
   const sql = `SELECT jatekos_id, jatekos_nev, SUM(Eredmenyek_pont) AS eredmeny FROM eredmenyek INNER JOIN jatekos On Eredmenyek_jatekos = jatekos_id GROUP BY jatekos_nev ORDER BY eredmeny DESC;`;
   pool.query(sql, (err, result) => {
@@ -306,7 +304,30 @@ app.get("/rekordok", (req, res) => {
   });
 });
 
-//Gergő végpontjai  
+//Eredmények naponként
+app.post("/eredmenyekNaponkent", (req, res) => {
+  const {jatekosId} = req.body;
+
+  const sql = `
+                SELECT Date(Eredmenyek_datum) AS nap, SUM(Eredmenyek_pont) As eredmeny 
+                FROM eredmenyek 
+                WHERE Eredmenyek_jatekos = ? 
+                GROUP BY nap;
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+
+
+//Gergő végpontjai----------------------------------------------------------------------------------------------------------------------------------------  
 //=========Admin végpontjai===========
 const Admin = require('./Admin');
 app.use('/admin', Admin);
