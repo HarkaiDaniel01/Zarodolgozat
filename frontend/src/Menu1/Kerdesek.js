@@ -260,7 +260,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                 const bemenet={
                     "nyeremeny" : pontszam,
                     "jatekos" : jatekosId,
-                    "kategoria": kategoria
+                    "kategoria": kategoria,
                 }
 
                 const response=await fetch(Cim.Cim+"/eredmenyFelvitel", {
