@@ -94,10 +94,32 @@ const Felhasznalo = () => {
 
                                 const datumTomb = data.map(sor => sor.nap)
                                 const eredmenyTomb = data.map(sor => sor.eredmeny)
-                                const egyHet = []
+                                const ujEredmenyekTomb = []
 
-                                console.log(Date(Date.now()))
+                                const ma = new Date()
+                                const datumok = []
+
+                                for (let i = 0; i < 7; i++) {
+                                    datumok.push(ma.getDate() - i)
+                                    console.log(ma.getDate() - i)
+
+                                    const datummaAlakitva = new Date(datumTomb[i])
+
+                                    if (datummaAlakitva.getDate() !== datumok[i]) {
+                                        ujEredmenyekTomb[i] = 0
+                                        console.log(datummaAlakitva)
+                                        console.log()
+                                    } else {
+                                        ujEredmenyekTomb[i] = eredmenyTomb[i]
+                                    }
+                                }
                                 
+                                
+
+                                
+
+                                
+
                                 setDatumokTomb(datumTomb)
                                 setEredmenyekTomb(eredmenyTomb)
 
@@ -256,7 +278,7 @@ const Felhasznalo = () => {
 
             <h4 style={{marginTop : "30px"}}>Eredmények:</h4>
 
-            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <table class="table table-striped table-bordered">
+            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <table className="table table-striped table-bordered">
                 <thead>
                     <tr>
                     <th>Dátum</th>

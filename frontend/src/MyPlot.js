@@ -8,8 +8,8 @@ const MyPlot = ({datum, eredmeny}) => {
         {
           x: datum,
           y: eredmeny,
-          type: 'date',
-          mode: 'lines+markers',
+          type: 'bar',
+          mode: 'bar',
           marker: { color: 'red' },
         },
         
