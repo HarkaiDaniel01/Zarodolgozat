@@ -1,7 +1,7 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
-const MyPlot = ({datum, eredmeny}) => {
+const MyPlot = ({datum, eredmeny, cim}) => {
   return (
     <Plot
       data={[
@@ -9,15 +9,31 @@ const MyPlot = ({datum, eredmeny}) => {
           x: datum,
           y: eredmeny,
           type: 'bar',
-          mode: 'bar',
           marker: { color: 'red' },
+          
         },
         
       ]}
       layout={{
         width: 400,
         height: 400,
-        title: 'React Plotly Példa'
+        title: {
+          text: cim
+        },
+        dragmode: false,
+        margin: {t : 50},
+        yaxis: {
+          rangemode: "tozero"
+        }
+
+      }}
+
+      config={{
+        displayModeBar: false,
+        scrollZoom: false,      
+        doubleClick: false,     
+        editable: false,        
+        displaylogo: false
       }}
     />
   );

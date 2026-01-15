@@ -326,6 +326,27 @@ app.post("/eredmenyekNaponkent", (req, res) => {
   });
 });
 
+//eredmények kategóriánként
+app.post("/eredmenyekKategoriankent", (req, res) => {
+  const {jatekosId, kategoriaId} = req.body;
+
+  const sql = `
+                SELECT Eredmenyek_pont
+                FROM eredmenyek 
+                WHERE Eredmenyek_jatekos = ? AND Eredmenyek_kategoria = ?
+                GROUP BY Eredmenyek_id;
+              `;
+
+  pool.query(sql, [jatekosId, kategoriaId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
 
 
 //Gergő végpontjai----------------------------------------------------------------------------------------------------------------------------------------  

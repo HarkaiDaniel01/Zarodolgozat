@@ -11,6 +11,7 @@ import Login from './Login';
 import Register from './Register';
 import Felhasznalo from './Felhasznalo';
 import Rekordok from './Rekordok'
+import Statisztika from './Statisztika';
 
 
 
@@ -33,6 +34,8 @@ function App() {
           <Route path="/felhasznalo" element={<Felhasznalo/>} />
 
           <Route path="/rekordok" element={<Rekordok/>} />
+
+          <Route path="/statisztika" element={<Statisztika/>} />
           
         </Routes>
       </div>

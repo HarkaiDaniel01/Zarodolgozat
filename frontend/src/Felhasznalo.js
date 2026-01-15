@@ -99,27 +99,6 @@ const Felhasznalo = () => {
                                 const ma = new Date()
                                 const datumok = []
 
-                                for (let i = 0; i < 7; i++) {
-                                    datumok.push(ma.getDate() - i)
-                                    console.log(ma.getDate() - i)
-
-                                    const datummaAlakitva = new Date(datumTomb[i])
-
-                                    if (datummaAlakitva.getDate() !== datumok[i]) {
-                                        ujEredmenyekTomb[i] = 0
-                                        console.log(datummaAlakitva)
-                                        console.log()
-                                    } else {
-                                        ujEredmenyekTomb[i] = eredmenyTomb[i]
-                                    }
-                                }
-                                
-                                
-
-                                
-
-                                
-
                                 setDatumokTomb(datumTomb)
                                 setEredmenyekTomb(eredmenyTomb)
 
@@ -312,19 +291,18 @@ const Felhasznalo = () => {
 
             <h4>Összes nyeremény: {osszes} Ft</h4>
 
+
             <div className="grafikon">
-                <MyPlot datum={datumokTomb} eredmeny={eredmenyekTomb}/>
+                <MyPlot datum={datumokTomb} eredmeny={eredmenyekTomb} cim={"Eredmények dátumonként"}/>
             </div>
             
             
 
         </div>
 
-            
-            <button style={{margin:"30px auto", display: "flex"}} className="btn btn-danger">Profil törlése</button>
-
-
-
+        <br></br>
+        <br></br>
+        <br></br>
         </div>
         
 

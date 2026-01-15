@@ -320,6 +320,15 @@ td, th {
   text-align: center;
 }
 
+.dropdown-menu {
+  list-style: none;
+  padding-left: 0;
+}
+
+.nav-item {
+  list-style: none;
+}
+
 
 
 

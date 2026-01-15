@@ -57,11 +57,34 @@ const Navbar = () => {
             </Link>
           )}
 
-          {loggedIn && (
+          {/*loggedIn && (
             <Link to="/felhasznalo" className="link" onClick={() => setMenuOpen(false)}>
-              Profil
+              Eredmények
             </Link>
-          )}
+          )*/}
+
+          {loggedIn && <li className="nav-item dropdown link">
+              <button 
+                className="nav-link dropdown-toggle btn btn-link"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                type="button"
+              >
+                Eredmények
+              </button>
+
+              <ul className="dropdown-menu">
+                <li>
+                  <Link className="dropdown-item" to="/felhasznalo">Eredmények</Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/statisztika">Statisztika</Link>
+                </li>
+              </ul>
+          </li>}
+
+
+
 
           {loggedIn && (
             <Link to="/rekordok" className="link" onClick={() => setMenuOpen(false)}>
