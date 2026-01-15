@@ -182,7 +182,7 @@ app.post("/eredmenyek", (req, res) => {
                 INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
                 INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
                 where Eredmenyek_jatekos = ?
-                ORDER BY Eredmenyek_datum DESC
+                ORDER BY Eredmenyek_id DESC
               `;
 
   pool.query(sql, [jatekosId], (err, result) => {
@@ -256,8 +256,8 @@ app.post('/eredmenyFelvitel', (req, res) => {
 
         if (handleValidationErrors(req,res)) return 
 
-        const {nyeremeny, jatekos, kategoria, datum} =req.body
-        const datumValue = datum || new Date().toISOString().split('T')[0];
+        const {nyeremeny, jatekos, kategoria} =req.body
+        const datumValue = new Date();
         const sql=`insert into eredmenyek values (null,?,?,?,?)`
         pool.query(sql,[nyeremeny, jatekos, datumValue, kategoria], (err, result) => {
         if (err) {
@@ -268,6 +268,9 @@ app.post('/eredmenyFelvitel', (req, res) => {
         return res.status(200).json({message:"Sikeres felvitel"})
         })
 })
+
+
+
 
 //nehéz kérdések
 app.get("/nehezVegyes", (req, res) => {
@@ -289,7 +292,6 @@ app.get("/nehezVegyes", (req, res) => {
   });
 });
 
-//Összes játékos rekordja
 app.get("/rekordok", (req, res) => {
   const sql = `SELECT jatekos_id, jatekos_nev, SUM(Eredmenyek_pont) AS eredmeny FROM eredmenyek INNER JOIN jatekos On Eredmenyek_jatekos = jatekos_id GROUP BY jatekos_nev ORDER BY eredmeny DESC;`;
   pool.query(sql, (err, result) => {
@@ -305,30 +307,7 @@ app.get("/rekordok", (req, res) => {
   });
 });
 
-//Eredmények naponként
-app.post("/eredmenyekNaponkent", (req, res) => {
-  const {jatekosId} = req.body;
-
-  const sql = `
-                SELECT Date(Eredmenyek_datum) AS nap, SUM(Eredmenyek_pont) As eredmeny 
-                FROM eredmenyek 
-                WHERE Eredmenyek_jatekos = ? 
-                GROUP BY nap;
-              `;
-
-  pool.query(sql, [jatekosId], (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Hiba" });
-    }
-
-    return res.status(200).json(result);
-  });
-});
-
-
-
-//Gergő végpontjai----------------------------------------------------------------------------------------------------------------------------------------  
+//Gergő végpontjai  
 //=========Admin végpontjai===========
 const Admin = require('./Admin');
 app.use('/admin', Admin);
@@ -389,6 +368,32 @@ app.post("/kerdesekkeres", (req, res) => {
 
   pool.query(sql, params, (err, result) => {
     if (err) return res.status(500).json({ error: "Adatbázis hiba történt." });
+    return res.status(200).json(result);
+  });
+});
+app.get("/endless-kerdesek",(req,res)=>{
+  const sql=`SELECT * FROM kerdesek ORDER BY RAND() LIMIT 100`;
+  pool.query(sql,(err,result)=>{
+    if(err){
+      console.log(err);
+      return res.status(500).json({error:"Hiba"});
+    }
+    if(result.length===0){
+      return res.status(404).json({error:"Nincs adat"});
+    }
+    return res.status(200).json(result);
+  });
+})
+app.get("/Gyakorlo-kerdesek",(req,res)=>{
+  const sql=`SELECT * FROM kerdesek ORDER BY RAND() LIMIT 50`;
+  pool.query(sql,(err,result)=>{
+    if(err){
+      console.log(err);
+      return res.status(500).json({error:"Hiba"});
+    }
+    if(result.length===0){
+      return res.status(404).json({error:"Nincs adat"});
+    }
     return res.status(200).json(result);
   });
 });
