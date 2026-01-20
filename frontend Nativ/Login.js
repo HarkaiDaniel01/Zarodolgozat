@@ -122,7 +122,7 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
               style={styles.input}
               value={password}
               onChangeText={setPassword}
-              secureTextEntry // Ez rejti el a jelszót
+              secureTextEntry
               placeholder="Írd be a jelszavad"
               placeholderTextColor="#999"
             />
