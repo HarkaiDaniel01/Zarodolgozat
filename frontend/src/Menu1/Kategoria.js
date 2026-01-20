@@ -9,7 +9,7 @@ const Kategoria=()=>{
     const [hiba,setHiba]=useState(false)
     const [kerdesek, setKerdesek] = useState([])
     const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false)
-    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠", "🖥️"])
+    const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠", "🐱‍👤"])
     const [kategoria, setKategoria] = useState(0)
 
  
@@ -290,6 +290,9 @@ const Kategoria=()=>{
 
             </div>) : <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve = {setKerdesekBetoltve}/>}
 
+            <br></br>
+            <br></br>
+            <br></br>
         
             
             

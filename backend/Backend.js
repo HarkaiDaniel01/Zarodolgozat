@@ -177,7 +177,7 @@ app.post("/eredmenyek", (req, res) => {
   const {jatekosId} = req.body;
 
   const sql = `
-                SELECT Eredmenyek_id, jatekos_nev, Eredmenyek_datum, kategoria_nev, Eredmenyek_pont  
+                SELECT Eredmenyek_id, jatekos_nev, DATE_FORMAT(Eredmenyek_datum, '%Y-%m-%d %H:%i:%s') AS Eredmenyek_datum, kategoria_nev, Eredmenyek_pont  
                 FROM eredmenyek 
                 INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
                 INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
@@ -312,7 +312,7 @@ app.post("/eredmenyekNaponkent", (req, res) => {
   const {jatekosId} = req.body;
 
   const sql = `
-                SELECT Date(Eredmenyek_datum) AS nap, SUM(Eredmenyek_pont) As eredmeny 
+                SELECT Date_FORMAT(Eredmenyek_datum, '%Y-%m-%d') AS nap, SUM(Eredmenyek_pont) As eredmeny 
                 FROM eredmenyek 
                 WHERE Eredmenyek_jatekos = ? 
                 GROUP BY nap;

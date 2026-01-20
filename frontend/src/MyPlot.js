@@ -2,6 +2,7 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 
 const MyPlot = ({datum, eredmeny, cim}) => {
+
   return (
     <Plot
       data={[
@@ -22,9 +23,18 @@ const MyPlot = ({datum, eredmeny, cim}) => {
         },
         dragmode: false,
         margin: {t : 50},
+  
         yaxis: {
-          rangemode: "tozero"
-        }
+          range: [0, Math.max(eredmeny) * 1.1],
+          type: 'linear'
+        },
+
+        xaxis: {
+          type:"category",
+          
+        },
+
+        margin: { t: 50, b: 50, l: 100, r: 30 },
 
       }}
 
