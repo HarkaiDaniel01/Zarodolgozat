@@ -94,13 +94,16 @@ const Felhasznalo = () => {
 
                                 const datumTomb = data.map(sor => sor.nap)
                                 const eredmenyTomb = data.map(sor => sor.eredmeny)
+                                const utolsoHetDatum = datumTomb.slice(-5).map(d => d.toString().split('T')[0])
+                                const utolsoHetEredmeny = eredmenyTomb.slice(-5)
                                 const ujEredmenyekTomb = []
+                                alert(data.map(sor => sor.nap))
 
                                 const ma = new Date()
                                 const datumok = []
 
-                                setDatumokTomb(datumTomb)
-                                setEredmenyekTomb(eredmenyTomb)
+                                setDatumokTomb(utolsoHetDatum)
+                                setEredmenyekTomb(utolsoHetEredmeny)
 
                                 setGrafikonTolt(false)
                                 
@@ -272,8 +275,8 @@ const Felhasznalo = () => {
                 {adatok.map((elem,index)=>(
                     
                         <tr>
-                            <td>{elem.Eredmenyek_datum.split('T')[0]}</td>
-                            <td>{elem.Eredmenyek_datum.split('T')[1].split('.')[0]}</td>
+                            <td>{elem.Eredmenyek_datum.split(' ')[0]}</td>
+                            <td>{elem.Eredmenyek_datum.split(' ')[1].split('.')[0]}</td>
                             <td>{elem.kategoria_nev}</td>
                             <td>{elem.Eredmenyek_pont} Ft</td>
                             <td><button className="btn btn-danger" onClick={()=>eredmenyTorles(elem.Eredmenyek_id)}>Törlés</button></td>
@@ -293,7 +296,7 @@ const Felhasznalo = () => {
 
 
             <div className="grafikon">
-                <MyPlot datum={datumokTomb} eredmeny={eredmenyekTomb} cim={"Eredmények dátumonként"}/>
+                <MyPlot datum={datumokTomb} eredmeny={eredmenyekTomb} cim={"Összes eredmény naponként"}/>
             </div>
             
             

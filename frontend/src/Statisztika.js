@@ -52,13 +52,14 @@ const Statisztika = () => {
                                 
                                 while (eredmenyTomb.length < 3) {
                                     eredmenyTomb.push(0)
-                                } 
+                                }
+
+                                const otEredmeny = eredmenyTomb.slice(-5)
                                 
-                                const szamTomb = Array.from({length: eredmenyTomb.length}, (_, i) => i + 1)
-                                setEredmenyek(eredmenyTomb)
+                                const szamTomb = Array.from({length: otEredmeny.length}, (_, i) => i + 1)
+                                setEredmenyek(otEredmeny)
                                 setSzamok(szamTomb)
 
-                                alert(kivalasztott)
 
 
                                 setTolt(false)
