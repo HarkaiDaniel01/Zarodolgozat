@@ -15,6 +15,10 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     const [helytelenValaszMarad, setHelytelenValaszMarad] = useState()
     const [nyeremenyek] = useState([0, 5000, 50000, 100000, 500000, 750000, 1500000, 2000000, 10000000, 15000000, 50000000])
 
+    const [pontozas, setPontozas] = useState(0)
+    const [kerdesPont, setKerdesPont] = useState(0)
+    const [felhasznaltSegitseg, setFelhasznaltSegitseg] = useState(0)
+
     const [telefonSegitsegAktiv, setTelefonSegitsegAktiv] = useState(true)
     const [felezoMegjelol, setFelezoMegjelol] = useState(false)
     const [kozonsegMegjelol, setKozonsegMegjelol] = useState(false)
@@ -39,11 +43,40 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     });
     };
 
-    const szamlaloNovel = () => {
+    /*const pontozasSzamol = () => {
+
+        
+
+        let segitsegSzorzo = 1;
+
+        switch (felhasznaltSegitseg) {
+            case 0: segitsegSzorzo = 2; 
+                        break;
+            case 1: segitsegSzorzo = 1.7;
+                        break;
+            case 2: segitsegSzorzo = 1.3;
+                        break;
+            default: segitsegSzorzo = 1;
+                        break;
+        }
+
+
+
+        const ujPontozas = Math.round(kerdesPont * segitsegSzorzo * szamlalo)
+        setPontozas(ujPontozas)
+        console.log(kerdesPont)
+        console.log(segitsegSzorzo)
+        console.log(szamlalo)
+        console.log(ujPontozas)
+
+
+    }*/
+
+    /*const szamlaloNovel = () => {
 
         showAlert("Helyes válasz! 😺", "", "success", "Következő kérdés 🏆")
         setSzamlalo(szamlalo + 1)
-    }
+    }*/
 
     const telefonSegitseg = () => {
 
@@ -84,6 +117,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             let rand = Math.floor(Math.random() * nevek.length)
             showAlert(`${nevek[rand]} a vonalban!`, `${szoveg[rand]}: <b>${telefonValasz}</b>`, "info", "Köszönöm a segítséget! 💖")
             setTelefonSegitsegAktiv(false)
+            setFelhasznaltSegitseg(felhasznaltSegitseg + 1)
         }
     }
 
@@ -144,6 +178,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             setKozonsegMegjelol(true)
             setSzazalek(szazalekTomb)
             setKozonsegSegitsegAktiv(false)
+            setFelhasznaltSegitseg(felhasznaltSegitseg + 1)
 
         }
     }
@@ -161,6 +196,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
             setFelezoMegjelol(true)
             setFelezoSegitsegAktiv(false)
+            setFelhasznaltSegitseg(felhasznaltSegitseg + 1)
 
             
 
@@ -182,7 +218,40 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             if (valasz === kerdesek[szamlalo].kerdesek_helyesValasz) {
 
             if (szamlalo === 9) setPontszam(nyeremenyek[10])
-            szamlaloNovel()
+
+            showAlert("Helyes válasz! 😺", "", "success", "Következő kérdés 🏆")
+            const ujSzamlalo = szamlalo + 1
+            setSzamlalo(ujSzamlalo)
+
+
+
+            
+            
+            //szamlaloNovel()
+
+            const ujKerdesPont = kerdesPont + kerdesek[szamlalo].kerdesek_nehezseg
+            setKerdesPont(ujKerdesPont)
+
+            let segitsegSzorzo = 1;
+
+            switch (felhasznaltSegitseg) {
+                case 0: segitsegSzorzo = 2; 
+                            break;
+                case 1: segitsegSzorzo = 1.7;
+                            break;
+                case 2: segitsegSzorzo = 1.3;
+                            break;
+                default: segitsegSzorzo = 1;
+                            break;
+            }
+
+            const ujPontozas = Math.round(ujKerdesPont * segitsegSzorzo * ujSzamlalo)
+            setPontozas(ujPontozas)
+            console.log(ujKerdesPont)
+            console.log(segitsegSzorzo)
+            console.log(ujSzamlalo)
+            console.log(ujPontozas)
+            
             
             //valaszKever()
         }
@@ -191,10 +260,11 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             A helyes válasz: ${kerdesek[szamlalo].kerdesek_helyesValasz}
             Magyarázat: ${kerdesek[szamlalo].kerdesek_leiras}
             `)*/
+            //pontozasSzamol()
             
             eredmenyMentes(
                 `Sajnos nem nyertél! 😿`,
-                `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}<br></br>${pontszam} Ft-ot nyertél! <br></br>El szeretnéd menteni az eredményt?`,
+                `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}<br></br>${pontszam} Ft-ot nyertél! <br></br>A pontszámod: ${pontozas}<br></br>El szeretnéd menteni az eredményt?`,
                 `warning`);
 
 
@@ -259,6 +329,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
                 const bemenet={
                     "nyeremeny" : pontszam,
+                    "pontszam" : pontozas,
                     "jatekos" : jatekosId,
                     "kategoria": kategoria,
                 }
@@ -292,8 +363,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
     const valaszKever = () => {
 
+        if (szamlalo < kerdesek.length) {
 
-        setFelezoMegjelol(false)
+            setFelezoMegjelol(false)
         setKozonsegMegjelol(false)
 
         //alert(szamlalo)
@@ -349,6 +421,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             case 9: setPontszam(15000000);break;
             default: setPontszam(50000000);break;
         }*/
+
+        }
+        
     }
 
     /*const helytelenValasz = () => {
@@ -391,10 +466,30 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[szamlalo])
 
+    /*useEffect(()=>{
+        pontozasSzamol()
+    },[szamlalo, kerdesPont, felhasznaltSegitseg])*/
+
     useEffect(()=>{
         const jatekos = localStorage.getItem("userid")
         setJatekosId(jatekos)
     },[])
+
+    useEffect(() => {
+        if (szamlalo === kerdesek.length) {
+            eredmenyMentes(
+                "Gratulálunk!",
+                `Gratulálunk! 🏆😻🎉🥳🏆<br>
+                Az összes kérdést helyesen válaszoltad meg!<br><br>
+                ${pontszam} Ft-ot nyertél!<br>
+                A pontszámod: ${pontozas}<br><br>
+                El szeretnéd menteni az eredményt?`,
+                "success"
+            );
+
+            kerdesekBetoltve(false);
+        }
+    }, [szamlalo, pontozas]);
 
     if (szamlalo < kerdesek.length) {
 
@@ -432,6 +527,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             </div>
 
             <h4>Nyeremény: {pontszam} Ft</h4>
+            <h4>Pontszám: {pontozas}</h4>
 
             
 
@@ -478,15 +574,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
         
 
-    } else {
-        //showAlert("Gratulálunk!", "Gratulálunk! 🏆😻🎉🥳🏆<br>Az összes kérdést helyesen válaszoltad meg és megnyerted a főnyereményt!", "success", "Tovább")
-        eredmenyMentes(
-            "Gratulálunk!",
-            `Gratulálunk! 🏆😻🎉🥳🏆<br>Az összes kérdést helyesen válaszoltad meg és megnyerted a főnyereményt!"<br></br>${pontszam} Ft-ot nyertél! <br></br>El szeretnéd menteni az eredményt?`,
-            "success")
-        setSzamlalo(0)
-        kerdesekBetoltve(false)
-    }
+    } 
  
     
     

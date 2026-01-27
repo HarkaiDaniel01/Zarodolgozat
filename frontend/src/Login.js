@@ -103,7 +103,7 @@ const Login = () => {
           />
         </div>
 
-        <button type="submit" style={styles.button}>Bejelentkezés</button>
+        <button type="submit" style={styles.button}>🎮 Bejelentkezés</button>
 
         {/* 🔥 REGISZTRÁCIÓ GOMB */}
         <button
@@ -111,7 +111,7 @@ const Login = () => {
           onClick={goToRegister}
           style={{ ...styles.button, backgroundColor: '#28a745', marginTop: '10px' }}
         >
-          Regisztráció
+          ✨ Regisztráció
         </button>
       </form>
     </div>

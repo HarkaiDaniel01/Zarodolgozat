@@ -12,6 +12,9 @@ import Register from './Register';
 import Felhasznalo from './Felhasznalo';
 import Rekordok from './Rekordok'
 import Statisztika from './Statisztika';
+import EredmenyekPontszam from './EredmenyekPontszam';
+import PontszamStatisztika from './PontszamStatisztika';
+import PontszamRekordok from './PontszamRekordok';
 
 
 
@@ -36,6 +39,12 @@ function App() {
           <Route path="/rekordok" element={<Rekordok/>} />
 
           <Route path="/statisztika" element={<Statisztika/>} />
+
+          <Route path="/eredmenyekPontszam" element={<EredmenyekPontszam/>} />
+
+          <Route path="/pontszamStatisztika" element={<PontszamStatisztika/>} />
+
+          <Route path="/pontszamRekordok" element={<PontszamRekordok/>} />
           
         </Routes>
       </div>

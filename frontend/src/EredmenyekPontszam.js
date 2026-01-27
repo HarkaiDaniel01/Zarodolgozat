@@ -5,7 +5,7 @@ import MyPlot from "./MyPlot";
 import { data } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 
-const Felhasznalo = () => {
+const EredmenyekPontszam = () => {
 
     const [jatekosId, setJatekosId] = useState(null);
     const [adatok,setAdatok]=useState([])
@@ -37,7 +37,7 @@ const Felhasznalo = () => {
                             "jatekosId" : jatekosId
                         }
             
-                        const response=await fetch(Cim.Cim+ "/eredmenyek", {
+                        const response=await fetch(Cim.Cim+ "/eredmenyekPontszam", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -79,7 +79,7 @@ const Felhasznalo = () => {
                             "jatekosId" : jatekosId
                         }
             
-                        const response=await fetch(Cim.Cim+ "/eredmenyekNaponkent", {
+                        const response=await fetch(Cim.Cim+ "/pontszamokNaponkent", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -158,7 +158,7 @@ const Felhasznalo = () => {
             }
         }
 
-        const osszNyeremenyBetolt=async ()=>{
+        const osszPontszamBetolt=async ()=>{
             
             if (jatekosId != null) {
                 try{
@@ -167,7 +167,7 @@ const Felhasznalo = () => {
                             "jatekosId" : jatekosId
                         }
             
-                        const response=await fetch(Cim.Cim+ "/osszesNyeremeny", {
+                        const response=await fetch(Cim.Cim+ "/osszesPontszam", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -221,7 +221,7 @@ const Felhasznalo = () => {
             }
 
             leToltes();
-            osszNyeremenyBetolt();
+            osszPontszamBetolt();
 
 
 
@@ -237,7 +237,7 @@ const Felhasznalo = () => {
     useEffect(()=>{
         nevBetolt()
         leToltes()
-        osszNyeremenyBetolt()
+        osszPontszamBetolt()
         EredmenyekNaponkentleToltes()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[jatekosId])
@@ -258,15 +258,15 @@ const Felhasznalo = () => {
             <div className="doboz">
             <h1>{`Üdvözöllek ${jatekosNev}!`}</h1>
 
-            <h4 style={{marginTop : "30px"}}>Eredmények:</h4>
+            <h4 style={{marginTop : "30px"}}>Eredmények pontszám:</h4>
 
-            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <div className="tablazat"><table className="table table-striped table-bordered">
+            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <table className="table table-striped table-bordered">
                 <thead>
                     <tr>
                     <th>Dátum</th>
                     <th className="d-none d-md-table-cell">Időpont</th>
                     <th>Kategória</th>
-                    <th>Nyeremény</th>
+                    <th>Pontszám</th>
                     <th>Törlés</th>
                 </tr>
                 </thead>
@@ -278,7 +278,7 @@ const Felhasznalo = () => {
                             <td>{elem.Eredmenyek_datum.split(' ')[0]}</td>
                             <td className="d-none d-md-table-cell">{elem.Eredmenyek_datum.split(' ')[1].split('.')[0]}</td>
                             <td>{elem.kategoria_nev}</td>
-                            <td>{elem.Eredmenyek_pont} Ft</td>
+                            <td>{elem.Eredmenyek_pontszam}</td>
                             <td><button className="btn btn-danger" onClick={()=>eredmenyTorles(elem.Eredmenyek_id)}>Törlés</button></td>
 
 
@@ -288,11 +288,11 @@ const Felhasznalo = () => {
                 </tbody>
 
             </table>
-            </div>
+            
             
             }
 
-            <h4>Összes nyeremény: {osszes} Ft</h4>
+            <h4>Összes pontszám: {osszes}</h4>
 
 
             <div className="grafikon">
@@ -313,4 +313,4 @@ const Felhasznalo = () => {
     )
 }
 
-export default Felhasznalo
+export default EredmenyekPontszam

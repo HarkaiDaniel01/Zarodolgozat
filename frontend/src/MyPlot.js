@@ -3,6 +3,7 @@ import Plot from 'react-plotly.js';
 
 const MyPlot = ({datum, eredmeny, cim}) => {
 
+
   return (
     <Plot
       data={[
@@ -10,23 +11,28 @@ const MyPlot = ({datum, eredmeny, cim}) => {
           x: datum,
           y: eredmeny,
           type: 'bar',
-          marker: { color: 'red' },
-          
+          width: datum.length === 1 ? 0.3 : 0.9,
+          marker: {
+            color: '#6366F1',
+            line: {
+              width: 0
+            },
+          },
         },
         
       ]}
       layout={{
-        width: 400,
-        height: 400,
+        width: 390,
+        height: 390,
         title: {
           text: cim
         },
         dragmode: false,
-        margin: {t : 50},
-  
+
         yaxis: {
           range: [0, Math.max(eredmeny) * 1.1],
-          type: 'linear'
+          type: 'linear',
+          
         },
 
         xaxis: {

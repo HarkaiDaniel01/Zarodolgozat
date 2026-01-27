@@ -83,7 +83,7 @@ const Register = () => {
         </div>
 
         <button type="submit" style={styles.button}>
-          Regisztráció
+          ✨ Regisztráció
         </button>
 
         <button
@@ -91,7 +91,7 @@ const Register = () => {
           onClick={() => navigate('/login')}
           style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '10px' }}
         >
-          Vissza a bejelentkezéshez
+          🎮 Vissza a bejelentkezéshez
         </button>
       </form>
     </div>

@@ -75,10 +75,50 @@ const Navbar = () => {
 
               <ul className="dropdown-menu">
                 <li>
-                  <Link className="dropdown-item" to="/felhasznalo">Eredmények</Link>
+                  <Link className="dropdown-item" to="/felhasznalo">Nyeremények</Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/statisztika">Statisztika</Link>
+                  <Link className="dropdown-item" to="/eredmenyekPontszam">Pontszámok</Link>
+                </li>
+              </ul>
+          </li>}
+
+          {loggedIn && <li className="nav-item dropdown link">
+              <button 
+                className="nav-link dropdown-toggle btn btn-link"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                type="button"
+              >
+                Statisztikák
+              </button>
+
+              <ul className="dropdown-menu">
+                <li>
+                  <Link className="dropdown-item" to="/statisztika">Nyeremények</Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/pontszamStatisztika">Pontszámok</Link>
+                </li>
+              </ul>
+          </li>}
+
+          {loggedIn && <li className="nav-item dropdown link">
+              <button 
+                className="nav-link dropdown-toggle btn btn-link"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                type="button"
+              >
+                Rekordok
+              </button>
+
+              <ul className="dropdown-menu">
+                <li>
+                  <Link className="dropdown-item" to="/rekordok">Nyeremények</Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/pontszamRekordok">Pontszámok</Link>
                 </li>
               </ul>
           </li>}
@@ -86,11 +126,11 @@ const Navbar = () => {
 
 
 
-          {loggedIn && (
+          {/*loggedIn && (
             <Link to="/rekordok" className="link" onClick={() => setMenuOpen(false)}>
               Rekordok
             </Link>
-          )}
+          )*/}
         </div>
       </div>
 

@@ -283,7 +283,16 @@ const Kategoria=()=>{
 
                 {/*<button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[6]} Vegyes</button>
                 <button className="gomb" onClick={() => kategoriaValasztNehez()}>{ikonok[7]} Géniusz</button>*/}
-
+                    {/*<button className="kategoriaGomb">Programozás</button>
+                    <button className="kategoriaGomb">Környezetvédelem</button>
+                    <button className="kategoriaGomb">Informatika</button>
+                    <button className="kategoriaGomb">Videójátékok</button>
+                    <button className="kategoriaGomb">Időfutam</button>
+                    <button className="kategoriaGomb">Tudomány</button>
+                    <button className="kategoriaGomb">Filmek</button>
+                    <button className="kategoriaGomb">Matematika</button>
+                    <button className="kategoriaGomb">Logikai rejtvények</button>
+                    <button className="kategoriaGomb">Honismeret</button>*/}
                 </div>
 
                 

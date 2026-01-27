@@ -2,7 +2,7 @@ import Cim from "./Cim"
 import { useState, useEffect} from "react"
 
 
-const Felhasznalo = () => {
+const PontszamRekordok = () => {
 
     const [adatok,setAdatok]=useState([])
     const [tolt,setTolt]=useState(true)
@@ -11,7 +11,7 @@ const Felhasznalo = () => {
 
      const leToltes=async ()=>{
             try{
-                const response=await fetch(Cim.Cim + "/rekordok")
+                const response=await fetch(Cim.Cim + "/pontszamRekordok")
                 const data=await response.json()
                 //alert(JSON.stringify(data))
                 //console.log(data)
@@ -56,7 +56,7 @@ const Felhasznalo = () => {
 
             <div>
                 <div className="doboz">
-                    <h1>Rekordok</h1>
+                    <h1>Pontszám Rekordok</h1>
 
                     {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még senkinek sincs eredménye<br></br> Játsz és légy az első!</div> : <table className="table table-striped table-bordered">
                         <thead>
@@ -94,4 +94,4 @@ const Felhasznalo = () => {
 
 }
 
-export default Felhasznalo
+export default PontszamRekordok

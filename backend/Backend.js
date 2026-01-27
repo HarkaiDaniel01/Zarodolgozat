@@ -136,7 +136,7 @@ app.get("/kerdesekKonnyuVegyes", (req, res) => {
 app.get("/kerdesekKozepesVegyes", (req, res) => {
   const sql = `SELECT * 
                 from kerdesek
-                where kerdesek_nehezseg = 2 
+                where kerdesek_nehezseg = 2
                 ORDER BY rand()
                 LIMIT 3`;
   pool.query(sql, (err, result) => {
@@ -195,11 +195,55 @@ app.post("/eredmenyek", (req, res) => {
   });
 });
 
+//eredmények lekérése pontszám alapján
+app.post("/eredmenyekPontszam", (req, res) => {
+  const {jatekosId} = req.body;
+
+  const sql = `
+                SELECT Eredmenyek_id, jatekos_nev, DATE_FORMAT(Eredmenyek_datum, '%Y-%m-%d %H:%i:%s') AS Eredmenyek_datum, kategoria_nev, Eredmenyek_pontszam  
+                FROM eredmenyek 
+                INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
+                INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
+                where Eredmenyek_jatekos = ?
+                ORDER BY Eredmenyek_id DESC
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//öszes nyeremény
 app.post("/osszesNyeremeny", (req, res) => {
   const {jatekosId} = req.body;
 
   const sql = `
                 SELECT SUM(Eredmenyek_pont) AS ossz
+                FROM eredmenyek
+                where Eredmenyek_jatekos = ?
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//összes pontszám
+app.post("/osszesPontszam", (req, res) => {
+  const {jatekosId} = req.body;
+
+  const sql = `
+                SELECT SUM(Eredmenyek_pontszam) AS ossz
                 FROM eredmenyek
                 where Eredmenyek_jatekos = ?
               `;
@@ -256,10 +300,10 @@ app.post('/eredmenyFelvitel', (req, res) => {
 
         if (handleValidationErrors(req,res)) return 
 
-        const {nyeremeny, jatekos, kategoria} =req.body
+        const {nyeremeny, pontszam, jatekos, kategoria} =req.body
         const datumValue = new Date();
-        const sql=`insert into eredmenyek values (null,?,?,?,?)`
-        pool.query(sql,[nyeremeny, jatekos, datumValue, kategoria], (err, result) => {
+        const sql=`insert into eredmenyek values (null,?,?,?,?,?)`
+        pool.query(sql,[nyeremeny, pontszam, jatekos, datumValue, kategoria], (err, result) => {
         if (err) {
             console.log(err)
             return res.status(500).json({error:"Hiba"})
@@ -292,8 +336,25 @@ app.get("/nehezVegyes", (req, res) => {
   });
 });
 
+//Nyeremény rekordok
 app.get("/rekordok", (req, res) => {
   const sql = `SELECT jatekos_id, jatekos_nev, SUM(Eredmenyek_pont) AS eredmeny FROM eredmenyek INNER JOIN jatekos On Eredmenyek_jatekos = jatekos_id GROUP BY jatekos_nev ORDER BY eredmeny DESC;`;
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Nincs adat" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//Pontszám rekordok
+app.get("/pontszamRekordok", (req, res) => {
+  const sql = `SELECT jatekos_id, jatekos_nev, SUM(Eredmenyek_pontszam) AS eredmeny FROM eredmenyek INNER JOIN jatekos On Eredmenyek_jatekos = jatekos_id GROUP BY jatekos_nev ORDER BY eredmeny DESC;`;
   pool.query(sql, (err, result) => {
     if (err) {
       console.log(err);
@@ -328,12 +389,56 @@ app.post("/eredmenyekNaponkent", (req, res) => {
   });
 });
 
+//Pontszámok naponként
+app.post("/pontszamokNaponkent", (req, res) => {
+  const {jatekosId} = req.body;
+
+  const sql = `
+                SELECT Date_FORMAT(Eredmenyek_datum, '%Y-%m-%d') AS nap, SUM(Eredmenyek_pontszam) As eredmeny 
+                FROM eredmenyek 
+                WHERE Eredmenyek_jatekos = ? 
+                GROUP BY nap;
+              `;
+
+  pool.query(sql, [jatekosId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+
+
 //eredmények kategóriánként
 app.post("/eredmenyekKategoriankent", (req, res) => {
   const {jatekosId, kategoriaId} = req.body;
 
   const sql = `
                 SELECT Eredmenyek_pont
+                FROM eredmenyek 
+                WHERE Eredmenyek_jatekos = ? AND Eredmenyek_kategoria = ?
+                GROUP BY Eredmenyek_id;
+              `;
+
+  pool.query(sql, [jatekosId, kategoriaId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+//pontszámok kategóriánként
+app.post("/pontszamokKategoriankent", (req, res) => {
+  const {jatekosId, kategoriaId} = req.body;
+
+  const sql = `
+                SELECT Eredmenyek_pontszam
                 FROM eredmenyek 
                 WHERE Eredmenyek_jatekos = ? AND Eredmenyek_kategoria = ?
                 GROUP BY Eredmenyek_id;
