@@ -522,7 +522,7 @@ app.post("/kerdesekkeres", (req, res) => {
   });
 });
 app.get("/endless-kerdesek",(req,res)=>{
-  const sql=`SELECT * FROM kerdesek ORDER BY RAND() LIMIT 100`;
+  const sql=`SELECT * FROM kerdesek ORDER BY RAND() LIMIT 200`;
   pool.query(sql,(err,result)=>{
     if(err){
       console.log(err);

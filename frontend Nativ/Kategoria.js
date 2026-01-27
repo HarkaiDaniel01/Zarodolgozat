@@ -5,7 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  FlatList, 
+  FlatList,
+  Switch,
+  Alert 
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Cim from "./Cim";
@@ -19,6 +21,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false);
   const [kategoria, setKategoria] = useState(0);
   const [isGyakorlas, setIsGyakorlas] = useState(false);
+  const [isHardcore, setIsHardcore] = useState(false);
 
   const [ikonok] = useState(["🏛️", "🌐", "📖", "🎵", "⚽", "🎄", "🎲", "🧠", "🖥️"]);
   
@@ -85,6 +88,10 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   };
 
   const kategoriaValasztGyakorlas = async (kategoriaId) => {
+    if (isHardcore) {
+      Alert.alert("Hardcore Mód", "Hardcore módban nem lehet gyakorolni!");
+      return;
+    }
     setKategoria(kategoriaId);
     setIsGyakorlas(true);
     try {
@@ -141,6 +148,17 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   return (
     <SafeAreaView style={styles.container}>
       {!kerdesekBetoltve ? (
+        <>
+          <View style={styles.hardcoreContainer}>
+            <Text style={styles.hardcoreText}>🔥 Hardcore Mód</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#FF6347" }}
+              thumbColor={isHardcore ? "#f4f3f4" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setIsHardcore(previousState => !previousState)}
+              value={isHardcore}
+            />
+          </View>
         <View style={styles.mainContent}>
           <Text style={styles.headerTitle}>Válassz kategóriát!</Text>
           
@@ -168,7 +186,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
             ListFooterComponent={
               <>
                 <View style={styles.separator} />
-                <Text style={styles.headerTitle}>Speciális módok</Text>
+                <Text style={styles.headerTitle}>Speciális módok (vegyes játék mód)</Text>
                 <View style={{gap: 15}}>
                   <TouchableOpacity
                     style={[styles.card, {backgroundColor: '#673AB7'}]}
@@ -214,8 +232,9 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
             }
           />
         </View>
+        </>
       ) : (
-        <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve={setKerdesekBetoltve} navigateToProfile={navigateToProfile} isGyakorlas={isGyakorlas}/>
+        <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve={setKerdesekBetoltve} navigateToProfile={navigateToProfile} isGyakorlas={isGyakorlas} isHardcore={isHardcore}/>
       )}
     </SafeAreaView>
   );
@@ -275,6 +294,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 20,
+  },
+  hardcoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  hardcoreText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
   textContainer: {
     flex: 1,

@@ -233,7 +233,7 @@ const Felhasznalobeallitas = () => {
 
           {/* JELSZÓ MÓDOSÍTÁSA */}
           <div>
-            <h3 style={{ color: "#00A21D", marginBottom: "1rem" }}>
+            <h3 style={{ color: darkMode ? "#e5e7eb" : "black" , marginBottom: "1rem" }}>
               Jelszó módosítása
             </h3>
             <form onSubmit={jelszoModositas}>

@@ -11,7 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Cim from "./Cim";
 
-const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, isGyakorlas }) => {
+const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, isGyakorlas, isHardcore }) => {
   const { height, width } = useWindowDimensions(); 
   const isLargeScreen = width > 600; 
   
@@ -23,15 +23,17 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const [helyesValasz, setHelyesValasz] = useState();
   const [helytelenValaszMarad, setHelytelenValaszMarad] = useState();
   
-  const [telefonSegitsegAktiv, setTelefonSegitsegAktiv] = useState(true);
-  const [felezoSegitsegAktiv, setFelezoSegitsegAktiv] = useState(true);
-  const [kozonsegSegitsegAktiv, setKozonsegSegitsegAktiv] = useState(true);
+  const [telefonSegitsegAktiv, setTelefonSegitsegAktiv] = useState(!isHardcore);
+  const [felezoSegitsegAktiv, setFelezoSegitsegAktiv] = useState(!isHardcore);
+  const [kozonsegSegitsegAktiv, setKozonsegSegitsegAktiv] = useState(!isHardcore);
   const [felezoMegjelol, setFelezoMegjelol] = useState(false);
   const [kozonsegMegjelol, setKozonsegMegjelol] = useState(false);
   const [szazalek, setSzazalek] = useState([]);
   const [megjeloltValasz, setMegjeloltValasz] = useState();
   const [valaszMegjelolve, setValaszMegjelolve] = useState(false);
   const [jatekosId, setJatekosId] = useState(null);
+  // Nyeremény mentés állapota a végén
+  const [mentve, setMentve] = useState(false);
 
   // Speedrun state-ek
   const [ido, setIdo] = useState(60);
@@ -81,7 +83,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
             console.log('Endless kerdesek betoltese hiba:', error);
           }
         }
-        Alert.alert("Helyes! 😺", "Következő kérdés 🏆", [{ text: "Ok", onPress: () => setSzamlalo(szamlalo + 1) }]);
+        Alert.alert("A Válasz helyes! 😺", "Következő kérdés 🏆", [{ text: "Ok", onPress: () => setSzamlalo(szamlalo + 1) }]);
       } else {
         const leiras = stripHtml(kerdesek[szamlalo].kerdesek_leiras || "");
         if (isGyakorlas) {
@@ -153,7 +155,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       return;
     }
 
-    Alert.alert(cim, tartalom + `\nNyeremény: ${pontszam} Ft\nMentés?`, [
+    Alert.alert(cim, tartalom + `\nNyeremény: ${pontszam} Ft\nHozzá szeretné adni a jelenlegi eredményét a többi hez?`, [
         { text: "Nem", onPress: () => { setSzamlalo(0); kerdesekBetoltve(false); } },
         { 
           text: "Igen", 
@@ -318,12 +320,50 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         </DynamicContainer>
       </View>
     );
+  } else if (szamlalo >= kerdesek.length && tolt) {
+    // Játékos végigment, nyert
+    const handleSave = async () => {
+      await eredmenyMentes("Gratulálok, nyertél! 🏆", "Végigvitted a játékot!");
+      setMentve(true);
+    };
+    return (
+      <View style={styles.center}>
+        <Text style={{fontSize: 22, fontWeight: 'bold', marginBottom: 10}}>Gratulálok, nyertél! 🏆</Text>
+        <Text style={{fontSize: 18, marginBottom: 20}}>Nyeremény: {pontszam} Ft</Text>
+        {!mentve ? (
+          <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+            <Text style={styles.saveText}>Eredmény mentése</Text>
+          </TouchableOpacity>
+        ) : null}
+        <TouchableOpacity
+          style={styles.exitBtnStyled}
+          activeOpacity={0.8}
+          onPress={() => { setSzamlalo(0); kerdesekBetoltve(false); }}
+        >
+          <Text style={styles.exitTextStyled}>🏠 Vissza a főmenübe</Text>
+        </TouchableOpacity>
+      </View>
+    );
   } else {
     return <View style={styles.center}><Text>Töltés...</Text></View>;
   }
 };
 //stilusok
 const styles = StyleSheet.create({
+  saveBtn: {
+      backgroundColor: '#4CAF50',
+      borderRadius: 30,
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      marginBottom: 15,
+      alignItems: 'center',
+      elevation: 2,
+    },
+    saveText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
   screenWrapper: {
     flex: 1,
     backgroundColor: '#FAFAFA',
@@ -492,6 +532,28 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#2962FF',
     borderRadius: 5,
+  },
+  exitBtnStyled: {
+    backgroundColor: '#2196F3',
+    width: '100%',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    borderWidth: 0,
+    paddingVertical: 18,
+    marginTop: 10,
+    shadowColor: '#1976D2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    marginBottom: 5,
+  },
+  exitTextStyled: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
+    letterSpacing: 0.5,
   },
 });
 

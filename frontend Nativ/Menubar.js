@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Kategoria from './Kategoria';
 import Profil from './Profil';
+import Rekordok from './Rekordok';
 
 function MyTabs() {
   const [activeTab, setActiveTab] = useState('jatek');
@@ -16,6 +17,8 @@ function MyTabs() {
       {/* Content */}
       {activeTab === 'jatek' ? (
         <Kategoria setHideTabBar={setHideTabBar} navigateToProfile={navigateToProfile} />
+      ) : activeTab === 'rekordok' ? (
+        <Rekordok />
       ) : (
         <Profil />
       )}
@@ -29,6 +32,14 @@ function MyTabs() {
           >
             <Text style={[styles.tabText, activeTab === 'jatek' && styles.activeTabText]}>
               Játék
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'rekordok' && styles.activeTab]}
+            onPress={() => setActiveTab('rekordok')}
+          >
+            <Text style={[styles.tabText, activeTab === 'rekordok' && styles.activeTabText]}>
+              Rekordok
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
