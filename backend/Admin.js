@@ -210,17 +210,25 @@ router.delete('/jatekostorles/:jatekos_id',
     if (validationError) return validationError;
     const { jatekos_id } = req.params;
     console.log("Játékos törlése:", { jatekos_id });
-    const sql = `DELETE FROM jatekos WHERE jatekos_id = ?`;
-
-    pool.query(sql, [jatekos_id], (err, result) => {
+    
+    const deleteEredmenyekSql = `DELETE FROM eredmenyek WHERE Eredmenyek_jatekos = ?`;
+    pool.query(deleteEredmenyekSql, [jatekos_id], (err) => {
       if (err) {
         console.log(err);
-        return res.status(500).json({ error: "Hiba" });
+        return res.status(500).json({ error: "Hiba az eredmények törlésekor" });
       }
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: "Felhasználó nem található" });
-      }
-      return res.status(200).json({ message: "Sikeres törlés!" });
+      
+      const sql = `DELETE FROM jatekos WHERE jatekos_id = ?`;
+      pool.query(sql, [jatekos_id], (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: "Hiba" });
+        }
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ error: "Felhasználó nem található" });
+        }
+        return res.status(200).json({ message: "Sikeres törlés!" });
+      });
     });
   } 
 );
