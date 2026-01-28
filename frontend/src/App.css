@@ -361,7 +361,7 @@ td, th {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .doboz {
     width: 410px;
     margin: 50px auto 0 auto;
