@@ -172,6 +172,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
                     nyeremeny: pontszam,
+                    pontszam: szamlalo,
                     jatekos: userId,
                     kategoria: kategoria,
                     datum: maiDatum
@@ -395,8 +396,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 15,
     elevation: 2,
-    shadowOpacity: 0.2,
-    shadowOffset: {width: 0, height: 2}
+    boxShadow: '0px 2px 4px rgba(0,0,0,0.2)',
   },
   prizeText: {
     fontWeight: 'bold',
@@ -411,8 +411,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
-    shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 3},
+    boxShadow: '0px 3px 6px rgba(0,0,0,0.1)',
     minHeight: 100,
   },
   questionText: {
@@ -479,8 +478,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
-    shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 2}
+    boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
   },
   disabledHelper: {
     backgroundColor: '#EEEEEE',
@@ -543,10 +541,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingVertical: 18,
     marginTop: 10,
-    shadowColor: '#1976D2',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8,
+    boxShadow: '0px 4px 8px rgba(25, 118, 210, 0.18)',
     marginBottom: 5,
   },
   exitTextStyled: {

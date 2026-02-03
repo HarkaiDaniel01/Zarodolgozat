@@ -23,7 +23,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   const [isGyakorlas, setIsGyakorlas] = useState(false);
   const [isHardcore, setIsHardcore] = useState(false);
 
-  const [ikonok] = useState(["🏛️", "🌐", "📖", "🎵", "⚽", "🎄", "🎲", "🧠", "🖥️"]);
+  const [ikonok] = useState(["🏛️", "🌐", "📖", "🎵", "⚽", "🎄", "🎲", "🧠", "🖥️", "🎮"]);
   
   const [szinek] = useState([
     "#8E24AA", "#00C853", "#FF1744", "#F50057", "#FF6D00", 
@@ -89,7 +89,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
 
   const kategoriaValasztGyakorlas = async (kategoriaId) => {
     if (isHardcore) {
-      Alert.alert("Hardcore Mód", "Hardcore módban nem lehet gyakorolni!");
+      Alert.alert("Ultrranehéz Mód", "Ultrranehéz módban nem lehet gyakorolni!");
       return;
     }
     setKategoria(kategoriaId);
@@ -150,13 +150,20 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
       {!kerdesekBetoltve ? (
         <>
           <View style={styles.hardcoreContainer}>
-            <Text style={styles.hardcoreText}>🔥 Hardcore Mód</Text>
+            <Text style={styles.hardcoreText}>🔥 Ultranehéz Mód</Text>
             <Switch
               trackColor={{ false: "#767577", true: "#FF6347" }}
               thumbColor={isHardcore ? "#f4f3f4" : "#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
-              onValueChange={() => setIsHardcore(previousState => !previousState)}
+              onValueChange={() => {
+                const newState = !isHardcore;
+                setIsHardcore(newState);
+                if (newState) {
+                  Alert.alert("Ultranehéz Mód", "Az Ultranehéz mód aktiválva! Összes segitség kikapcsolva sok szerencsét 🧠.");
+                }
+              }}
               value={isHardcore}
+              
             />
           </View>
         <View style={styles.mainContent}>
@@ -186,7 +193,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
             ListFooterComponent={
               <>
                 <View style={styles.separator} />
-                <Text style={styles.headerTitle}>Speciális módok (vegyes játék mód)</Text>
+                <Text style={styles.headerTitle}>Speciális módok</Text>
                 <View style={{gap: 15}}>
                   <TouchableOpacity
                     style={[styles.card, {backgroundColor: '#673AB7'}]}
@@ -197,7 +204,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={[styles.cardText, {color: 'white'}]} numberOfLines={1} adjustsFontSizeToFit>
-                            Speedrun
+                            Gyorsasági kihívás
                         </Text>
                     </View>
                   </TouchableOpacity>
@@ -210,7 +217,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={[styles.cardText, {color: 'white'}]} numberOfLines={1} adjustsFontSizeToFit>
-                            Endless Run
+                            Megállás nélkül kíhívás
                         </Text>
                     </View>
                   </TouchableOpacity>

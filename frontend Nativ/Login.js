@@ -1,54 +1,53 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Alert, 
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
   ScrollView,
   KeyboardAvoidingView,
-  Platform 
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Cim from './Cim';
+  Platform,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Cim from "./Cim";
 
 const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setError('Kérlek töltsd ki mindkét mezőt!');
+      setError("Kérlek töltsd ki mindkét mezőt!");
       return;
     }
 
-    setError('');
-    
+    setError("");
+
     try {
-      const response = await fetch(Cim.Cim + '/admin/bejelentkezes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          "jatekos_nev": username, 
-          "jatekos_jelszo": password
+      const response = await fetch(Cim.Cim + "/admin/bejelentkezes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jatekos_nev: username,
+          jatekos_jelszo: password,
         }),
       });
 
       if (!response.ok) {
         const errData = await response.json();
-        throw new Error(errData.message || 'Hibás bejelentkezési adatok');
+        throw new Error(errData.message || "Hibás bejelentkezési adatok");
       }
 
       const data = await response.json();
 
-      // AsyncStorage használata localStorage helyett (minden await-es!)
-      await AsyncStorage.setItem('token', data.token);
+      await AsyncStorage.setItem("token", data.token);
       if (data.role) {
-        await AsyncStorage.setItem('role', data.role);
+        await AsyncStorage.setItem("role", data.role);
       }
-      await AsyncStorage.setItem('userid', String(data.user.id)); 
+      await AsyncStorage.setItem("userid", String(data.user.id));
 
       const taroltEredmeny = await AsyncStorage.getItem("taroltEredmeny");
 
@@ -57,20 +56,20 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
 
         const maiDatum = new Date().toISOString();
         const bemenet = {
-          "nyeremeny": ePont,
-          "jatekos": data.user.id,
-          "kategoria": eKat,
-          "datum": maiDatum
+          nyeremeny: ePont,
+          jatekos: data.user.id,
+          kategoria: eKat,
+          datum: maiDatum,
         };
-        
+
         const resEredmeny = await fetch(Cim.Cim + "/eredmenyFelvitel", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(bemenet)
+          body: JSON.stringify(bemenet),
         });
-        
+
         if (resEredmeny.ok) {
           Alert.alert("Siker", "Korábbi eredmény feltöltve!");
         } else {
@@ -81,9 +80,8 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
       }
 
       if (onLoginSuccess) onLoginSuccess();
-
-     } catch (err) {
-      console.log('Login Error:', err);
+    } catch (err) {
+      console.log("Login Error:", err);
       setError(err.message);
       Alert.alert("Hiba", err.message);
     }
@@ -94,22 +92,22 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Bejelentkezés</Text>
-        
+
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        
+
         <View style={styles.form}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Felhasználónév</Text>
             <TextInput
               style={styles.input}
               value={username}
-              onChangeText={setUsername} 
+              onChangeText={setUsername}
               placeholder="Írd be a felhasználóneved"
               placeholderTextColor="#999"
               autoCapitalize="none"
@@ -147,66 +145,66 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 30,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   title: {
     marginBottom: 30,
     fontSize: 32,
-    color: '#333',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#333",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   form: {
-    width: '100%',
+    width: "100%",
   },
   inputGroup: {
     marginBottom: 15,
   },
   label: {
     marginBottom: 8,
-    fontWeight: 'bold',
-    color: '#555',
+    fontWeight: "bold",
+    color: "#555",
     fontSize: 16,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 15,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
     fontSize: 16,
   },
   button: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: '#007bff',
-    alignItems: 'center',
+    backgroundColor: "#007bff",
+    alignItems: "center",
     marginTop: 10,
     // Árnyék Androidra
-    elevation: 3, 
+    elevation: 3,
     // Árnyék iOS-re
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
   registerButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: "#28a745",
     marginTop: 15,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   error: {
-    color: 'red',
+    color: "red",
     marginBottom: 15,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
