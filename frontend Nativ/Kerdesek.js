@@ -234,6 +234,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const [szazalek, setSzazalek] = useState([]);
   const [megjeloltValasz, setMegjeloltValasz] = useState();
   const [valaszMegjelolve, setValaszMegjelolve] = useState(false);
+  const [eredmenyMutat, setEredmenyMutat] = useState(false);
   
   // Nyeremény mentés állapota a végén
   const [mentve, setMentve] = useState(false);
@@ -273,31 +274,41 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const valaszEllenoriz = async (valasz) => {
     setMegjeloltValasz(valasz);
     setValaszMegjelolve(true);
+    setEredmenyMutat(false); // még csak várakozunk
+
     setTimeout(async () => {
-      if (valasz === kerdesek[szamlalo].kerdesek_helyesValasz) {
-        if (isEndless && szamlalo === kerdesek.length - 1) {
-          try {
-            const response = await fetch(Cim.Cim + `/endless-kerdesek`, { method: "GET" });
-            const ujKerdesek = await response.json();
-            if (response.ok) {
-              setKerdesek(prev => [...prev, ...ujKerdesek]);
+      setEredmenyMutat(true); // eredmények felfedése (színek)
+
+      // Kis várakozás, hogy látszódjon a színkód (piros/zöld) az Alert előtt
+      setTimeout(async () => {
+        if (valasz === kerdesek[szamlalo].kerdesek_helyesValasz) {
+          if (isEndless && szamlalo === kerdesek.length - 1) {
+            try {
+              const response = await fetch(Cim.Cim + `/endless-kerdesek`, { method: "GET" });
+              const ujKerdesek = await response.json();
+              if (response.ok) {
+                setKerdesek(prev => [...prev, ...ujKerdesek]);
+              }
+            } catch (error) {
+              console.log('Endless kerdesek betoltese hiba:', error);
             }
-          } catch (error) {
-            console.log('Endless kerdesek betoltese hiba:', error);
+          }
+          Alert.alert("A Válasz helyes! 😺", "Következő kérdés 🏆", [{ text: "Ok", onPress: () => {
+             setSzamlalo(szamlalo + 1);
+             setMegjeloltValasz(null);
+             setValaszMegjelolve(false);
+             setEredmenyMutat(false);
+          }}]);
+        } else {
+          const leiras = stripHtml(kerdesek[szamlalo].kerdesek_leiras || "");
+          if (isGyakorlas) {
+            Alert.alert("Helytelen! 😿", `A helyes válasz: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`, [{ text: "Ok", onPress: () => eredmenyMentes() }]);
+          } else {
+            eredmenyMentes("Nem nyertél! 😿", `Helyes: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`);
           }
         }
-        Alert.alert("A Válasz helyes! 😺", "Következő kérdés 🏆", [{ text: "Ok", onPress: () => setSzamlalo(szamlalo + 1) }]);
-      } else {
-        const leiras = stripHtml(kerdesek[szamlalo].kerdesek_leiras || "");
-        if (isGyakorlas) {
-          Alert.alert("Helytelen! 😿", `A helyes válasz: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`, [{ text: "Ok", onPress: () => eredmenyMentes() }]);
-        } else {
-          eredmenyMentes("Nem nyertél! 😿", `Helyes: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`);
-        }
-      }
-      setMegjeloltValasz(null);
-      setValaszMegjelolve(false);
-    }, 1000);
+      }, 1000); // Még 1mp, hogy lássa a júzer a színeket
+    }, 2000); // 2mp várakozás 'sárgán'
   };
 
   const telefonSegitseg = () => { 
@@ -380,12 +391,6 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                     datum: maiDatum
                   }),
                 });
-
-                if (response.ok) {
-                  Alert.alert("Siker", "Eredmény sikeresen mentve!");
-                } else {
-                  Alert.alert("Hiba", "Nem sikerült menteni az eredményt.");
-                }
               } else {
                 await AsyncStorage.setItem("taroltEredmeny", JSON.stringify({
                   ePont: pontszam,
@@ -495,15 +500,32 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
             <View style={customStyles.answersContainer}>
                {valaszok.map((elem, index) => {
                  const isHidden = felezoMegjelol && (elem !== helyesValasz && elem !== helytelenValaszMarad);
-                 // Logic check: if "megjeloltValasz" matches, it is the selected one. 
-                 // If we had a "revealed" state, we'd check helyesValasz too.
-                 // For now, we style the "Selected" one as the Green one to match the image request.
-                 const isSelected = megjeloltValasz === elem;
                  
+                 const isSelectedSubstitute = megjeloltValasz === elem;
+                 const isCorrect = elem === kerdesek[szamlalo].kerdesek_helyesValasz;
+                 
+                 let currentGradient = null;
+                 let isActiveStyle = false;
+
+                 if (eredmenyMutat) {
+                    if (isCorrect) {
+                        currentGradient = greenGradient;
+                        isActiveStyle = true;
+                    } else if (isSelectedSubstitute) {
+                        currentGradient = ['#ef5350', '#c62828']; // Red
+                        isActiveStyle = true;
+                    }
+                 } else {
+                    if (isSelectedSubstitute) {
+                        currentGradient = goldGradient; // Yellow waiting
+                        isActiveStyle = true;
+                    }
+                 }
+
                  // Wrapper Component to conditionally apply Gradient
-                 const Wrapper = isSelected ? LinearGradient : View;
-                 const wrapperProps = isSelected 
-                    ? { colors: greenGradient, start: {x:0, y:0}, end: {x:1, y:0}, style: [customStyles.answerRow, customStyles.answerRowSelected] }
+                 const Wrapper = isActiveStyle ? LinearGradient : View;
+                 const wrapperProps = isActiveStyle 
+                    ? { colors: currentGradient, start: {x:0, y:0}, end: {x:1, y:0}, style: [customStyles.answerRow, customStyles.answerRowSelected] }
                     : { style: customStyles.answerRow };
 
                  return (
@@ -518,7 +540,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                         {/* Letter Box */}
                         <View style={[
                             customStyles.letterBox, 
-                            isSelected && { backgroundColor: selectedLetterColor }
+                            isActiveStyle && { backgroundColor: selectedLetterColor }
                         ]}>
                            <Text style={customStyles.letterText}>{betuk[index]}</Text>
                         </View>
@@ -527,7 +549,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                         <View style={customStyles.answerTextContainer}>
                           <Text style={[
                               customStyles.answerText, 
-                              isSelected && customStyles.answerTextSelected
+                              isActiveStyle && customStyles.answerTextSelected
                           ]}>
                             {elem}
                             {kozonsegMegjelol && szazalek[index] ? `  (${szazalek[index]})` : ''}
@@ -544,26 +566,26 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               <View style={customStyles.helpersRow}>
                 {/* Phone */}
                 <TouchableOpacity 
-                    style={[customStyles.helperBox, !telefonSegitsegAktiv && { opacity: 0.5 }]}
+                    style={[customStyles.helperBox, customStyles.helperBoxWhite, !telefonSegitsegAktiv && { opacity: 0.5 }]}
                     onPress={telefonSegitseg}
                     disabled={!telefonSegitsegAktiv}
                 >
-                    <View style={customStyles.helperIconContainer}>
+                    <View style={[customStyles.helperIconContainer, customStyles.helperIconContainerOrange]}>
                       <MaterialCommunityIcons name="phone" size={24} color="#fff" />
                     </View>
-                    <Text style={customStyles.helperText}>Telefon</Text>
+                    <Text style={[customStyles.helperText, {color: '#333'}]}>Telefon</Text>
                 </TouchableOpacity>
 
                 {/* Audience */}
                 <TouchableOpacity 
-                    style={[customStyles.helperBox, !kozonsegSegitsegAktiv && { opacity: 0.5 }]}
+                    style={[customStyles.helperBox, customStyles.helperBoxWhite, !kozonsegSegitsegAktiv && { opacity: 0.5 }]}
                     onPress={kozonsegSegitseg}
                     disabled={!kozonsegSegitsegAktiv}
                 >
-                    <View style={customStyles.helperIconContainer}>
+                    <View style={[customStyles.helperIconContainer, customStyles.helperIconContainerOrange]}>
                        <MaterialCommunityIcons name="account-group" size={24} color="#fff" />
                     </View>
-                    <Text style={customStyles.helperText}>Közönség</Text>
+                    <Text style={[customStyles.helperText, {color: '#333'}]}>Közönség</Text>
                 </TouchableOpacity>
 
                 {/* 50:50 - White Style */}

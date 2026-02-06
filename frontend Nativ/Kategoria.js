@@ -49,9 +49,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   ]);
   
   const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
-    if (kategoriaNev === "Vegyes") kategoriaValasztVegyes(kategoriaId);
-    else if (kategoriaNev === "Géniusz") kategoriaValasztNehez(kategoriaId);
-    else if (kategoriaNev === "Speedrun") kategoriaValasztSpeedrun(kategoriaId);
+    if (kategoriaNev === "Speedrun") kategoriaValasztSpeedrun(kategoriaId);
     else if (kategoriaNev === "Endless") kategoriaValasztEndless(kategoriaId);
     else if (kategoriaNev === "Gyakorlas") kategoriaValasztGyakorlas(kategoriaId);
     else { 
@@ -62,26 +60,6 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
       setKerdesek([...konnyu, ...kozepes, ...nehez]);
       setKerdesekBetoltve(true);
     }
-  };
-  const kategoriaValasztVegyes = async (kategoriaId) => {
-    setKategoria(kategoriaId);
-    const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes");
-    const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes");
-    const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes");
-    setKerdesek([...konnyu, ...kozepes, ...nehez]);
-    setKerdesekBetoltve(true);
-  };
-
-  const kategoriaValasztNehez = async (kategoriaId) => {
-    setKategoria(kategoriaId);
-    try {
-      const response = await fetch(Cim.Cim + `/nehezVegyes`, { method: "GET" });
-      const data = await response.json();
-      if (response.ok) { 
-        setKerdesek(data); 
-        setKerdesekBetoltve(true); 
-      }
-    } catch (error) { console.log('KategoriaValasztNehez Error:', error); }
   };
 
   const kategoriaValasztSpeedrun = async (kategoriaId) => {
@@ -144,7 +122,10 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     try {
       const response = await fetch(Cim.Cim + "/kategoria");
       const data = await response.json();
-      if (response.ok) { setAdatok(data); }
+      if (response.ok) { 
+        const szurtAdatok = data.filter(item => item.kategoria_nev !== "Vegyes" );
+        setAdatok(szurtAdatok); 
+      }
       else { setHiba(true); }
     } catch (error) { 
       console.log('leToltes Error:', error); 
