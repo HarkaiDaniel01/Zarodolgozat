@@ -1,2 +1,2 @@
-const Cim = "http://10.172.39.98:3000";
+const Cim = "http://no no no:3000";
 export default { Cim };
