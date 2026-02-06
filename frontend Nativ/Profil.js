@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Login from './Login';
 import Register from './Register';
 import Felhasznalo from './Felhasznalo';
+import OsszesNyeremeny from './OsszesNyeremeny';
 
 const Profil = () => {
   const [currentScreen, setCurrentScreen] = useState('loading');
@@ -28,6 +29,7 @@ const Profil = () => {
   const navigateToRegister = () => setCurrentScreen('register');
   const navigateToLogin = () => setCurrentScreen('login');
   const navigateToFelhasznalo = () => setCurrentScreen('felhasznalo');
+  const navigateToOsszesNyeremeny = () => setCurrentScreen('osszesNyeremeny');
 
   if (currentScreen === 'loading') {
     return <View style={{ flex: 1 }} />;
@@ -38,7 +40,11 @@ const Profil = () => {
   }
 
   if (currentScreen === 'felhasznalo') {
-    return <Felhasznalo onLogout={navigateToLogin} />;
+    return <Felhasznalo onLogout={navigateToLogin} onNavigateToWinnings={navigateToOsszesNyeremeny} />;
+  }
+
+  if (currentScreen === 'osszesNyeremeny') {
+    return <OsszesNyeremeny onBack={navigateToFelhasznalo} />;
   }
 
   return <Login onNavigateToRegister={navigateToRegister} onLoginSuccess={navigateToFelhasznalo} />;

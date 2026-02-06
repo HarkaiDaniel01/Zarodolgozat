@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^npx expo install expo-linear-gradient$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

@@ -12,6 +12,7 @@ import AdminRegisztralcio from './Regisztralcio/AdminRegisztralcio';
 import Usermenu from './AdminFomenu/Usermenu';
 import Engedelykeres from './Felhasználókezel/Engedelykeres';
 import Felhasznalobeallitas from './Felhasználókezel/Felhasznalobeallitas';
+import Eredmenyek from './Eredmenyek/Eredmenyek';
 import { checkTokenAndLogout } from './utils/authUtils';
 // Token ellenőrző wrapper komponens
 const TokenChecker = ({ children }) => {
@@ -103,6 +104,7 @@ function App() {
                   <Route path="/Adminfomenu" element={<AdminRoute><AdminFomenu /></AdminRoute>} />
                   <Route path="/kategoriakezel" element={<AdminRoute><Kategoriafeltolt /></AdminRoute>} />
                   <Route path="/kerdeskezel" element={<AdminRoute><Kerdesfeltolt /></AdminRoute>} />
+                  <Route path="/eredmenyek" element={<AdminRoute><Eredmenyek /></AdminRoute>} />
                   <Route path="/engedelykeres" element={<AdminRoute><Engedelykeres /></AdminRoute>} />
                   <Route path="/beallitasok" element={<ProtectedRoute><Felhasznalobeallitas /></ProtectedRoute>} />
                   <Route path="/usermenu" element={<UserRoute><Usermenu /></UserRoute>} />

@@ -7,9 +7,13 @@ import {
   ActivityIndicator,
   FlatList,
   Switch,
-  Alert 
+  Alert,
+  StatusBar
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+
 import Cim from "./Cim";
 import Kerdesek from "./Kerdesek"; 
 
@@ -23,13 +27,27 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   const [isGyakorlas, setIsGyakorlas] = useState(false);
   const [isHardcore, setIsHardcore] = useState(false);
 
-  const [ikonok] = useState(["🏛️", "🌐", "📖", "🎵", "⚽", "🎄", "🎲", "🧠", "🖥️", "🎮"]);
-  
+  const getIconName = (index) => {
+    const icons = [
+      "bank", 
+      "earth", 
+      "book-open-variant", 
+      "music", 
+      "dumbbell", 
+      "coffee", 
+      "dice-5", 
+      "brain", 
+      "desktop-tower", 
+      "gamepad-variant"
+    ];
+    return icons[index % icons.length];
+  };
+
   const [szinek] = useState([
     "#8E24AA", "#00C853", "#FF1744", "#F50057", "#FF6D00", 
     "#009688", "#607D8B", "#795548", "#3F51B5"
   ]);
-
+  
   const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
     if (kategoriaNev === "Vegyes") kategoriaValasztVegyes(kategoriaId);
     else if (kategoriaNev === "Géniusz") kategoriaValasztNehez(kategoriaId);
@@ -146,180 +164,201 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   if (hiba) return <View style={styles.center}><Text>Hiba az adatok letöltésekor.</Text></View>;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {!kerdesekBetoltve ? (
         <>
-          <View style={styles.hardcoreContainer}>
-            <Text style={styles.hardcoreText}>🔥 Ultranehéz Mód</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#FF6347" }}
-              thumbColor={isHardcore ? "#f4f3f4" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() => {
-                const newState = !isHardcore;
-                setIsHardcore(newState);
-                if (newState) {
-                  Alert.alert("Ultranehéz Mód", "Az Ultranehéz mód aktiválva! Összes segitség kikapcsolva sok szerencsét 🧠.");
-                }
-              }}
-              value={isHardcore}
-              
-            />
-          </View>
-        <View style={styles.mainContent}>
-          <Text style={styles.headerTitle}>Válassz kategóriát!</Text>
-          
-          <FlatList
-            data={adatok}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={styles.listContainer}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={[styles.card, {marginBottom: 15}]}
-                onPress={() => kategoriaValaszt(item.kategoria_id, item.kategoria_nev)}
-              >
-                <View style={[styles.iconContainer, { backgroundColor: szinek[index % szinek.length] }]}>
-                  <Text style={{fontSize: 24}}>{ikonok[index] || "❓"}</Text>
-                </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.cardText} numberOfLines={1} adjustsFontSizeToFit>
-                        {item.kategoria_nev}
-                    </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            
-            ListFooterComponent={
-              <>
-                <View style={styles.separator} />
-                <Text style={styles.headerTitle}>Speciális módok</Text>
-                <View style={{gap: 15}}>
-                  <TouchableOpacity
-                    style={[styles.card, {backgroundColor: '#673AB7'}]}
-                    onPress={() => kategoriaValaszt(0, 'Speedrun')}
-                  >
-                    <View style={[styles.iconContainer, { backgroundColor: '#7E57C2' }]}>
-                      <Text style={{fontSize: 24}}>⏱️</Text>
+            <LinearGradient
+                colors={['#6200EA', '#F50057']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.headerGradient}
+            >
+                <SafeAreaView edges={['top', 'left', 'right']}>
+                    <View style={styles.headerContent}>
+                        <View style={styles.headerTopRow}>
+                            <View style={styles.titleRow}>
+                                <MaterialCommunityIcons name="fire" size={28} color="#FFD740" />
+                                <Text style={styles.headerTitle}>Kvízjáték</Text>
+                            </View>
+                            <View style={styles.hardcoreContainer}>
+                                <Text style={styles.hardcoreText}>Ultranehéz Mód</Text>
+                                <Switch
+                                    trackColor={{ false: "#BDBDBD", true: "#FF3D00" }}
+                                    thumbColor={"#fff"}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={(val) => {
+                                        setIsHardcore(val);
+                                        if (val) Alert.alert("Ultranehéz Mód", "Az Ultranehéz mód aktiválva! Összes segitség kikapcsolva. Sok szerencsét! 🧠");
+                                    }}
+                                    value={isHardcore}
+                                />
+                            </View>
+                        </View>
+                        <Text style={styles.subTitle}>Válassz kategóriát!</Text>
                     </View>
-                    <View style={styles.textContainer}>
-                        <Text style={[styles.cardText, {color: 'white'}]} numberOfLines={1} adjustsFontSizeToFit>
-                            Gyorsasági kihívás
-                        </Text>
+                </SafeAreaView>
+            </LinearGradient>
+
+            <View style={styles.listWrapper}>
+                <FlatList
+                    data={adatok}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={styles.listContainer}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                        style={styles.card}
+                        onPress={() => kategoriaValaszt(item.kategoria_id, item.kategoria_nev)}
+                    >
+                        <View style={[styles.iconContainer, { backgroundColor: szinek[index % szinek.length] }]}>
+                            <MaterialCommunityIcons name={getIconName(index)} size={24} color="#fff" />
+                        </View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.cardText} numberOfLines={1} adjustsFontSizeToFit>
+                                {item.kategoria_nev}
+                            </Text>
+                        </View>
+                        <MaterialCommunityIcons name="chevron-right" size={24} color="#BDBDBD" />
+                    </TouchableOpacity>
+                    )}
+                    
+                    ListFooterComponent={
+                    <View style={{marginTop: 20}}>
+                        <Text style={styles.sectionTitle}>Speciális módok</Text>
+                        <View style={{gap: 15, paddingBottom: 20}}>
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() => kategoriaValaszt(0, 'Speedrun')}
+                        >
+                            <View style={[styles.iconContainer, { backgroundColor: '#7E57C2' }]}>
+                                <MaterialCommunityIcons name="timer-outline" size={24} color="#fff" />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.cardText}>Gyorsasági kihívás</Text>
+                            </View>
+                            <MaterialCommunityIcons name="chevron-right" size={24} color="#BDBDBD" />
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() => kategoriaValaszt(-1, 'Endless')}
+                        >
+                            <View style={[styles.iconContainer, { backgroundColor: '#E91E63' }]}>
+                                <MaterialCommunityIcons name="infinity" size={24} color="#fff" />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.cardText}>Megállás nélkül</Text>
+                            </View>
+                            <MaterialCommunityIcons name="chevron-right" size={24} color="#BDBDBD" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() => kategoriaValaszt(-2, 'Gyakorlas')}
+                        >
+                            <View style={[styles.iconContainer, { backgroundColor: '#4CAF50' }]}>
+                                <MaterialCommunityIcons name="school" size={24} color="#fff" />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.cardText}>Gyakorlás</Text>
+                            </View>
+                            <MaterialCommunityIcons name="chevron-right" size={24} color="#BDBDBD" />
+                        </TouchableOpacity>
+                        </View>
                     </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.card, {backgroundColor: '#E91E63'}]}
-                    onPress={() => kategoriaValaszt(-1, 'Endless')}
-                  >
-                    <View style={[styles.iconContainer, { backgroundColor: '#F06292' }]}>
-                      <Text style={{fontSize: 24}}>♾️</Text>
-                    </View>
-                    <View style={styles.textContainer}>
-                        <Text style={[styles.cardText, {color: 'white'}]} numberOfLines={1} adjustsFontSizeToFit>
-                            Megállás nélkül kíhívás
-                        </Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.card, {backgroundColor: '#4CAF50'}]}
-                    onPress={() => kategoriaValaszt(-2, 'Gyakorlas')}
-                  >
-                    <View style={[styles.iconContainer, { backgroundColor: '#81C784' }]}>
-                      <Text style={{fontSize: 24}}>🎓</Text>
-                    </View>
-                    <View style={styles.textContainer}>
-                        <Text style={[styles.cardText, {color: 'white'}]} numberOfLines={1} adjustsFontSizeToFit>
-                            Gyakorlás
-                        </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </>
-            }
-          />
-        </View>
+                    }
+                />
+            </View>
         </>
       ) : (
-        <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve={setKerdesekBetoltve} navigateToProfile={navigateToProfile} isGyakorlas={isGyakorlas} isHardcore={isHardcore}/>
+        <SafeAreaView style={{flex: 1}}>
+             <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve={setKerdesekBetoltve} navigateToProfile={navigateToProfile} isGyakorlas={isGyakorlas} isHardcore={isHardcore}/>
+        </SafeAreaView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F5F7FA',
   },
-  mainContent: {
-    flex: 1,
+  headerGradient: {
+    paddingBottom: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    marginBottom: 10,
+    // @ts-ignore
+    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.2)',
+    elevation: 6,
+  },
+  headerContent: {
     paddingHorizontal: 20,
-    width: '100%',
-    maxWidth: 600, 
-    alignSelf: 'center',
+    paddingTop: 10,
   },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  headerTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#2962FF",
-    textAlign: "center",
-    marginVertical: 30,
+    color: "#fff",
+  },
+  hardcoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    borderRadius: 25,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  hardcoreText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  subTitle: {
+    fontSize: 17,
+    color: 'rgba(255,255,255,0.95)',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+  listWrapper: {
+    flex: 1,
+    paddingHorizontal: 20,
   },
   listContainer: {
+    paddingTop: 10,
     paddingBottom: 20,
-    gap: 15,
   },
   card: {
     backgroundColor: "#fff",
     borderRadius: 20,
-    padding: 15,
+    padding: 16,
     flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
+    marginBottom: 14,
+    // @ts-ignore
+    boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.1)',
     elevation: 3,
-    marginBottom: 5,
-    minHeight: 80,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#e0e0e0',
-    marginVertical: 15,
   },
   iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 52,
+    height: 52,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 20,
-  },
-  hardcoreContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 15,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  hardcoreText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    marginRight: 16,
   },
   textContainer: {
     flex: 1,
@@ -327,8 +366,20 @@ const styles = StyleSheet.create({
   },
   cardText: {
     color: "#333",
-    fontWeight: "600",
-    fontSize: 18,
+    fontWeight: "700",
+    fontSize: 17,
+  },
+  sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#444',
+      marginBottom: 15,
+      marginLeft: 5,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

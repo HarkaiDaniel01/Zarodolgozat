@@ -6,10 +6,213 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
-  useWindowDimensions 
+  useWindowDimensions,
+  ActivityIndicator,
+  StatusBar,
+  Platform
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from "./Cim";
+
+// Stílusok a "Design alapján"
+const customStyles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginTop: Platform.OS === 'android' ? 40 : 10,
+    marginBottom: 20,
+  },
+  headerPillLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerPillTextLeft: {
+    color: '#8e24aa', // Purple
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  headerPillRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffc107', // Amber/Gold
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerPillTextRight: {
+    color: '#3e2723', // Dark brown for contrast
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  questionCard: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 30,
+    marginHorizontal: 20,
+    marginTop: 15,
+    marginBottom: 20,
+    minHeight: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // Shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+    position: 'relative', // For the floating badge
+  },
+  floatingBadge: {
+    position: 'absolute',
+    top: -15,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderRadius: 20,
+    zIndex: 10,
+  },
+  floatingBadgeText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  questionText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#37474f',
+    lineHeight: 24,
+  },
+  answersContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  answerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    marginBottom: 12,
+    height: 70,
+    overflow: 'hidden', // Ensure gradient doesn't bleed
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  answerRowSelected: {
+    // We will handle background via LinearGradient conditionally
+    backgroundColor: 'transparent',
+    elevation: 4,
+  },
+  letterBox: {
+    width: 60,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ab47bc', // Light Purple default
+  },
+  letterText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  answerTextContainer: {
+    flex: 1,
+    paddingHorizontal: 15,
+    justifyContent: 'center',
+  },
+  answerText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  answerTextSelected: {
+    color: '#fff',
+  },
+  bottomSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  helpersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  helperBox: {
+    width: '30%',
+    aspectRatio: 1, // Square
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)', // Semi-transparent glass
+  },
+  helperBoxWhite: {
+    backgroundColor: '#fff',
+  },
+  helperIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  helperIconContainerOrange: {
+    backgroundColor: '#ff9800',
+  },
+  helperText: {
+    color: '#fff', // Or color based on background
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  exitButton: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 55,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  exitButtonText: {
+    color: '#333',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 8,
+  }
+});
 
 const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, isGyakorlas, isHardcore }) => {
   const { height, width } = useWindowDimensions(); 
@@ -31,7 +234,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const [szazalek, setSzazalek] = useState([]);
   const [megjeloltValasz, setMegjeloltValasz] = useState();
   const [valaszMegjelolve, setValaszMegjelolve] = useState(false);
-  const [jatekosId, setJatekosId] = useState(null);
+  
   // Nyeremény mentés állapota a végén
   const [mentve, setMentve] = useState(false);
 
@@ -40,6 +243,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const [progress, setProgress] = useState(1);
   const isSpeedrun = kategoria === 0;
   const isEndless = kategoria === -1;
+
   
   useEffect(() => {
     if (isSpeedrun && szamlalo < kerdesek.length) {
@@ -72,7 +276,6 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     setTimeout(async () => {
       if (valasz === kerdesek[szamlalo].kerdesek_helyesValasz) {
         if (isEndless && szamlalo === kerdesek.length - 1) {
-          // Ha az utolsó kérdésnél vagyunk, töltsünk be újakat
           try {
             const response = await fetch(Cim.Cim + `/endless-kerdesek`, { method: "GET" });
             const ujKerdesek = await response.json();
@@ -87,7 +290,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       } else {
         const leiras = stripHtml(kerdesek[szamlalo].kerdesek_leiras || "");
         if (isGyakorlas) {
-          Alert.alert("Helytelen! 😿", `A helyes válasz: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`, [{ text: "Ok", onPress: () => setSzamlalo(szamlalo + 1) }]);
+          Alert.alert("Helytelen! 😿", `A helyes válasz: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`, [{ text: "Ok", onPress: () => eredmenyMentes() }]);
         } else {
           eredmenyMentes("Nem nyertél! 😿", `Helyes: ${kerdesek[szamlalo].kerdesek_helyesValasz}\n\n${leiras}`);
         }
@@ -100,7 +303,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const telefonSegitseg = () => { 
     if(telefonSegitsegAktiv) { 
       if (!isGyakorlas) setTelefonSegitsegAktiv(false); 
-      Alert.alert("Telefon", "Szerintem: " + helyesValasz); 
+      Alert.alert("Telefonos segítség", "Szerintem a helyes válasz: " + helyesValasz); 
     }
   };
   const kozonsegSegitseg = () => { 
@@ -155,7 +358,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       return;
     }
 
-    Alert.alert(cim, tartalom + `\nNyeremény: ${pontszam} Ft\nHozzá szeretné adni a jelenlegi eredményét a többi hez?`, [
+    Alert.alert(cim, tartalom + `\nNyeremény: ${pontszam} Ft\nHozzá szeretné adni a jelenlegi eredményét a többihez?`, [
         { text: "Nem", onPress: () => { setSzamlalo(0); kerdesekBetoltve(false); } },
         { 
           text: "Igen", 
@@ -165,7 +368,6 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               const token = await AsyncStorage.getItem('token');
 
               if (token && userId) {
-                // Bejelentkezett felhasználó - azonnal feltöltjük
                 const maiDatum = new Date().toISOString();
                 const response = await fetch(`${Cim.Cim}/eredmenyFelvitel`, {
                   method: 'POST',
@@ -185,7 +387,6 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                   Alert.alert("Hiba", "Nem sikerült menteni az eredményt.");
                 }
               } else {
-                // Nincs bejelentkezve - eltároljuk és átirányítjuk login oldalra
                 await AsyncStorage.setItem("taroltEredmeny", JSON.stringify({
                   ePont: pontszam,
                   eKat: kategoria
@@ -194,16 +395,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                   "Bejelentkezés szükséges", 
                   "Eredmény eltárolva. Jelentkezz be a feltöltéshez!",
                   [
-                    { 
-                      text: "Mégse", 
-                      style: 'cancel'
-                    },
-                    { 
-                      text: "Bejelentkezés", 
-                      onPress: () => {
-                        if (navigateToProfile) navigateToProfile();
-                      }
-                    }
+                    { text: "Mégse", style: 'cancel'},
+                    { text: "Bejelentkezés", onPress: () => { if (navigateToProfile) navigateToProfile(); } }
                   ]
                 );
               }
@@ -222,6 +415,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const valaszKever = () => {
     setFelezoMegjelol(false);
     setKozonsegMegjelol(false);
+    if (!kerdesek[szamlalo]) return;
+    
     let tomb = [kerdesek[szamlalo].kerdesek_helyesValasz, kerdesek[szamlalo].kerdesek_helytelenValasz1, kerdesek[szamlalo].kerdesek_helytelenValasz2, kerdesek[szamlalo].kerdesek_helytelenValasz3];
     for (let i = tomb.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [tomb[i], tomb[j]] = [tomb[j], tomb[i]]; }
     setValaszok(tomb);
@@ -235,321 +430,456 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   };
 
   useEffect(() => { 
-    if (szamlalo < kerdesek.length) {
+    if (kerdesek && szamlalo < kerdesek.length) {
       valaszKever(); 
     }
-  }, [szamlalo]);
+  }, [szamlalo, kerdesek]);
 
-  if (szamlalo < kerdesek.length && tolt) {
-    const DynamicContainer = height < 700 ? ScrollView : View;
-    const containerProps = height < 700 ? { contentContainerStyle: styles.scrollContent } : { style: styles.fullHeightContainer };
+  if (szamlalo < kerdesek.length && tolt && kerdesek[szamlalo]) {
+    
+    // Gradient definitions for reuse
+    const bgGradientColors = ['#AB47BC', '#7B1FA2', '#4A148C']; // Pinkish Purple -> Deep Purple
+    const goldGradient = ['#FFD54F', '#FFB300'];
+    const pinkBadgeGradient = ['#F48FB1', '#EC407A'];
+    const greenGradient = ['#69F0AE', '#00C853']; // Light Green -> Green
+    const defaultLetterColor = '#AB47BC';
+    const selectedLetterColor = 'rgba(255,255,255,0.3)';
 
     return (
-      <View style={styles.screenWrapper}>
-        <DynamicContainer {...containerProps}>
-            {/* Felső rész: Nyeremény + Kérdés */}
-            <View style={styles.topSection}>
-                {!isSpeedrun && !isEndless && !isGyakorlas && (
-                  <View style={styles.prizePill}>
-                      <Text style={styles.prizeText}>Jelenlegi nyeremény: {pontszam} Ft</Text>
-                  </View>
-                )}
+      <LinearGradient colors={bgGradientColors} style={customStyles.fullScreen} start={{x:0, y:0}} end={{x:1, y:1}}>
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView contentContainerStyle={{paddingBottom: 20}} showsVerticalScrollIndicator={false}>
+            
+            {/* Header */}
+            <View style={customStyles.headerContainer}>
+              <View style={customStyles.headerPillLeft}>
+                <MaterialCommunityIcons name="star-four-points-outline" size={20} color="#8e24aa" />
+                <Text style={customStyles.headerPillTextLeft}>
+                  Kérdés {szamlalo + 1}/{isEndless ? '∞' : kerdesek.length}
+                </Text>
+              </View>
 
-                {isSpeedrun && (
-                  <View style={styles.speedrunContainer}>
-                    <View style={styles.timerContainer}>
-                      <Text style={styles.timerText}>⏱️ {ido}s</Text>
-                    </View>
-                    <View style={styles.progressBarContainer}>
-                      <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
-                    </View>
-                  </View>
-                )}
-
-                <View style={styles.questionBox}>
-                    <Text style={styles.questionText}>{kerdesek[szamlalo].kerdesek_kerdes}</Text>
+              {!isGyakorlas && !isSpeedrun && (
+                <View style={customStyles.headerPillRight}>
+                  <MaterialCommunityIcons name="trophy-outline" size={20} color="#3e2723" />
+                  <Text style={customStyles.headerPillTextRight}>
+                    {pontszam.toLocaleString('hu-HU')} Ft
+                  </Text>
                 </View>
-            </View>
-            {/* Középső rész: Válaszok */}
-            <View style={styles.middleSection}>
-                {valaszok.map((elem, index) => {
-                    const isHidden = felezoMegjelol && (elem !== helyesValasz && elem !== helytelenValaszMarad);
-                    return (
-                        <TouchableOpacity
-                            key={index}
-                            style={[styles.answerBtn, megjeloltValasz === elem && {backgroundColor: '#FFEB3B'}, isHidden && {opacity: 0}]}
-                            onPress={() => valaszEllenoriz(elem)}
-                            disabled={valaszMegjelolve || isHidden}
-                        >
-                            <View style={styles.circle}>
-                                <Text style={styles.circleText}>{betuk[index]}</Text>
-                            </View>
-                            <View style={styles.answerTextContainer}>
-                                <Text style={styles.answerText}>
-                                    {elem}
-                                    {kozonsegMegjelol && szazalek[index] ? <Text style={{color: '#2962FF', fontWeight: 'bold'}}> ({szazalek[index]})</Text> : ""}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
-            {/* Alsó rész: Segítségek + Kilépés */}
-            <View style={styles.bottomSection}>
-                <View style={styles.helpersRow}>
-                    <TouchableOpacity style={[styles.helperBtn, !telefonSegitsegAktiv && styles.disabledHelper, {gap: isLargeScreen ? 15 : 10, maxWidth: isLargeScreen ? 140 : 100}]} onPress={telefonSegitseg} disabled={!telefonSegitsegAktiv}>
-                        <Text style={[styles.helperEmoji, {fontSize: isLargeScreen ? 32 : 24}]}>📞</Text>
-                        <Text style={[styles.helperLabel, {fontSize: isLargeScreen ? 13 : 11}]}>Telefon</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.helperBtn, !kozonsegSegitsegAktiv && styles.disabledHelper, {gap: isLargeScreen ? 15 : 10, maxWidth: isLargeScreen ? 140 : 100}]} onPress={kozonsegSegitseg} disabled={!kozonsegSegitsegAktiv}>
-                        <Text style={[styles.helperEmoji, {fontSize: isLargeScreen ? 32 : 24}]}>👥</Text>
-                        <Text style={[styles.helperLabel, {fontSize: isLargeScreen ? 13 : 11}]}>Közönség</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.helperBtn, !felezoSegitsegAktiv && styles.disabledHelper, {gap: isLargeScreen ? 15 : 10, maxWidth: isLargeScreen ? 140 : 100}]} onPress={felezoSegitseg} disabled={!felezoSegitsegAktiv}>
-                        <Text style={[styles.helperEmoji, {fontSize: isLargeScreen ? 32 : 24}]}>%</Text>
-                        <Text style={[styles.helperLabel, {fontSize: isLargeScreen ? 13 : 11}]}>50:50</Text>
-                    </TouchableOpacity>
+              )}
+               {isSpeedrun && (
+                <View style={customStyles.headerPillRight}>
+                  <MaterialCommunityIcons name="timer-outline" size={20} color="#3e2723" />
+                  <Text style={customStyles.headerPillTextRight}>
+                    {ido}s
+                  </Text>
                 </View>
+              )}
+            </View>
 
-                <TouchableOpacity style={[styles.exitBtn, {padding: isLargeScreen ? 20 : 15}]} onPress={() => kerdesekBetoltve(false)}>
-                    <Text style={[styles.exitText, {fontSize: isLargeScreen ? 18 : 16}]}>✖ Kilépés</Text>
+            {/* Question Card */}
+            <View style={customStyles.questionCard}>
+              <LinearGradient 
+                colors={pinkBadgeGradient}
+                start={{x:0, y:0}} end={{x:1, y:0}}
+                style={customStyles.floatingBadge}
+              >
+                 <Text style={customStyles.floatingBadgeText}>Kérdés</Text>
+              </LinearGradient>
+              <Text style={customStyles.questionText}>
+                 {kerdesek[szamlalo].kerdesek_kerdes}
+              </Text>
+            </View>
+
+            {/* Answers */}
+            <View style={customStyles.answersContainer}>
+               {valaszok.map((elem, index) => {
+                 const isHidden = felezoMegjelol && (elem !== helyesValasz && elem !== helytelenValaszMarad);
+                 // Logic check: if "megjeloltValasz" matches, it is the selected one. 
+                 // If we had a "revealed" state, we'd check helyesValasz too.
+                 // For now, we style the "Selected" one as the Green one to match the image request.
+                 const isSelected = megjeloltValasz === elem;
+                 
+                 // Wrapper Component to conditionally apply Gradient
+                 const Wrapper = isSelected ? LinearGradient : View;
+                 const wrapperProps = isSelected 
+                    ? { colors: greenGradient, start: {x:0, y:0}, end: {x:1, y:0}, style: [customStyles.answerRow, customStyles.answerRowSelected] }
+                    : { style: customStyles.answerRow };
+
+                 return (
+                   <TouchableOpacity
+                      key={index}
+                      activeOpacity={0.9}
+                      disabled={valaszMegjelolve || isHidden}
+                      onPress={() => valaszEllenoriz(elem)}
+                      style={{ opacity: isHidden ? 0 : 1 }}
+                   >
+                     <Wrapper {...wrapperProps}>
+                        {/* Letter Box */}
+                        <View style={[
+                            customStyles.letterBox, 
+                            isSelected && { backgroundColor: selectedLetterColor }
+                        ]}>
+                           <Text style={customStyles.letterText}>{betuk[index]}</Text>
+                        </View>
+
+                        {/* Text */}
+                        <View style={customStyles.answerTextContainer}>
+                          <Text style={[
+                              customStyles.answerText, 
+                              isSelected && customStyles.answerTextSelected
+                          ]}>
+                            {elem}
+                            {kozonsegMegjelol && szazalek[index] ? `  (${szazalek[index]})` : ''}
+                          </Text>
+                        </View>
+                     </Wrapper>
+                   </TouchableOpacity>
+                 );
+               })}
+            </View>
+
+            {/* Bottom Helpers & Exit */}
+            <View style={customStyles.bottomSection}>
+              <View style={customStyles.helpersRow}>
+                {/* Phone */}
+                <TouchableOpacity 
+                    style={[customStyles.helperBox, !telefonSegitsegAktiv && { opacity: 0.5 }]}
+                    onPress={telefonSegitseg}
+                    disabled={!telefonSegitsegAktiv}
+                >
+                    <View style={customStyles.helperIconContainer}>
+                      <MaterialCommunityIcons name="phone" size={24} color="#fff" />
+                    </View>
+                    <Text style={customStyles.helperText}>Telefon</Text>
                 </TouchableOpacity>
+
+                {/* Audience */}
+                <TouchableOpacity 
+                    style={[customStyles.helperBox, !kozonsegSegitsegAktiv && { opacity: 0.5 }]}
+                    onPress={kozonsegSegitseg}
+                    disabled={!kozonsegSegitsegAktiv}
+                >
+                    <View style={customStyles.helperIconContainer}>
+                       <MaterialCommunityIcons name="account-group" size={24} color="#fff" />
+                    </View>
+                    <Text style={customStyles.helperText}>Közönség</Text>
+                </TouchableOpacity>
+
+                {/* 50:50 - White Style */}
+                <TouchableOpacity 
+                    style={[customStyles.helperBox, customStyles.helperBoxWhite, !felezoSegitsegAktiv && { opacity: 0.5 }]}
+                    onPress={felezoSegitseg}
+                    disabled={!felezoSegitsegAktiv}
+                >
+                    <View style={[customStyles.helperIconContainer, customStyles.helperIconContainerOrange]}>
+                       <Text style={{color: '#fff', fontWeight: 'bold'}}>%</Text>
+                    </View>
+                    <Text style={[customStyles.helperText, {color: '#333'}]}>50:50</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity style={customStyles.exitButton} onPress={() => kerdesekBetoltve(false)}>
+                 <MaterialCommunityIcons name="close" size={24} color="#f44336" />
+                 <Text style={customStyles.exitButtonText}>Kilépés</Text>
+              </TouchableOpacity>
             </View>
 
-        </DynamicContainer>
-      </View>
+          </ScrollView>
+        </SafeAreaView>
+      </LinearGradient>
     );
+
   } else if (szamlalo >= kerdesek.length && tolt) {
-    // Játékos végigment, nyert
     const handleSave = async () => {
       await eredmenyMentes("Gratulálok, nyertél! 🏆", "Végigvitted a játékot!");
       setMentve(true);
     };
     return (
-      <View style={styles.center}>
-        <Text style={{fontSize: 22, fontWeight: 'bold', marginBottom: 10}}>Gratulálok, nyertél! 🏆</Text>
-        <Text style={{fontSize: 18, marginBottom: 20}}>Nyeremény: {pontszam} Ft</Text>
-        {!mentve ? (
-          <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-            <Text style={styles.saveText}>Eredmény mentése</Text>
-          </TouchableOpacity>
-        ) : null}
-        <TouchableOpacity
-          style={styles.exitBtnStyled}
-          activeOpacity={0.8}
-          onPress={() => { setSzamlalo(0); kerdesekBetoltve(false); }}
-        >
-          <Text style={styles.exitTextStyled}>🏠 Vissza a főmenübe</Text>
-        </TouchableOpacity>
-      </View>
+      <LinearGradient
+          colors={['#AB47BC', '#7B1FA2', '#4A148C']}
+          style={styles.centerContainer}
+      >
+        <StatusBar barStyle="light-content" />
+        <View style={styles.winnerCard}>
+            <MaterialCommunityIcons name="trophy" size={80} color="#FFD700" />
+            <Text style={styles.winnerTitle}>Játék Vége!</Text>
+            <Text style={styles.winnerPrize}>{pontszam.toLocaleString('hu-HU')} Ft</Text>
+            
+            {!mentve && !isGyakorlas ? (
+            <TouchableOpacity style={styles.primaryBtn} onPress={handleSave}>
+                <Text style={styles.primaryBtnText}>Eredmény mentése</Text>
+            </TouchableOpacity>
+            ) : null}
+            
+            <TouchableOpacity
+              style={styles.secondaryBtn}
+              onPress={() => { setSzamlalo(0); kerdesekBetoltve(false); }}
+            >
+              <Text style={styles.secondaryBtnText}>Vissza a menübe</Text>
+            </TouchableOpacity>
+        </View>
+      </LinearGradient>
     );
   } else {
-    return <View style={styles.center}><Text>Töltés...</Text></View>;
+    return (
+        <View style={styles.centerContainer}>
+            <ActivityIndicator size="large" color="#fff" />
+            <Text style={{marginTop: 15, color: '#fff', fontSize: 16}}>Betöltés...</Text>
+        </View>
+    );
   }
 };
-//stilusok
+
 const styles = StyleSheet.create({
-  saveBtn: {
-      backgroundColor: '#4CAF50',
-      borderRadius: 30,
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-      marginBottom: 15,
-      alignItems: 'center',
-      elevation: 2,
-    },
-    saveText: {
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: 16,
-    },
-  screenWrapper: {
+  gradientContainer: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
   },
-  fullHeightContainer: {
+  safeArea: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'space-between',
   },
   scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  contentContainer: {
+    flex: 1,
     padding: 20,
-    minHeight: '100%',
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
     justifyContent: 'space-between',
   },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  topSection: {
-    width: '100%',
+  // Header
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 30,
+    marginTop: 10,
   },
-  prizePill: {
-    backgroundColor: '#FFD740',
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 50,
-    marginBottom: 15,
-    elevation: 2,
-    boxShadow: '0px 2px 4px rgba(0,0,0,0.2)',
+  exitBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  prizeBadge: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   prizeText: {
     fontWeight: 'bold',
-    color: '#333',
-    fontSize: 16
+    color: '#3e2723',
+    fontSize: 15,
   },
-  questionBox: {
+  
+  // Question
+  questionCard: {
     backgroundColor: '#fff',
-    width: '100%',
-    padding: 20,
-    borderRadius: 15,
+    borderRadius: 24,
+    padding: 24,
+    minHeight: 160,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 3,
-    boxShadow: '0px 3px 6px rgba(0,0,0,0.1)',
-    minHeight: 100,
+    marginBottom: 40,
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
   },
   questionText: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a237e',
     textAlign: 'center',
-    color: '#333',
-    lineHeight: 24
+    lineHeight: 30,
   },
-  middleSection: {
-    width: '100%',
-    gap: 10,
-    marginVertical: 10,
+
+  // Answers
+  answersContainer: {
+    gap: 14,
+    marginBottom: 30,
   },
   answerBtn: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    width: '100%',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
-  circle: {
+  answerBtnSelected: {
+    backgroundColor: '#FFF9C4',
+    borderColor: '#FFD700',
+    transform: [{scale: 0.98}],
+  },
+  letterBadge: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#2962FF',
+    backgroundColor: '#3949AB', 
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
-    flexShrink: 0,
-  },
-  circleText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-  answerTextContainer: {
-    flex: 1,
-  },
-  answerText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-  },
-
-  bottomSection: {
-    width: '100%',
-    marginTop: 10,
-  },
-  helpersRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  helperBtn: {
-    backgroundColor: '#fff',
-    flex: 1,
-    aspectRatio: 1,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 3,
-    boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-  },
-  disabledHelper: {
-    backgroundColor: '#EEEEEE',
-    opacity: 0.6
-  },
-  helperEmoji: {
-    marginBottom: 5
-  },
-  helperLabel: {
-    color: '#555',
-    textAlign: 'center'
-  },
-  exitBtn: {
-    backgroundColor: '#fff',
-    width: '100%',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
     elevation: 2,
-    borderWidth: 1,
-    borderColor: '#eee'
   },
-  exitText: {
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  // Speedrun stílusok
-  speedrunContainer: {
-    width: '100%',
-    marginBottom: 15,
-  },
-  timerContainer: {
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  timerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  progressBarContainer: {
-    height: 10,
-    width: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 5,
-    overflow: 'hidden',
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#2962FF',
-    borderRadius: 5,
-  },
-  exitBtnStyled: {
-    backgroundColor: '#2196F3',
-    width: '100%',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    borderWidth: 0,
-    paddingVertical: 18,
-    marginTop: 10,
-    boxShadow: '0px 4px 8px rgba(25, 118, 210, 0.18)',
-    marginBottom: 5,
-  },
-  exitTextStyled: {
+  letterText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
-    letterSpacing: 0.5,
   },
+  answerText: {
+    flex: 1,
+    fontSize: 17,
+    color: '#333',
+    fontWeight: '600',
+  },
+  percentageText: {
+    color: '#3949AB',
+    fontWeight: '800',
+    marginLeft: 5,
+  },
+  
+  // Helpers
+  helpersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-end',
+    marginBottom: 10,
+  },
+  helperWrapper: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  helperBtn: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+  },
+  helperBtnDisabled: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    elevation: 0,
+  },
+  helperIconText: {
+    fontSize: 22, 
+    fontWeight: '900', 
+    color: '#3949AB'
+  },
+  helperLabel: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: {width: 0, height: 1},
+    textShadowRadius: 2,
+  },
+
+  // Loading/Winner
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  winnerCard: {
+    backgroundColor: '#fff',
+    width: '85%',
+    maxWidth: 360,
+    borderRadius: 30,
+    padding: 30,
+    alignItems: 'center',
+    elevation: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+  },
+  winnerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#4A148C', // Deep Purple
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  winnerPrize: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#ffc107', // Amber/Gold matches top pill
+    marginBottom: 30,
+  },
+  primaryBtn: {
+    backgroundColor: '#8e24aa', // Purple
+    width: '100%',
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginBottom: 12,
+    elevation: 4,
+  },
+  primaryBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  secondaryBtn: {
+    paddingVertical: 15,
+    width: '100%',
+    alignItems: 'center',
+  },
+  secondaryBtnText: {
+    color: '#e1bee7', // Light purple
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
+  // Speedrun
+  timerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    borderRadius: 20,
+    padding: 8,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  timerText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    marginLeft: 8,
+    fontSize: 16
+  }
 });
 
 export default Kerdesek;

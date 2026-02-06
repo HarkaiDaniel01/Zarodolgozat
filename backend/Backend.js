@@ -15,6 +15,8 @@ const pool = mysql.createPool({
   password: "",
   database: "zarodolgozat_kvizjatek",
 });
+
+
 function handleValidationErrors(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -547,6 +549,102 @@ app.get("/Gyakorlo-kerdesek",(req,res)=>{
     return res.status(200).json(result);
   });
 });
+//osszes nyeremeny
+app.get("/osszesNyeremeny", (req, res) => {
+  const sql = `SELECT SUM(Eredmenyek_pont) AS ossz FROM eredmenyek`;
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Hiba" });
+    }
+    return res.status(200).json(result);
+  });
+});
+
+
+
+// NYEREMÉNY KEZELÉS (A Frontend Nyeremenykezelo.js komponenséhez szükséges)
+// Mivel a Frontend 'nyeremeny_nev', 'nyeremeny_kep', stb. adatokat küld, 
+// ezeknek szükségük van a 'nyeremeny' táblára, mert az 'eredmenyek' tábla csak pontszámokat tárol.
+
+// Nyeremények lekérdezése (A Frontend '/osszeseredmenyek' végpontot hívja)
+app.get('/osszeseredmenyek', (req, res) => {
+    const sql = `SELECT * FROM nyeremeny`;
+    pool.query(sql, (err, result) => {
+        if (err) {
+            // Ha még nincs tábla, üres tömböt adunk vissza hiba helyett
+            if (err.code === 'ER_NO_SUCH_TABLE') {
+                return res.status(200).json([]);
+            }
+            console.error("Hiba a nyeremények lekérdezésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        return res.status(200).json(result);
+    });
+});
+
+
+
+// Eredmények listázása Adminnak (Minden adat + join)
+app.get('/eredmenyekAdmin', (req, res) => {
+    const sql = `
+        SELECT Eredmenyek_id, 
+               Eredmenyek_jatekos, 
+               Eredmenyek_kategoria,
+               jatekos_nev, 
+               DATE_FORMAT(Eredmenyek_datum, '%Y-%m-%d %H:%i:%s') AS datum, 
+               kategoria_nev, 
+               Eredmenyek_pont, 
+               Eredmenyek_pontszam 
+        FROM eredmenyek 
+        INNER JOIN jatekos ON jatekos_id = Eredmenyek_jatekos 
+        INNER JOIN kategoria ON Eredmenyek_kategoria = kategoria_id
+        ORDER BY Eredmenyek_datum DESC
+    `;
+    pool.query(sql, (err, result) => {
+        if (err) {
+            console.error("Hiba az eredmények lekérdezésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        return res.status(200).json(result);
+    });
+});
+
+// Eredmény módosítása Adminnak
+app.put('/eredmenyModositasAdmin/:id', (req, res) => {
+    const id = req.params.id;
+    const { Eredmenyek_pont, Eredmenyek_pontszam, Eredmenyek_kategoria } = req.body;
+    
+    const sql = `
+        UPDATE eredmenyek 
+        SET Eredmenyek_pont = ?, 
+            Eredmenyek_pontszam = ?, 
+            Eredmenyek_kategoria = ? 
+        WHERE Eredmenyek_id = ?
+    `;
+    
+    pool.query(sql, [Eredmenyek_pont, Eredmenyek_pontszam, Eredmenyek_kategoria, id], (err, result) => {
+        if (err) {
+            console.error("Hiba az eredmény módosításakor:", err);
+            return res.status(500).json({ error: "Hiba a módosításkor" });
+        }
+        return res.status(200).json({ message: "Sikeres módosítás!" });
+    });
+});
+
+// Eredmény törlése Adminnak
+app.delete('/eredmenyTorlesAdmin/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = `DELETE FROM eredmenyek WHERE Eredmenyek_id=?`;
+    pool.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error("Hiba az eredmény törlésekor:", err);
+            return res.status(500).json({ error: "Hiba a törléskor" });
+        }
+        return res.status(200).json({ message: "Sikeres törlés!" });
+    });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
