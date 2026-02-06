@@ -36,7 +36,7 @@ const Felhasznalo = () => {
         useEffect(()=>{
             leToltes()
             
-        })
+        }, [])
 
 
 
@@ -55,10 +55,10 @@ const Felhasznalo = () => {
             return (
 
             <div>
-                <div className="doboz">
+                <div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}}>
                     <h1>Rekordok</h1>
 
-                    {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px"}}>Még senkinek sincs eredménye<br></br> Játsz és légy az első!</div> : <table className="table table-striped table-bordered">
+                    {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px", color: "#F5F7FA"}}>Még senkinek sincs eredménye<br></br> Játsz és légy az első!</div> : <table className="table table-dark table-striped table-bordered">
                         <thead>
                             <tr>
                             <th>Helyezés</th>

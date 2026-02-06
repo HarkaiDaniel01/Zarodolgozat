@@ -255,7 +255,7 @@ const Kategoria=()=>{
 
     useEffect(()=>{
         leToltes()
-    })
+    }, [])
 
     if (tolt)
         return (
@@ -271,9 +271,10 @@ const Kategoria=()=>{
 
         <div>
             
-        {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"100px"}} >
+        {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}} >
 
-                <h1>Válassz kategóriát!</h1>
+                <h1>Legyen Ön is Szoftverfejlesztő!</h1>
+                <h2>Válassz kategóriát!</h2>
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
                     
@@ -299,9 +300,7 @@ const Kategoria=()=>{
 
             </div>) : <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve = {setKerdesekBetoltve}/>}
 
-            <br></br>
-            <br></br>
-            <br></br>
+            
         
             
             

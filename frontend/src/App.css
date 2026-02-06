@@ -1,7 +1,7 @@
 h2 {
   text-align: center;
   font-family: Cambria, Cochin;
-  color: rgb(64, 64, 171);
+  color:#F5F7FA;
   font-weight: bold;
   font-size: 32px;
 }
@@ -9,9 +9,10 @@ h2 {
 h1{
   text-align: center;
   font-family: Cambria, Cochin;
-  color: rgb(64, 64, 171);
+  color:#F5F7FA;
   font-weight: bold;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  font-size: 40px;
 }
 
 .kartya{
@@ -74,14 +75,14 @@ input{
 .doboz {
   margin: 150px auto 0 auto;
   width: 600px;
-  border: 1px solid black; 
+
   border-radius: 20px;
   box-shadow: 5px 5px 5px;
   padding: 15px;
-  background-color: white;
+  background-color: rgba(20, 24, 40, 0.7);
+
   justify-content: center;
   margin-top: 150px;
-
 }
 
 .gombDoboz > .gomb {
@@ -90,18 +91,18 @@ input{
   font-size: 20px;
   font-weight: bold;
   border-radius: 20px;        
-  background-color: #ffffff;  
-  border: 1px solid #000000;  
+  background: linear-gradient(135deg, #4DA3FF, #7B5CFF);
+  border: 0px solid #000000;  
   margin-bottom: 15px;
   min-height: 56px;
-  
+  color:#F5F7FA;
   display: flex;              
   align-items: center;
   justify-content: center;
   gap: 10px;                  
   
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+  box-shadow: 0 0 22px rgba(46,196,182,0.7); 
 
   opacity: 0;
   transition: opacity 0.5s ease-in;
@@ -126,11 +127,10 @@ input{
   padding: 12px 20px;         
   font-size: 20px;
   font-weight: bold;
-  border-radius: 20px;        
-  background-color: #ffffff;  
-  border: 1px solid #000000;  
+  border-radius: 20px;         
+  border: 0px solid #000000;  
   margin-bottom: 15px;
-  
+  min-height: 56px;
   display: flex;              
   align-items: center;
   justify-content: center;
@@ -147,18 +147,19 @@ input{
   font-size: 20px;
   font-weight: bold;
   border-radius: 20px;        
-  background-color: #ffffff;  
-  border: 1px solid #000000;  
+  background: linear-gradient(135deg, #4DA3FF, #7B5CFF);  
+  border: 0px solid #000000;  
   margin-bottom: 15px;
   min-height: 56px;
-  
+  opacity: 100%;
   display: flex;              
   align-items: center;
   justify-content: center;
-  gap: 10px;                  
+  gap: 10px;     
+  color:#F5F7FA;       
   
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+  box-shadow: 0 0 18px rgba(46,196,182,0.6);
 
   opacity: 0;
   transition: opacity 0.5s ease-in;
@@ -168,13 +169,14 @@ input{
 .gomb:hover {
   background-color: #f0f0f0;  
   transform: translateY(-2px); 
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 0 32px rgba(46,196,182,0.9);
 }
 
 .kategoriaGomb:hover {
   background-color: #f0f0f0;  
   transform: translateY(-2px); 
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 0 30px rgba(77,163,255,0.8);
 }
 
 .gombDoboz {
@@ -184,11 +186,17 @@ input{
 
 body {
   background-color: #f4f4f7;
+  background-image: url("Kepek/kvizjatekHatter2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 h4 {
   text-align: center;
-  color: rgb(64, 64, 171);
+  color:#F5F7FA;
+  font-weight: bold;
 }
 
 .segitsegGomb {
@@ -254,11 +262,16 @@ h4 {
 }
 
 i {
-  color: rgb(64, 64, 171);
+  color:#F5F7FA;
 }
 
 td, th {
   text-align: center;
+}
+
+.nav .hamburger{
+  position: fixed; /* vagy fixed */
+  z-index: 9999;
 }
 
 
@@ -308,7 +321,7 @@ td, th {
 
 .sorKijelolve td {
   font-weight: bold;
-  color: Blue;
+  color: #ffcc00;
 }
 
 .nincsKijeloles {
@@ -328,9 +341,6 @@ td, th {
 .nav-item {
   list-style: none;
 }
-
-
-
 
 
 @media (max-width:1000px){

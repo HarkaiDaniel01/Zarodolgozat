@@ -501,6 +501,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             <div className="doboz">
 
             <h2> ({szamlalo + 1}) {kerdesek[szamlalo].kerdesek_kerdes}</h2>
+            <br></br>
 
             {/*<div className="gombDoboz">
                 <button className="gomb" style={{marginBottom:"15px"}} onClick={() => szamlaloNovel()}>A: {kerdesek[szamlalo].kerdesek_helyesValasz}</button>
@@ -520,7 +521,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                 {valaszok.map((elem, index) => (
                     <button key={elem} 
                             disabled={valaszMegjelolve}
-                            style={{textAlign:"left", backgroundColor:(megjeloltValasz === elem) ? "#ffcc00" : "white"}} 
+                            style={{textAlign:"left", backgroundColor:(megjeloltValasz === elem) ? "#4DA3FF" : "#2A2F3A"}} 
                             className={!valaszMegjelolve ? (((felezoMegjelol && (elem === helyesValasz || elem === helytelenValaszMarad)) || !felezoMegjelol)?"gomb":"atlatszoGomb") : "gombLetiltva"} 
                             onClick={() => valaszEllenoriz(elem)}>{betuk[index]}: {elem} <i>{kozonsegMegjelol ? szazalek[index] : ""}</i> </button>
                 ))}

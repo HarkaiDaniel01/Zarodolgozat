@@ -109,7 +109,7 @@ const Login = () => {
         <button
           type="button"
           onClick={goToRegister}
-          style={{ ...styles.button, backgroundColor: '#28a745', marginTop: '10px' }}
+          style={{ ...styles.button, backgroundColor: '#7B5CFF', marginTop: '10px' }}
         >
           ✨ Regisztráció
         </button>
@@ -124,15 +124,16 @@ const styles = {
     margin: '60px auto',
     padding: '30px',
     textAlign: 'center',
-    border: '1px solid #ddd',
     borderRadius: '10px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: 'rgba(10, 10, 20, 0.8)',
+    marginTop : "150px",
+    boxShadow: "5px 5px 5px"
+    
   },
   title: {
     marginBottom: '20px',
     fontSize: '2rem',
-    color: '#333',
+    color:" #F2F2F2"
   },
   form: {
     display: 'flex',
@@ -141,12 +142,13 @@ const styles = {
   },
   inputGroup: {
     textAlign: 'left',
+
   },
   label: {
     display: 'block',
     marginBottom: '5px',
     fontWeight: 'bold',
-    color: '#555',
+    color:" #F2F2F2"
   },
   input: {
     width: '100%',
@@ -154,12 +156,14 @@ const styles = {
     borderRadius: '6px',
     border: '1px solid #ccc',
     fontSize: '1rem',
+    backgroundColor: "#2A2F3A",
+    color: "#F2F2F2"
   },
   button: {
     padding: '12px',
     border: 'none',
     borderRadius: '6px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#4DA3FF',
     color: '#fff',
     fontSize: '1rem',
     cursor: 'pointer',

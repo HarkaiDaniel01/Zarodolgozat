@@ -22,6 +22,9 @@ const MyPlot = ({datum, eredmeny, cim}) => {
         
       ]}
       layout={{
+        paper_bgcolor: 'black',
+        plot_bgcolor: 'black',
+        font: { color: 'white' }, 
         width: 390,
         height: 390,
         title: {
@@ -41,7 +44,7 @@ const MyPlot = ({datum, eredmeny, cim}) => {
         },
 
         margin: { t: 50, b: 50, l: 100, r: 30 },
-
+        
       }}
 
       config={{
