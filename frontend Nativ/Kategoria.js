@@ -26,6 +26,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
   const [kategoria, setKategoria] = useState(0);
   const [isGyakorlas, setIsGyakorlas] = useState(false);
   const [isHardcore, setIsHardcore] = useState(false);
+  const [geniuszKategoria, setGeniuszKategoria] = useState(null);
 
   const getIconName = (index) => {
     const icons = [
@@ -52,6 +53,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     if (kategoriaNev === "Speedrun") kategoriaValasztSpeedrun(kategoriaId);
     else if (kategoriaNev === "Endless") kategoriaValasztEndless(kategoriaId);
     else if (kategoriaNev === "Gyakorlas") kategoriaValasztGyakorlas(kategoriaId);
+    else if (kategoriaNev === "Géniusz") kategoriaValasztGeniusz(kategoriaId);
     else { 
       setKategoria(kategoriaId);
       const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu");
@@ -60,6 +62,15 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
       setKerdesek([...konnyu, ...kozepes, ...nehez]);
       setKerdesekBetoltve(true);
     }
+  };
+
+  const kategoriaValasztGeniusz = async (kategoriaId) => {
+    setKategoria(kategoriaId);
+    const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes");
+    const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes");
+    const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes");
+    setKerdesek([...konnyu, ...kozepes, ...nehez]);
+    setKerdesekBetoltve(true);
   };
 
   const kategoriaValasztSpeedrun = async (kategoriaId) => {
@@ -113,7 +124,9 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
 
   const KerdesekLetolteseVegyes = async (vegpont) => {
     try {
-      const response = await fetch(Cim.Cim + vegpont, { method: "GET" });
+      const response = await fetch(Cim.Cim + vegpont, {
+        method: "GET",
+      });
       return response.ok ? await response.json() : [];
     } catch (error) { console.log('KerdesekLetolteseVegyes Error:', error); return []; }
   };
@@ -123,7 +136,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
       const response = await fetch(Cim.Cim + "/kategoria");
       const data = await response.json();
       if (response.ok) { 
-        const szurtAdatok = data.filter(item => item.kategoria_nev !== "Vegyes" );
+        const szurtAdatok = data.filter(item => item.kategoria_nev !== "Vegyes" || item.kategoria_nev === "Géniusz");
         setAdatok(szurtAdatok); 
       }
       else { setHiba(true); }
@@ -243,6 +256,21 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
                             <View style={styles.textContainer}>
                                 <Text style={styles.cardText}>Gyakorlás</Text>
                             </View>
+
+                        {geniuszKategoria && (
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() => kategoriaValaszt(geniuszKategoria, 'Géniusz')}
+                        >
+                            <View style={[styles.iconContainer, { backgroundColor: '#3F51B5' }]}>
+                                <MaterialCommunityIcons name="brain" size={24} color="#fff" />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.cardText}>Géniusz Mód</Text>
+                            </View>
+                            <MaterialCommunityIcons name="chevron-right" size={24} color="#BDBDBD" />
+                        </TouchableOpacity>
+                        )}
                             <MaterialCommunityIcons name="chevron-right" size={24} color="#BDBDBD" />
                         </TouchableOpacity>
                         </View>
@@ -252,9 +280,14 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
             </View>
         </>
       ) : (
-        <SafeAreaView style={{flex: 1}}>
-             <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve={setKerdesekBetoltve} navigateToProfile={navigateToProfile} isGyakorlas={isGyakorlas} isHardcore={isHardcore}/>
-        </SafeAreaView>
+        <Kerdesek 
+            kerdesek={kerdesek} 
+            kategoria={kategoria} 
+            kerdesekBetoltve={setKerdesekBetoltve} 
+            navigateToProfile={navigateToProfile} 
+            isGyakorlas={isGyakorlas} 
+            isHardcore={isHardcore}
+        />
       )}
     </View>
   );

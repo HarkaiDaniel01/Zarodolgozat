@@ -25,8 +25,38 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Level logic (derived or state)
-  const level = userData ? Math.floor(userData.jatszottJatekok / 10) + 1 : 1;
-  const xp = userData ? (userData.jatszottJatekok % 10) * 10 : 0;
+  const calculateLevelInfo = (totalGames) => {
+    if (!totalGames) return { level: 0, currentXp: 0, maxXp: 100 };
+    
+    let lvl = 0;
+    let gamesNeeded = 10;
+    let gamesLeft = totalGames;
+    
+    // Növekvő nehézség: minden szinthez +2 játék kell (pl. 10, 12, 14...)
+    while (gamesLeft >= gamesNeeded) {
+      gamesLeft -= gamesNeeded;
+      lvl++;
+      gamesNeeded += 2; 
+    }
+    
+    return {
+      level: lvl,
+      currentXp: gamesLeft * 10,     // 1 játék = 10 XP
+      maxXp: gamesNeeded * 10        // Szint max XP
+    };
+  };
+
+  const { level, currentXp, maxXp } = calculateLevelInfo(userData?.jatszottJatekok);
+
+  const getRankName = (lvl) => {
+    if (lvl >= 25) return 'Legenda 👑';
+    if (lvl >= 20) return 'Mester 🎓';
+    if (lvl >= 15) return 'Profi 🏆';
+    if (lvl >= 10) return 'Haladó ⭐';
+    if (lvl >= 5) return 'Amatőr 🌿';
+    if (lvl >= 2) return 'Kezdő 🌱';
+    return 'Friss kezdő 🐣';
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -229,13 +259,13 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
           
           {/* Stats Row */}
           <View style={styles.statsRow}>
-              <TouchableOpacity style={styles.statCard} onPress={onNavigateToWinnings}>
+              <View style={styles.statCard}>
                   <View style={[styles.statIconContainer, { backgroundColor: '#E0F7FA' }]}>
                       <MaterialCommunityIcons name="wallet" size={24} color="#00BCD4" />
                   </View>
                   <Text style={styles.statLabel}>Összes nyeremény</Text>
                   <Text style={styles.statValue}>{userData?.osszesNyeremeny?.toLocaleString('hu-HU')} Ft</Text>
-              </TouchableOpacity>
+              </View>
               
               <View style={styles.statCard}>
                   <View style={[styles.statIconContainer, { backgroundColor: '#E3F2FD' }]}>
@@ -289,12 +319,12 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
               </View>
               <View style={{flex: 1}}>
                   <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
-                      <Text style={styles.levelTitle}>{level >= 5 ? 'Profi' : 'Kezdő'}</Text>
-                      <Text style={styles.xpText}>{xp} / 100 XP</Text>
+                      <Text style={styles.levelTitle}>{getRankName(level)}</Text>
+                      <Text style={styles.xpText}>{currentXp} / {maxXp} XP</Text>
                   </View>
                   <Text style={{color: '#666', marginBottom: 8}}>Szint {level}</Text>
                   <View style={styles.progressBarBackground}>
-                      <View style={[styles.progressBarFill, {width: `${xp}%`}]} />
+                      <View style={[styles.progressBarFill, {width: `${Math.min(100, (currentXp / maxXp) * 100)}%`}]} />
                   </View>
               </View>
           </View>

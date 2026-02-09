@@ -9,7 +9,7 @@ import {
   useWindowDimensions,
   ActivityIndicator,
   StatusBar,
-  Platform
+  Animated
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,21 +22,40 @@ const customStyles = StyleSheet.create({
   fullScreen: {
     flex: 1,
   },
-  headerContainer: {
+  headerDetailsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: Platform.OS === 'android' ? 40 : 10,
+    marginTop: 10,
     marginBottom: 20,
+  },
+  headerExitBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerStatsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    alignItems: 'center',
   },
   headerPillLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 15,
+    paddingHorizontal: 12,
+    borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -46,7 +65,7 @@ const customStyles = StyleSheet.create({
   headerPillTextLeft: {
     color: '#8e24aa', // Purple
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 5,
   },
   headerPillRight: {
@@ -54,8 +73,8 @@ const customStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffc107', // Amber/Gold
     paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 15,
+    paddingHorizontal: 15,
+    borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -65,7 +84,7 @@ const customStyles = StyleSheet.create({
   headerPillTextRight: {
     color: '#3e2723', // Dark brown for contrast
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 5,
   },
   questionCard: {
@@ -157,60 +176,46 @@ const customStyles = StyleSheet.create({
   },
   bottomSection: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 30,
   },
-  helpersRow: {
+  controlBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  helperBox: {
-    width: '30%',
-    aspectRatio: 1, // Square
-    borderRadius: 15,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)', // Semi-transparent glass
-  },
-  helperBoxWhite: {
-    backgroundColor: '#fff',
-  },
-  helperIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  helperIconContainerOrange: {
-    backgroundColor: '#ff9800',
-  },
-  helperText: {
-    color: '#fff', // Or color based on background
-    fontSize: 12,
-    fontWeight: '600',
-    marginTop: 2,
-  },
-  exitButton: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 55,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  exitButtonText: {
-    color: '#333',
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginLeft: 8,
+  controlItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 60,
+  },
+  controlIconCircle: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    marginBottom: 4,
+  },
+  controlIconCircleActive: {
+    backgroundColor: '#FFF3E0',
+  },
+  controlIconCircleExit: {
+    backgroundColor: '#FFEBEE',
+  },
+  controlText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#455A64',
   }
 });
 
@@ -238,18 +243,47 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   
   // Nyeremény mentés állapota a végén
   const [mentve, setMentve] = useState(false);
+  
+  // Animáció a helyes válasz villogásához
+  const [blinkAnim] = useState(new Animated.Value(1));
+
+  useEffect(() => {
+    let loop;
+    if (eredmenyMutat) {
+      loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(blinkAnim, {
+            toValue: 0.3,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+          Animated.timing(blinkAnim, {
+            toValue: 1,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      loop.start();
+    } else {
+      blinkAnim.setValue(1); 
+    }
+    return () => {
+      if (loop) loop.stop();
+    };
+  }, [eredmenyMutat]);
 
   // Speedrun state-ek
   const [ido, setIdo] = useState(60);
   const [progress, setProgress] = useState(1);
-  const isSpeedrun = kategoria === 0;
+  const isSpeedrun = kategoria === 0 || kategoria === "0";
   const isEndless = kategoria === -1;
 
   
   useEffect(() => {
-    if (isSpeedrun && szamlalo < kerdesek.length) {
+    if (isSpeedrun && szamlalo < kerdesek.length && !valaszMegjelolve) {
       const nehezseg = kerdesek[szamlalo].kerdesek_nehezseg;
-      const kezdoIdo = nehezseg === 1 ? 60 : nehezseg === 2 ? 45 : 30;
+      const kezdoIdo = nehezseg === 1 ? 45 : nehezseg === 2 ? 30 : 25;
       setIdo(kezdoIdo);
       setProgress(1);
 
@@ -267,7 +301,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
       return () => clearInterval(interval);
     }
-  }, [szamlalo, isSpeedrun]);
+  }, [szamlalo, isSpeedrun, valaszMegjelolve]);
   
   const stripHtml = (html) => (!html ? "" : html.replace(/<[^>]*>?/gm, ''));
 
@@ -293,12 +327,16 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               console.log('Endless kerdesek betoltese hiba:', error);
             }
           }
-          Alert.alert("A Válasz helyes! 😺", "Következő kérdés 🏆", [{ text: "Ok", onPress: () => {
-             setSzamlalo(szamlalo + 1);
-             setMegjeloltValasz(null);
-             setValaszMegjelolve(false);
-             setEredmenyMutat(false);
-          }}]);
+          // Alert.alert("A Válasz helyes! 😺", "Következő kérdés 🏆", [{ text: "Ok", onPress: () => {
+          //    setSzamlalo(szamlalo + 1);
+          //    setMegjeloltValasz(null);
+          //    setValaszMegjelolve(false);
+          //    setEredmenyMutat(false);
+          // }}]);
+          setSzamlalo(szamlalo + 1);
+          setMegjeloltValasz(null);
+          setValaszMegjelolve(false);
+          setEredmenyMutat(false);
         } else {
           const leiras = stripHtml(kerdesek[szamlalo].kerdesek_leiras || "");
           if (isGyakorlas) {
@@ -313,13 +351,25 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
   const telefonSegitseg = () => { 
     if(telefonSegitsegAktiv) { 
-      if (!isGyakorlas) setTelefonSegitsegAktiv(false); 
+      if (!isGyakorlas) {
+        setTelefonSegitsegAktiv(false);
+        if (isSpeedrun) {
+          setKozonsegSegitsegAktiv(false);
+          setFelezoSegitsegAktiv(false);
+        }
+      } 
       Alert.alert("Telefonos segítség", "Szerintem a helyes válasz: " + helyesValasz); 
     }
   };
   const kozonsegSegitseg = () => { 
     if(kozonsegSegitsegAktiv) { 
-      if (!isGyakorlas) setKozonsegSegitsegAktiv(false); 
+      if (!isGyakorlas) {
+        setKozonsegSegitsegAktiv(false);
+        if (isSpeedrun) {
+          setTelefonSegitsegAktiv(false);
+          setFelezoSegitsegAktiv(false);
+        }
+      } 
       let esely = 40;
       let maradekSzazalek = 60;
       if (szamlalo < 3) { esely = 50; maradekSzazalek = 50; } 
@@ -352,7 +402,13 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   };
   const felezoSegitseg = () => { 
     if(felezoSegitsegAktiv) { 
-      if (!isGyakorlas) setFelezoSegitsegAktiv(false); 
+      if (!isGyakorlas) {
+        setFelezoSegitsegAktiv(false);
+        if (isSpeedrun) {
+          setTelefonSegitsegAktiv(false);
+          setKozonsegSegitsegAktiv(false);
+        }
+      } 
       setFelezoMegjelol(true); 
     }
   };
@@ -420,6 +476,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const valaszKever = () => {
     setFelezoMegjelol(false);
     setKozonsegMegjelol(false);
+    setValaszMegjelolve(false);
     if (!kerdesek[szamlalo]) return;
     
     let tomb = [kerdesek[szamlalo].kerdesek_helyesValasz, kerdesek[szamlalo].kerdesek_helytelenValasz1, kerdesek[szamlalo].kerdesek_helytelenValasz2, kerdesek[szamlalo].kerdesek_helytelenValasz3];
@@ -432,6 +489,17 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     setTolt(true);
     const nyeremenyek = [0, 50000, 100000, 500000, 750000, 1500000, 2000000, 10000000, 15000000, 50000000];
     setPontszam(nyeremenyek[szamlalo] || 0);
+  };
+
+  const handleExit = () => {
+    Alert.alert(
+      "Kilépés",
+      "Biztosan ki szeretnél lépni? Az eddigi haladásod elveszik.",
+      [
+        { text: "Mégse", style: "cancel" },
+        { text: "Kilépés", style: "destructive", onPress: () => { setSzamlalo(0); kerdesekBetoltve(false); } }
+      ]
+    );
   };
 
   useEffect(() => { 
@@ -452,34 +520,41 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
     return (
       <LinearGradient colors={bgGradientColors} style={customStyles.fullScreen} start={{x:0, y:0}} end={{x:1, y:1}}>
+        <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
         <SafeAreaView style={{flex: 1}}>
           <ScrollView contentContainerStyle={{paddingBottom: 20}} showsVerticalScrollIndicator={false}>
-            
             {/* Header */}
-            <View style={customStyles.headerContainer}>
-              <View style={customStyles.headerPillLeft}>
-                <MaterialCommunityIcons name="star-four-points-outline" size={20} color="#8e24aa" />
-                <Text style={customStyles.headerPillTextLeft}>
-                  Kérdés {szamlalo + 1}/{isEndless ? '∞' : kerdesek.length}
-                </Text>
-              </View>
+            <View style={customStyles.headerDetailsContainer}>
+                {/* Exit Button - Top Left */}
+                <TouchableOpacity style={customStyles.headerExitBtn} onPress={handleExit}>
+                    <MaterialCommunityIcons name="door-open" size={22} color="#8e24aa" />
+                </TouchableOpacity>
 
-              {!isGyakorlas && !isSpeedrun && (
-                <View style={customStyles.headerPillRight}>
-                  <MaterialCommunityIcons name="trophy-outline" size={20} color="#3e2723" />
-                  <Text style={customStyles.headerPillTextRight}>
-                    {pontszam.toLocaleString('hu-HU')} Ft
-                  </Text>
+                <View style={customStyles.headerStatsContainer}>
+                    <View style={customStyles.headerPillLeft}>
+                        <MaterialCommunityIcons name="star-four-points-outline" size={16} color="#8e24aa" />
+                        <Text style={customStyles.headerPillTextLeft}>
+                        {szamlalo + 1}/{isEndless ? '∞' : kerdesek.length}
+                        </Text>
+                    </View>
+
+                    {!isGyakorlas && !isSpeedrun && (
+                        <View style={customStyles.headerPillRight}>
+                        <MaterialCommunityIcons name="trophy-outline" size={16} color="#3e2723" />
+                        <Text style={customStyles.headerPillTextRight}>
+                            {pontszam.toLocaleString('hu-HU')}
+                        </Text>
+                        </View>
+                    )}
+                    {isSpeedrun && (
+                        <View style={customStyles.headerPillRight}>
+                        <MaterialCommunityIcons name="timer-outline" size={16} color="#3e2723" />
+                        <Text style={customStyles.headerPillTextRight}>
+                            {ido}s
+                        </Text>
+                        </View>
+                    )}
                 </View>
-              )}
-               {isSpeedrun && (
-                <View style={customStyles.headerPillRight}>
-                  <MaterialCommunityIcons name="timer-outline" size={20} color="#3e2723" />
-                  <Text style={customStyles.headerPillTextRight}>
-                    {ido}s
-                  </Text>
-                </View>
-              )}
             </View>
 
             {/* Question Card */}
@@ -527,16 +602,9 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                  const wrapperProps = isActiveStyle 
                     ? { colors: currentGradient, start: {x:0, y:0}, end: {x:1, y:0}, style: [customStyles.answerRow, customStyles.answerRowSelected] }
                     : { style: customStyles.answerRow };
-
-                 return (
-                   <TouchableOpacity
-                      key={index}
-                      activeOpacity={0.9}
-                      disabled={valaszMegjelolve || isHidden}
-                      onPress={() => valaszEllenoriz(elem)}
-                      style={{ opacity: isHidden ? 0 : 1 }}
-                   >
-                     <Wrapper {...wrapperProps}>
+                 
+                 const content = (
+                    <Wrapper {...wrapperProps}>
                         {/* Letter Box */}
                         <View style={[
                             customStyles.letterBox, 
@@ -556,55 +624,67 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                           </Text>
                         </View>
                      </Wrapper>
+                 );
+
+                 return (
+                   <TouchableOpacity
+                      key={index}
+                      activeOpacity={0.9}
+                      disabled={valaszMegjelolve || isHidden}
+                      onPress={() => valaszEllenoriz(elem)}
+                      style={{ opacity: isHidden ? 0 : 1 }}
+                   >
+                     {isCorrect && eredmenyMutat ? (
+                       <Animated.View style={{ opacity: blinkAnim }}>
+                         {content}
+                       </Animated.View>
+                     ) : (
+                       content
+                     )}
                    </TouchableOpacity>
                  );
                })}
             </View>
 
-            {/* Bottom Helpers & Exit */}
+            {/* Bottom Control Bar */}
             <View style={customStyles.bottomSection}>
-              <View style={customStyles.helpersRow}>
+              <View style={customStyles.controlBar}>
                 {/* Phone */}
                 <TouchableOpacity 
-                    style={[customStyles.helperBox, customStyles.helperBoxWhite, !telefonSegitsegAktiv && { opacity: 0.5 }]}
+                    style={[customStyles.controlItem, !telefonSegitsegAktiv && { opacity: 0.5 }]}
                     onPress={telefonSegitseg}
                     disabled={!telefonSegitsegAktiv}
                 >
-                    <View style={[customStyles.helperIconContainer, customStyles.helperIconContainerOrange]}>
-                      <MaterialCommunityIcons name="phone" size={24} color="#fff" />
+                    <View style={[customStyles.controlIconCircle, telefonSegitsegAktiv && customStyles.controlIconCircleActive]}>
+                      <MaterialCommunityIcons name="phone" size={24} color={telefonSegitsegAktiv ? "#F57C00" : "#B0BEC5"} />
                     </View>
-                    <Text style={[customStyles.helperText, {color: '#333'}]}>Telefon</Text>
+                    <Text style={customStyles.controlText}>Telefon</Text>
                 </TouchableOpacity>
 
                 {/* Audience */}
                 <TouchableOpacity 
-                    style={[customStyles.helperBox, customStyles.helperBoxWhite, !kozonsegSegitsegAktiv && { opacity: 0.5 }]}
+                    style={[customStyles.controlItem, !kozonsegSegitsegAktiv && { opacity: 0.5 }]}
                     onPress={kozonsegSegitseg}
                     disabled={!kozonsegSegitsegAktiv}
                 >
-                    <View style={[customStyles.helperIconContainer, customStyles.helperIconContainerOrange]}>
-                       <MaterialCommunityIcons name="account-group" size={24} color="#fff" />
+                    <View style={[customStyles.controlIconCircle, kozonsegSegitsegAktiv && customStyles.controlIconCircleActive]}>
+                       <MaterialCommunityIcons name="account-group" size={24} color={kozonsegSegitsegAktiv ? "#F57C00" : "#B0BEC5"} />
                     </View>
-                    <Text style={[customStyles.helperText, {color: '#333'}]}>Közönség</Text>
+                    <Text style={customStyles.controlText}>Közönség</Text>
                 </TouchableOpacity>
 
-                {/* 50:50 - White Style */}
+                {/* 50:50 */}
                 <TouchableOpacity 
-                    style={[customStyles.helperBox, customStyles.helperBoxWhite, !felezoSegitsegAktiv && { opacity: 0.5 }]}
+                    style={[customStyles.controlItem, !felezoSegitsegAktiv && { opacity: 0.5 }]}
                     onPress={felezoSegitseg}
                     disabled={!felezoSegitsegAktiv}
                 >
-                    <View style={[customStyles.helperIconContainer, customStyles.helperIconContainerOrange]}>
-                       <Text style={{color: '#fff', fontWeight: 'bold'}}>%</Text>
+                    <View style={[customStyles.controlIconCircle, felezoSegitsegAktiv && customStyles.controlIconCircleActive]}>
+                       <Text style={{color: felezoSegitsegAktiv ? "#F57C00" : "#B0BEC5", fontWeight: 'bold', fontSize: 16}}>50:50</Text>
                     </View>
-                    <Text style={[customStyles.helperText, {color: '#333'}]}>50:50</Text>
+                    <Text style={customStyles.controlText}>Felező</Text>
                 </TouchableOpacity>
               </View>
-
-              <TouchableOpacity style={customStyles.exitButton} onPress={() => kerdesekBetoltve(false)}>
-                 <MaterialCommunityIcons name="close" size={24} color="#f44336" />
-                 <Text style={customStyles.exitButtonText}>Kilépés</Text>
-              </TouchableOpacity>
             </View>
 
           </ScrollView>
