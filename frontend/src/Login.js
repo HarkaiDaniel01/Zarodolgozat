@@ -35,10 +35,11 @@ const Login = () => {
       const taroltEredmeny = localStorage.getItem("taroltEredmeny");
 
       if (taroltEredmeny) {
-        const {ePont, eKat} = JSON.parse(taroltEredmeny);
+        const {ePont, ePontozas, eKat} = JSON.parse(taroltEredmeny);
 
         const bemenet={
           "nyeremeny" : ePont,
+          "pontszam" : ePontozas,
           "jatekos" : data.user.id,
           "kategoria": eKat
         }

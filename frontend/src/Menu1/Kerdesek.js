@@ -350,7 +350,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
 
             } else {
-                localStorage.setItem("taroltEredmeny", JSON.stringify({ePont: pontszam, eKat: kategoria}))
+                localStorage.setItem("taroltEredmeny", JSON.stringify({ePont: pontszam, ePontozas : pontozas, eKat: kategoria}))
                 navigate("/login")
             }
 
