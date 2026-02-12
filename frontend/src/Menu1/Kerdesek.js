@@ -343,9 +343,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                             })
 
                 if (response.ok) {
-                        alert("ok")
+                        showAlert("Sikeres mentés!", "Eredmény sikeresen elmentve!", "success", "Rendben!")
                 } else {
-                        alert("hiba")
+                        showAlert("Hiba!", "Hiba történt az eredmény feltöltésekor", "Warning", "Rendben!")
                 }
 
 

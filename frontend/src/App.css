@@ -285,9 +285,11 @@ td, th {
 } 
 
 .swal2-popup {
-  color: #ffcc00;
+  background: #1E2433;
+  color: #FFFFFF;
   border-radius: 20px;
-  background-color: black;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
 }
 
 .swal2-confirm, .swal2-cancel {
@@ -297,8 +299,8 @@ td, th {
   font-weight: bold;
   border-radius: 20px;
   margin-bottom: 15px;
-  background-color: #ffcc00;
-  color: black;
+  background-color: '#2EC4B6';
+  color: '#F5F7FA';
 
   
   display: flex;              
@@ -314,7 +316,6 @@ td, th {
 
 .swal2-confirm:hover, .swal2-cancel:hover {
   transform: translateY(-2px);
-  background: #ddd;
   transition: 0.2s;
   
 }

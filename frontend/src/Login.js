@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cim from './Cim';
+import Swal from 'sweetalert2';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -51,12 +52,30 @@ const Login = () => {
           },
           body: JSON.stringify(bemenet)
         })
+
+        let cim = ""
+        let szoveg = ""
+        let ikon = ""
+        let gomb = ""
         
         if (response.ok) {
-          alert("ok")
+          cim = "Sikeres mentés!"
+          szoveg = "Eredmény sikeresen mentve!"
+          ikon = "success"
+          gomb = "Rendben"
         } else {
-          alert("hiba")
+          cim = "Hiba!"
+          szoveg = "Hiba történt az eredmény mentésekor!"
+          ikon = "warning"
+          gomb = "Rendben"
         }
+
+        Swal.fire({
+          title: `${cim}`,
+          html: `${szoveg}`,
+          icon: `${ikon}`,
+          confirmButtonText: `${gomb}`,
+        });
 
 
         localStorage.removeItem("taroltEredmeny")
