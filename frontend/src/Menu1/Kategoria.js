@@ -273,7 +273,7 @@ const Kategoria=()=>{
             
         {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}} >
 
-                <h1>Legyen Ön is Szoftverfejlesztő!</h1>
+                <h1>Itt lesz a cím!</h1>
                 <h2>Válassz kategóriát!</h2>
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
