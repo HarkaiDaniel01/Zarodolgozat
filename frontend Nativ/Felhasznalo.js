@@ -49,6 +49,7 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
   const { level, currentXp, maxXp } = calculateLevelInfo(userData?.jatszottJatekok);
 
   const getRankName = (lvl) => {
+    if (lvl >= 30) return 'Szuperhős 🦸‍♂️';
     if (lvl >= 25) return 'Legenda 👑';
     if (lvl >= 20) return 'Mester 🎓';
     if (lvl >= 15) return 'Profi 🏆';

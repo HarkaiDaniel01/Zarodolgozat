@@ -253,7 +253,7 @@ const Felhasznalobeallitas = () => {
                   autoComplete="current-password"
                   style={{
                     backgroundColor: darkMode ? "#374151" : "white",
-                    color: darkMode ? "#e5e7eb" : "#1f2937",
+                    color: darkMode ? "#e5e7eb" : "white",
                     border: darkMode ? "1px solid #4b5563" : "1px solid #d1d5db"
                   }}
                 />

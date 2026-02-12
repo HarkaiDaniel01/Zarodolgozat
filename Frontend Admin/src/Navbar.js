@@ -151,27 +151,8 @@ const Navbar = () => {
             {bejelentkezve ? (
               <li className="nav-item">
                 <button 
-                  className="nav-link" 
+                  className="nav-link logout-btn" 
                   onClick={kijelentkezes}
-                  style={{
-                    background: 'none',
-                    color: 'var(--text-color)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '0.5rem 1rem',
-                    transition: 'all 0.3s ease',
-                    fontWeight: 'bold',
-                    marginLeft: '10px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--danger-color)';
-                    e.target.style.color = 'white';
-                    e.target.style.borderRadius = 'var(--border-radius)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.color = 'var(--text-color)';
-                  }}
                 >
                   Kijelentkezés 🚪
                 </button>

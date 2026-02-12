@@ -84,12 +84,26 @@ body {
 .custom-navbar .nav-link {
   color: #ffffff !important;
   font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
 }
 
 .custom-navbar .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.9);
   color: #66A5AD !important;
-  border-radius: 8px;
+}
+
+.custom-navbar .logout-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.custom-navbar .logout-btn:hover {
+  background-color: var(--danger-color);
+  color: white !important;
 }
 
 body {
@@ -199,4 +213,9 @@ body.dark-mode h3 {
   .hide-on-mobile {
     display: none;
   }
+}
+
+body.dark-mode small,
+body.dark-mode .text-muted {
+  color: #ffffff !important;
 }

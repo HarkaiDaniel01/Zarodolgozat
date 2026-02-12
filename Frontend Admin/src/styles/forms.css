@@ -85,9 +85,9 @@ body.dark-mode .form-control {
 }
 
 body.dark-mode .form-control::placeholder {
-  color: #000000;
+  color: #ffffff;
 }
 
 body.dark-mode .form-input::placeholder {
-  color: #000000;
+  color: #ffffff;
 }
