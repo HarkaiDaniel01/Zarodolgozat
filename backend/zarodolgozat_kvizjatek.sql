@@ -32,10 +32,12 @@ USE `zarodolgozat_kvizjatek`;
 CREATE TABLE `eredmenyek` (
   `Eredmenyek_id` int(11) NOT NULL,
   `Eredmenyek_pont` int(11) NOT NULL,
+  `Eredmenyek_pontszam` int(11) NOT NULL DEFAULT 0,
   `Eredmenyek_jatekos` int(11) NOT NULL,
-  `Eredmenyek_datum` date NOT NULL,
+  `Eredmenyek_datum` datetime NOT NULL DEFAULT current_timestamp(),
   `Eredmenyek_kategoria` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
 
 -- --------------------------------------------------------
 
@@ -665,6 +667,12 @@ ALTER TABLE `nehezseg`
   ADD PRIMARY KEY (`nehezseg_id`);
 
 --
+-- A tábla indexei `nyeremeny`
+--
+ALTER TABLE `nyeremeny`
+  ADD PRIMARY KEY (`nyeremeny_id`);
+
+--
 -- A kiírt táblák AUTO_INCREMENT értéke
 --
 
@@ -697,6 +705,12 @@ ALTER TABLE `kerdesek`
 --
 ALTER TABLE `nehezseg`
   MODIFY `nehezseg_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT a táblához `nyeremeny`
+--
+ALTER TABLE `nyeremeny`
+  MODIFY `nyeremeny_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Megkötések a kiírt táblákhoz
