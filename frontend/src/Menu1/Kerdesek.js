@@ -500,8 +500,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         <div>
             <div className="doboz">
 
-            <h2> ({szamlalo + 1}) {kerdesek[szamlalo].kerdesek_kerdes}</h2>
-            <br></br>
+            <h2 className="kerdes"> ({szamlalo + 1}) {kerdesek[szamlalo].kerdesek_kerdes}</h2>
 
             {/*<div className="gombDoboz">
                 <button className="gomb" style={{marginBottom:"15px"}} onClick={() => szamlaloNovel()}>A: {kerdesek[szamlalo].kerdesek_helyesValasz}</button>

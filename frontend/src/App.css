@@ -109,8 +109,6 @@ input{
   animation: fadeIn 1s ease forwards;
 }
 
-
-
 .gombDoboz > .gomb:nth-child(1) { animation-delay: 0.5s; }
 .gombDoboz > .gomb:nth-child(2) { animation-delay: 1s; }
 .gombDoboz > .gomb:nth-child(3) { animation-delay: 1.5s; }
@@ -341,6 +339,11 @@ td, th {
 
 .nav-item {
   list-style: none;
+}
+
+.kerdes {
+  height: 120px;
+  overflow-y: auto;
 }
 
 
