@@ -18,7 +18,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from "./Cim";
 
-// Stílusok a "Design alapján"
 const customStyles = StyleSheet.create({
   fullScreen: {
     flex: 1,
@@ -498,22 +497,22 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
   if (szamlalo < kerdesekList.length && tolt && kerdesekList[szamlalo]) {
     
-    // Responsive sizing
+    // ============= RESPONSIV KÉPERNYŐ MÉRET FELISMERÉS =============
     const isSmallScreen = width < 350;
     const isMediumScreen = width >= 350 && width < 600;
     const isTablet = width >= 600 && width < 900;
     const isLargeTablet = width >= 900;
     
-    // Gradient definitions for reuse
-    const bgGradientColors = ['#AB47BC', '#7B1FA2', '#4A148C'] as const; // Pinkish Purple -> Deep Purple
+    // ============= GRADIENSEK =============
+    const bgGradientColors = ['#AB47BC', '#7B1FA2', '#4A148C'] as const;
     const goldGradient = ['#FFD54F', '#FFB300'] as const;
     const pinkBadgeGradient = ['#F48FB1', '#EC407A'] as const;
-    const greenGradient = ['#69F0AE', '#00C853'] as const; // Light Green -> Green
-    const redGradient = ['#ef5350', '#c62828'] as const; // Red
+    const greenGradient = ['#69F0AE', '#00C853'] as const;
+    const redGradient = ['#ef5350', '#c62828'] as const;
     const defaultLetterColor = '#AB47BC';
     const selectedLetterColor = 'rgba(255,255,255,0.3)';
     
-    // Responsive font sizes
+    // ============= RESPONSIV FONT MÉRETEK =============
     const responsiveFontSizes = {
       headerPill: isSmallScreen ? 12 : isMediumScreen ? 13 : 14,
       question: isSmallScreen ? 16 : isMediumScreen ? 18 : isTablet ? 20 : 22,
@@ -521,7 +520,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       controlText: isSmallScreen ? 9 : isMediumScreen ? 10 : 11,
     };
     
-    // Responsive spacing
+    // ============= RESPONSIV SZÓKÖZÖK ÉS PADDING =============
     const responsivePadding = {
       headerHorizontal: isSmallScreen ? 12 : isMediumScreen ? 15 : isTablet ? 20 : 25,
       headerVertical: isSmallScreen ? 8 : 10,
@@ -533,254 +532,444 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       bottomPadding: isSmallScreen ? 15 : isMediumScreen ? 20 : isTablet ? 25 : 30,
     };
     
-    // Responsive control bar
+    // ============= RESPONSIV KOMPONENS MÉRETEK =============
     const controlSize = isSmallScreen ? 36 : isMediumScreen ? 40 : isTablet ? 45 : 50;
     const controlIconSize = isSmallScreen ? 20 : isMediumScreen ? 22 : isTablet ? 24 : 26;
+    const iconSize = isSmallScreen ? 60 : 80;
+    const exitIconSize = isSmallScreen ? 18 : 22;
+    const starIconSize = isSmallScreen ? 12 : 16;
+    const trophyIconSize = isSmallScreen ? 12 : 16;
+    const timerIconSize = isSmallScreen ? 12 : 16;
 
     return (
-      <LinearGradient colors={bgGradientColors} style={customStyles.fullScreen} start={{x:0, y:0}} end={{x:1, y:1}}>
-        <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
-        <SafeAreaView style={{flex: 1}}>
-          <ScrollView contentContainerStyle={{paddingBottom: 20}} showsVerticalScrollIndicator={false}>
-            {/* Header */}
-            <View style={[customStyles.headerDetailsContainer, {
-              paddingHorizontal: responsivePadding.headerHorizontal,
-              marginTop: responsivePadding.headerVertical,
-              marginBottom: responsivePadding.headerVertical,
-            }]}>
-                {/* Exit Button - Top Left */}
-                <TouchableOpacity 
-                  style={[customStyles.headerExitBtn, {
+      <LinearGradient 
+        colors={bgGradientColors} 
+        style={customStyles.fullScreen} 
+        start={{ x: 0, y: 0 }} 
+        end={{ x: 1, y: 1 }}
+      >
+        <StatusBar 
+          barStyle="light-content" 
+          backgroundColor="transparent" 
+          translucent={true} 
+        />
+        <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView 
+            contentContainerStyle={{ paddingBottom: 20 }} 
+            showsVerticalScrollIndicator={false}
+          >
+            {/* ========== FEJLÉC ========== */}
+            <View
+              style={[
+                customStyles.headerDetailsContainer,
+                {
+                  paddingHorizontal: responsivePadding.headerHorizontal,
+                  marginTop: responsivePadding.headerVertical,
+                  marginBottom: responsivePadding.headerVertical,
+                },
+              ]}
+            >
+              {/* Kilépés gomb */}
+              <TouchableOpacity 
+                style={[
+                  customStyles.headerExitBtn,
+                  {
                     width: isSmallScreen ? 36 : 40,
                     height: isSmallScreen ? 36 : 40,
                     borderRadius: isSmallScreen ? 18 : 20,
-                  }]} 
-                  onPress={handleExit}
-                >
-                    <MaterialCommunityIcons name="door-open" size={isSmallScreen ? 18 : 22} color="#8e24aa" />
-                </TouchableOpacity>
+                  },
+                ]} 
+                onPress={handleExit}
+              >
+                <MaterialCommunityIcons 
+                  name="door-open" 
+                  size={exitIconSize} 
+                  color="#8e24aa" 
+                />
+              </TouchableOpacity>
 
-                <View style={customStyles.headerStatsContainer}>
-                    <View style={[customStyles.headerPillLeft, {
+              {/* Fejléc statisztika */}
+              <View style={customStyles.headerStatsContainer}>
+                {/* Kérdés szám */}
+                <View
+                  style={[
+                    customStyles.headerPillLeft,
+                    {
                       paddingVertical: responsivePadding.headerVertical,
-                    }]}>
-                        <MaterialCommunityIcons name="star-four-points-outline" size={isSmallScreen ? 12 : 16} color="#8e24aa" />
-                        <Text style={[customStyles.headerPillTextLeft, {
-                          fontSize: responsiveFontSizes.headerPill,
-                        }]}>
-                        {szamlalo + 1}/{isEndless ? '∞' : kerdesekList.length}
-                        </Text>
-                    </View>
-
-                    {!isGyakorlas && !isSpeedrun && (
-                        <View style={[customStyles.headerPillRight, {
-                          paddingVertical: responsivePadding.headerVertical,
-                        }]}>
-                        <MaterialCommunityIcons name="trophy-outline" size={isSmallScreen ? 12 : 16} color="#3e2723" />
-                        <Text style={[customStyles.headerPillTextRight, {
-                          fontSize: responsiveFontSizes.headerPill,
-                        }]}>
-                            {pontszam.toLocaleString('hu-HU')}
-                        </Text>
-                        </View>
-                    )}
-                    {isSpeedrun && (
-                        <View style={[customStyles.headerPillRight, {
-                          paddingVertical: responsivePadding.headerVertical,
-                        }]}>
-                        <MaterialCommunityIcons name="timer-outline" size={isSmallScreen ? 12 : 16} color="#3e2723" />
-                        <Text style={[customStyles.headerPillTextRight, {
-                          fontSize: responsiveFontSizes.headerPill,
-                        }]}>
-                            {ido}s
-                        </Text>
-                        </View>
-                    )}
+                    },
+                  ]}
+                >
+                  <MaterialCommunityIcons 
+                    name="star-four-points-outline" 
+                    size={starIconSize} 
+                    color="#8e24aa" 
+                  />
+                  <Text
+                    style={[
+                      customStyles.headerPillTextLeft,
+                      {
+                        fontSize: responsiveFontSizes.headerPill,
+                      },
+                    ]}
+                  >
+                    {szamlalo + 1}/{isEndless ? '∞' : kerdesekList.length}
+                  </Text>
                 </View>
+
+                {/* Nyeremény vagy Idő */}
+                {!isGyakorlas && !isSpeedrun && (
+                  <View
+                    style={[
+                      customStyles.headerPillRight,
+                      {
+                        paddingVertical: responsivePadding.headerVertical,
+                      },
+                    ]}
+                  >
+                    <MaterialCommunityIcons 
+                      name="trophy-outline" 
+                      size={trophyIconSize} 
+                      color="#3e2723" 
+                    />
+                    <Text
+                      style={[
+                        customStyles.headerPillTextRight,
+                        {
+                          fontSize: responsiveFontSizes.headerPill,
+                        },
+                      ]}
+                    >
+                      {pontszam.toLocaleString('hu-HU')}
+                    </Text>
+                  </View>
+                )}
+
+                {isSpeedrun && (
+                  <View
+                    style={[
+                      customStyles.headerPillRight,
+                      {
+                        paddingVertical: responsivePadding.headerVertical,
+                      },
+                    ]}
+                  >
+                    <MaterialCommunityIcons 
+                      name="timer-outline" 
+                      size={timerIconSize} 
+                      color="#3e2723" 
+                    />
+                    <Text
+                      style={[
+                        customStyles.headerPillTextRight,
+                        {
+                          fontSize: responsiveFontSizes.headerPill,
+                        },
+                      ]}
+                    >
+                      {ido}s
+                    </Text>
+                  </View>
+                )}
+              </View>
             </View>
 
-            {/* Question Card */}
-            <View style={[customStyles.questionCard, {
-              padding: responsivePadding.questionPadding,
-              marginHorizontal: responsivePadding.questionMargin,
-              marginTop: responsivePadding.questionMargin,
-              marginBottom: responsivePadding.questionMargin,
-              minHeight: isSmallScreen ? 120 : isMediumScreen ? 140 : isTablet ? 160 : 180,
-            }]}>
+            {/* ========== KÉRDÉS KÁRTYA ========== */}
+            <View
+              style={[
+                customStyles.questionCard,
+                {
+                  padding: responsivePadding.questionPadding,
+                  marginHorizontal: responsivePadding.questionMargin,
+                  marginTop: responsivePadding.questionMargin,
+                  marginBottom: responsivePadding.questionMargin,
+                  minHeight: isSmallScreen ? 120 : isMediumScreen ? 140 : isTablet ? 160 : 180,
+                },
+              ]}
+            >
               <LinearGradient 
                 colors={pinkBadgeGradient}
-                start={{x:0, y:0}} end={{x:1, y:0}}
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 0 }}
                 style={customStyles.floatingBadge}
               >
-                 <Text style={customStyles.floatingBadgeText}>Kérdés</Text>
+                <Text style={customStyles.floatingBadgeText}>Kérdés</Text>
               </LinearGradient>
-              <Text style={[customStyles.questionText, {
-                fontSize: responsiveFontSizes.question,
-              }]}>
-                 {kerdesekList[szamlalo].kerdesek_kerdes}
+              <Text
+                style={[
+                  customStyles.questionText,
+                  {
+                    fontSize: responsiveFontSizes.question,
+                  },
+                ]}
+              >
+                {kerdesekList[szamlalo].kerdesek_kerdes}
               </Text>
             </View>
 
-            {/* Answers */}
-            <View style={[customStyles.answersContainer, {
-              paddingHorizontal: responsivePadding.questionMargin,
-              gap: responsivePadding.answerMargin,
-              marginBottom: responsivePadding.bottomPadding,
-            }]}>
-               {valaszok.map((elem, index) => {
-                 const isHidden = felezoMegjelol && (elem !== helyesValasz && elem !== helytelenValaszMarad);
-                 const isSelectedSubstitute = megjeloltValasz === elem;
-                 const isCorrect = elem === kerdesekList[szamlalo].kerdesek_helyesValasz;
-                 
-                 // Determine which gradient/style to apply
-                 let gradientColors: readonly [string, string, ...string[]] | null = null;
-                 let useGradient = false;
+            {/* ========== VÁLASZOK ========== */}
+            <View
+              style={[
+                customStyles.answersContainer,
+                {
+                  paddingHorizontal: responsivePadding.questionMargin,
+                  gap: responsivePadding.answerMargin,
+                  marginBottom: responsivePadding.bottomPadding,
+                },
+              ]}
+            >
+              {valaszok.map((elem, index) => {
+                const isHidden = 
+                  felezoMegjelol && 
+                  (elem !== helyesValasz && elem !== helytelenValaszMarad);
+                const isSelectedSubstitute = megjeloltValasz === elem;
+                const isCorrect = elem === kerdesekList[szamlalo].kerdesek_helyesValasz;
+                
+                // Gradiens és stílus meghatározása
+                let gradientColors: readonly [string, string, ...string[]] | null = null;
+                let useGradient = false;
 
-                 if (eredmenyMutat) {
-                    if (isCorrect) {
-                        gradientColors = greenGradient;
-                        useGradient = true;
-                    } else if (isSelectedSubstitute) {
-                        gradientColors = redGradient;
-                        useGradient = true;
-                    }
-                 } else {
-                    if (isSelectedSubstitute) {
-                        gradientColors = goldGradient;
-                        useGradient = true;
-                    }
-                 }
+                if (eredmenyMutat) {
+                  if (isCorrect) {
+                    gradientColors = greenGradient;
+                    useGradient = true;
+                  } else if (isSelectedSubstitute) {
+                    gradientColors = redGradient;
+                    useGradient = true;
+                  }
+                } else {
+                  if (isSelectedSubstitute) {
+                    gradientColors = goldGradient;
+                    useGradient = true;
+                  }
+                }
 
-                 const answerContent = (
-                    <>
-                      <View style={[
-                          customStyles.letterBox, 
+                const answerContent = (
+                  <>
+                    {/* Betű doboz */}
+                    <View
+                      style={[
+                        customStyles.letterBox,
+                        {
+                          width: isSmallScreen ? 50 : isMediumScreen ? 55 : 60,
+                        },
+                        useGradient && { backgroundColor: selectedLetterColor },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          customStyles.letterText,
                           {
-                            width: isSmallScreen ? 50 : isMediumScreen ? 55 : 60,
+                            fontSize: isSmallScreen ? 16 : isMediumScreen ? 18 : 20,
                           },
-                          useGradient && { backgroundColor: selectedLetterColor }
-                      ]}>
-                         <Text style={[customStyles.letterText, {
-                           fontSize: isSmallScreen ? 16 : isMediumScreen ? 18 : 20,
-                         }]}>{betuk[index]}</Text>
-                      </View>
-                      <View style={customStyles.answerTextContainer}>
-                        <Text style={[
-                            customStyles.answerText, 
-                            {
-                              fontSize: responsiveFontSizes.answerText,
-                            },
-                            useGradient && customStyles.answerTextSelected
-                        ]}>
-                          {elem}
-                          {kozonsegMegjelol && szazalek[index] ? `  (${szazalek[index]})` : ''}
-                        </Text>
-                      </View>
-                    </>
-                 );
+                        ]}
+                      >
+                        {betuk[index]}
+                      </Text>
+                    </View>
 
-                 return (
-                   <TouchableOpacity
-                      key={index}
-                      activeOpacity={0.9}
-                      disabled={valaszMegjelolve || isHidden}
-                      onPress={() => valaszEllenoriz(elem)}
-                      style={{ opacity: isHidden ? 0 : 1 }}
-                   >
-                     {useGradient && gradientColors ? (
-                       <Animated.View style={{ 
-                         opacity: isCorrect && eredmenyMutat ? blinkAnim : 1 
-                       }}>
-                         <LinearGradient 
-                           colors={gradientColors}
-                           start={{x:0, y:0}} 
-                           end={{x:1, y:0}} 
-                           style={[
-                             customStyles.answerRow, 
-                             customStyles.answerRowSelected,
-                             {
-                               height: responsivePadding.answerHeight,
-                               marginBottom: responsivePadding.answerMargin,
-                             }
-                           ]}
-                         >
-                           {answerContent}
-                         </LinearGradient>
-                       </Animated.View>
-                     ) : (
-                       <View style={[customStyles.answerRow, {
-                         height: responsivePadding.answerHeight,
-                         marginBottom: responsivePadding.answerMargin,
-                       }]}>
-                         {answerContent}
-                       </View>
-                     )}
-                   </TouchableOpacity>
-                 );
-               })}
+                    {/* Válasz szöveg */}
+                    <View style={customStyles.answerTextContainer}>
+                      <Text
+                        style={[
+                          customStyles.answerText,
+                          {
+                            fontSize: responsiveFontSizes.answerText,
+                          },
+                          useGradient && customStyles.answerTextSelected,
+                        ]}
+                      >
+                        {elem}
+                        {kozonsegMegjelol && szazalek[index] 
+                          ? `  (${szazalek[index]})` 
+                          : ''}
+                      </Text>
+                    </View>
+                  </>
+                );
+
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    activeOpacity={0.9}
+                    disabled={valaszMegjelolve || isHidden}
+                    onPress={() => valaszEllenoriz(elem)}
+                    style={{ opacity: isHidden ? 0 : 1 }}
+                  >
+                    {useGradient && gradientColors ? (
+                      <Animated.View
+                        style={{
+                          opacity: isCorrect && eredmenyMutat ? blinkAnim : 1,
+                        }}
+                      >
+                        <LinearGradient
+                          colors={gradientColors}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={[
+                            customStyles.answerRow,
+                            customStyles.answerRowSelected,
+                            {
+                              height: responsivePadding.answerHeight,
+                              marginBottom: responsivePadding.answerMargin,
+                            },
+                          ]}
+                        >
+                          {answerContent}
+                        </LinearGradient>
+                      </Animated.View>
+                    ) : (
+                      <View
+                        style={[
+                          customStyles.answerRow,
+                          {
+                            height: responsivePadding.answerHeight,
+                            marginBottom: responsivePadding.answerMargin,
+                          },
+                        ]}
+                      >
+                        {answerContent}
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
-            {/* Bottom Control Bar */}
-            <View style={[customStyles.bottomSection, {
-              paddingHorizontal: responsivePadding.questionMargin,
-              paddingBottom: responsivePadding.bottomPadding,
-            }]}>
-              <View style={[customStyles.controlBar, {
-                paddingVertical: isSmallScreen ? 8 : 10,
-                paddingHorizontal: isSmallScreen ? 8 : 10,
-              }]}>
-                {/* Phone */}
-                <TouchableOpacity 
-                    style={[customStyles.controlItem, !telefonSegitsegAktiv && { opacity: 0.5 }]}
-                    onPress={telefonSegitseg}
-                    disabled={!telefonSegitsegAktiv}
+            {/* ========== KONTROL SÁV (SEGÍTSÉGEK) ========== */}
+            <View
+              style={[
+                customStyles.bottomSection,
+                {
+                  paddingHorizontal: responsivePadding.questionMargin,
+                  paddingBottom: responsivePadding.bottomPadding,
+                },
+              ]}
+            >
+              <View
+                style={[
+                  customStyles.controlBar,
+                  {
+                    paddingVertical: isSmallScreen ? 8 : 10,
+                    paddingHorizontal: isSmallScreen ? 8 : 10,
+                  },
+                ]}
+              >
+                {/* TELEFON segítség */}
+                <TouchableOpacity
+                  style={[
+                    customStyles.controlItem,
+                    !telefonSegitsegAktiv && { opacity: 0.5 },
+                  ]}
+                  onPress={telefonSegitseg}
+                  disabled={!telefonSegitsegAktiv}
                 >
-                    <View style={[customStyles.controlIconCircle, {
-                      width: controlSize,
-                      height: controlSize,
-                      borderRadius: controlSize / 2,
-                    }, telefonSegitsegAktiv && customStyles.controlIconCircleActive]}>
-                      <MaterialCommunityIcons name="phone" size={controlIconSize} color={telefonSegitsegAktiv ? "#F57C00" : "#B0BEC5"} />
-                    </View>
-                    <Text style={[customStyles.controlText, {
-                      fontSize: responsiveFontSizes.controlText,
-                    }]}>Telefon</Text>
+                  <View
+                    style={[
+                      customStyles.controlIconCircle,
+                      {
+                        width: controlSize,
+                        height: controlSize,
+                        borderRadius: controlSize / 2,
+                      },
+                      telefonSegitsegAktiv && customStyles.controlIconCircleActive,
+                    ]}
+                  >
+                    <MaterialCommunityIcons
+                      name="phone"
+                      size={controlIconSize}
+                      color={telefonSegitsegAktiv ? '#F57C00' : '#B0BEC5'}
+                    />
+                  </View>
+                  <Text
+                    style={[
+                      customStyles.controlText,
+                      {
+                        fontSize: responsiveFontSizes.controlText,
+                      },
+                    ]}
+                  >
+                    Telefon
+                  </Text>
                 </TouchableOpacity>
 
-                {/* Audience */}
-                <TouchableOpacity 
-                    style={[customStyles.controlItem, !kozonsegSegitsegAktiv && { opacity: 0.5 }]}
-                    onPress={kozonsegSegitseg}
-                    disabled={!kozonsegSegitsegAktiv}
+                {/* KÖZÖNSÉG segítség */}
+                <TouchableOpacity
+                  style={[
+                    customStyles.controlItem,
+                    !kozonsegSegitsegAktiv && { opacity: 0.5 },
+                  ]}
+                  onPress={kozonsegSegitseg}
+                  disabled={!kozonsegSegitsegAktiv}
                 >
-                    <View style={[customStyles.controlIconCircle, {
-                      width: controlSize,
-                      height: controlSize,
-                      borderRadius: controlSize / 2,
-                    }, kozonsegSegitsegAktiv && customStyles.controlIconCircleActive]}>
-                       <MaterialCommunityIcons name="account-group" size={controlIconSize} color={kozonsegSegitsegAktiv ? "#F57C00" : "#B0BEC5"} />
-                    </View>
-                    <Text style={[customStyles.controlText, {
-                      fontSize: responsiveFontSizes.controlText,
-                    }]}>Közönség</Text>
+                  <View
+                    style={[
+                      customStyles.controlIconCircle,
+                      {
+                        width: controlSize,
+                        height: controlSize,
+                        borderRadius: controlSize / 2,
+                      },
+                      kozonsegSegitsegAktiv && customStyles.controlIconCircleActive,
+                    ]}
+                  >
+                    <MaterialCommunityIcons
+                      name="account-group"
+                      size={controlIconSize}
+                      color={kozonsegSegitsegAktiv ? '#F57C00' : '#B0BEC5'}
+                    />
+                  </View>
+                  <Text
+                    style={[
+                      customStyles.controlText,
+                      {
+                        fontSize: responsiveFontSizes.controlText,
+                      },
+                    ]}
+                  >
+                    Közönség
+                  </Text>
                 </TouchableOpacity>
 
-                {/* 50:50 */}
-                <TouchableOpacity 
-                    style={[customStyles.controlItem, !felezoSegitsegAktiv && { opacity: 0.5 }]}
-                    onPress={felezoSegitseg}
-                    disabled={!felezoSegitsegAktiv}
+                {/* FELEZŐ (50:50) segítség */}
+                <TouchableOpacity
+                  style={[
+                    customStyles.controlItem,
+                    !felezoSegitsegAktiv && { opacity: 0.5 },
+                  ]}
+                  onPress={felezoSegitseg}
+                  disabled={!felezoSegitsegAktiv}
                 >
-                    <View style={[customStyles.controlIconCircle, {
-                      width: controlSize,
-                      height: controlSize,
-                      borderRadius: controlSize / 2,
-                    }, felezoSegitsegAktiv && customStyles.controlIconCircleActive]}>
-                       <Text style={{color: felezoSegitsegAktiv ? "#F57C00" : "#B0BEC5", fontWeight: 'bold', fontSize: isSmallScreen ? 10 : 12}}>50:50</Text>
-                    </View>
-                    <Text style={[customStyles.controlText, {
-                      fontSize: responsiveFontSizes.controlText,
-                    }]}>Felező</Text>
+                  <View
+                    style={[
+                      customStyles.controlIconCircle,
+                      {
+                        width: controlSize,
+                        height: controlSize,
+                        borderRadius: controlSize / 2,
+                      },
+                      felezoSegitsegAktiv && customStyles.controlIconCircleActive,
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        color: felezoSegitsegAktiv ? '#F57C00' : '#B0BEC5',
+                        fontWeight: 'bold',
+                        fontSize: isSmallScreen ? 10 : 12,
+                      }}
+                    >
+                      50:50
+                    </Text>
+                  </View>
+                  <Text
+                    style={[
+                      customStyles.controlText,
+                      {
+                        fontSize: responsiveFontSizes.controlText,
+                      },
+                    ]}
+                  >
+                    Felező
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -789,6 +978,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       </SafeAreaView>
 
       {/* Idő lejárt Modal */}
+      {/* IDŐ LEJÁRT Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -796,35 +986,75 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         onRequestClose={() => {}}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.timeoutModal, {
-            width: isSmallScreen ? '90%' : '85%',
-            maxWidth: isTablet ? 400 : 360,
-          }]}>
-            <MaterialCommunityIcons name="clock-alert" size={isSmallScreen ? 60 : 80} color="#FF6B6B" />
-            <Text style={[styles.timeoutTitle, {
-              fontSize: isSmallScreen ? 24 : 28,
-            }]}>Idő lejárt! ⏰</Text>
-            <Text style={[styles.timeoutText, {
-              fontSize: isSmallScreen ? 14 : 16,
-            }]}>Sajnos nem sikerült időben válaszolni.</Text>
+          <View
+            style={[
+              styles.timeoutModal,
+              {
+                width: isSmallScreen ? '90%' : '85%',
+                maxWidth: isTablet ? 400 : 360,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <MaterialCommunityIcons
+              name="clock-alert"
+              size={isSmallScreen ? 60 : 80}
+              color="#FF6B6B"
+            />
+
+            {/* Cím */}
+            <Text
+              style={[
+                styles.timeoutTitle,
+                {
+                  fontSize: isSmallScreen ? 24 : 28,
+                },
+              ]}
+            >
+              Idő lejárt! ⏰
+            </Text>
+
+            {/* Szöveg */}
+            <Text
+              style={[
+                styles.timeoutText,
+                {
+                  fontSize: isSmallScreen ? 14 : 16,
+                },
+              ]}
+            >
+              Sajnos nem sikerült időben válaszolni.
+            </Text>
+
+            {/* Gomb */}
             <TouchableOpacity
-              style={[styles.timeoutButton, {
-                paddingVertical: isSmallScreen ? 12 : 14,
-              }]}
+              style={[
+                styles.timeoutButton,
+                {
+                  paddingVertical: isSmallScreen ? 12 : 14,
+                },
+              ]}
               onPress={() => {
                 setIdoLejartMutat(false);
-                eredmenyMentes("Nem nyertél! 😿", "Az idő lejárt!");
+                eredmenyMentes('Nem nyertél! 😿', 'Az idő lejárt!');
               }}
             >
-              <Text style={[styles.timeoutButtonText, {
-                fontSize: isSmallScreen ? 14 : 16,
-              }]}>Rendben</Text>
+              <Text
+                style={[
+                  styles.timeoutButtonText,
+                  {
+                    fontSize: isSmallScreen ? 14 : 16,
+                  },
+                ]}
+              >
+                Rendben
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Hibás válasz Modal */}
+      {/* HIBÁS VÁLASZ Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -832,62 +1062,150 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         onRequestClose={() => {}}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.wrongAnswerModal, {
-            width: isSmallScreen ? '90%' : '85%',
-            maxWidth: 360,
-          }]}>
-            <MaterialCommunityIcons name="close-circle" size={isSmallScreen ? 60 : 80} color="#FF6B6B" />
-            <Text style={[styles.wrongAnswerTitle, {
-              fontSize: isSmallScreen ? 22 : 24,
-            }]}>Helytelen! 😿</Text>
-            <View style={[styles.correctAnswerBox, {
-              padding: isSmallScreen ? 12 : 15,
-            }]}>
-              <Text style={[styles.correctAnswerLabel, {
-                fontSize: isSmallScreen ? 11 : 12,
-              }]}>A helyes válasz:</Text>
-              <Text style={[styles.correctAnswerText, {
-                fontSize: isSmallScreen ? 14 : 16,
-              }]}>{wrongAnswerInfo.rightAnswer}</Text>
+          <View
+            style={[
+              styles.wrongAnswerModal,
+              {
+                width: isSmallScreen ? '90%' : '85%',
+                maxWidth: 360,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <MaterialCommunityIcons
+              name="close-circle"
+              size={isSmallScreen ? 60 : 80}
+              color="#FF6B6B"
+            />
+
+            {/* Cím */}
+            <Text
+              style={[
+                styles.wrongAnswerTitle,
+                {
+                  fontSize: isSmallScreen ? 22 : 24,
+                },
+              ]}
+            >
+              Helytelen! 😿
+            </Text>
+
+            {/* Helyes válasz */}
+            <View
+              style={[
+                styles.correctAnswerBox,
+                {
+                  padding: isSmallScreen ? 12 : 15,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.correctAnswerLabel,
+                  {
+                    fontSize: isSmallScreen ? 11 : 12,
+                  },
+                ]}
+              >
+                A helyes válasz:
+              </Text>
+              <Text
+                style={[
+                  styles.correctAnswerText,
+                  {
+                    fontSize: isSmallScreen ? 14 : 16,
+                  },
+                ]}
+              >
+                {wrongAnswerInfo.rightAnswer}
+              </Text>
             </View>
+
+            {/* Leírás (ha van) */}
             {wrongAnswerInfo.description ? (
-              <View style={[styles.descriptionBox, {
-                padding: isSmallScreen ? 12 : 15,
-              }]}>
-                <Text style={[styles.descriptionText, {
-                  fontSize: isSmallScreen ? 12 : 14,
-                }]}>{wrongAnswerInfo.description}</Text>
+              <View
+                style={[
+                  styles.descriptionBox,
+                  {
+                    padding: isSmallScreen ? 12 : 15,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.descriptionText,
+                    {
+                      fontSize: isSmallScreen ? 12 : 14,
+                    },
+                  ]}
+                >
+                  {wrongAnswerInfo.description}
+                </Text>
               </View>
             ) : null}
-            <View style={[styles.wrongAnswerButtonContainer, {
-              gap: isSmallScreen ? 8 : 10,
-            }]}>
+
+            {/* Gombok */}
+            <View
+              style={[
+                styles.wrongAnswerButtonContainer,
+                {
+                  gap: isSmallScreen ? 8 : 10,
+                },
+              ]}
+            >
+              {/* VISSZA gomb */}
               <TouchableOpacity
-                style={[styles.wrongAnswerButton, {
-                  paddingVertical: isSmallScreen ? 10 : 12,
-                }]}
+                style={[
+                  styles.wrongAnswerButton,
+                  {
+                    paddingVertical: isSmallScreen ? 10 : 12,
+                  },
+                ]}
                 onPress={() => {
                   setShowWrongAnswerModal(false);
                   setSzamlalo(0);
                   kerdesekBetoltve(false);
                 }}
               >
-                <Text style={[styles.wrongAnswerButtonText, {
-                  fontSize: isSmallScreen ? 12 : 14,
-                }]}>Vissza</Text>
+                <Text
+                  style={[
+                    styles.wrongAnswerButtonText,
+                    {
+                      fontSize: isSmallScreen ? 12 : 14,
+                    },
+                  ]}
+                >
+                  Vissza
+                </Text>
               </TouchableOpacity>
+
+              {/* MENTÉS gomb (csak ha nem gyakorlás) */}
               {!wrongAnswerInfo.isTraining && (
                 <TouchableOpacity
-                  style={[styles.wrongAnswerButton, styles.saveButton, {
-                    paddingVertical: isSmallScreen ? 10 : 12,
-                  }]}
+                  style={[
+                    styles.wrongAnswerButton,
+                    styles.saveButton,
+                    {
+                      paddingVertical: isSmallScreen ? 10 : 12,
+                    },
+                  ]}
                   onPress={() => {
-                    eredmenyMentes("Nem nyertél! 😿", `Helyes: ${wrongAnswerInfo.rightAnswer}\n\n${wrongAnswerInfo.description}`);
+                    eredmenyMentes(
+                      'Nem nyertél! 😿',
+                      `Helyes: ${wrongAnswerInfo.rightAnswer}\n\n${wrongAnswerInfo.description}`
+                    );
                   }}
                 >
-                  <Text style={[styles.wrongAnswerButtonText, {
-                    fontSize: isSmallScreen ? 12 : 14,
-                  }]}>Mentés</Text>
+                  <Text
+                    style={[
+                      styles.wrongAnswerButtonText,
+                      {
+                        fontSize: isSmallScreen ? 12 : 14,
+                      },
+                    ]}
+                  >
+                    Mentés
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -895,7 +1213,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         </View>
       </Modal>
 
-      {/* Játék vége Modal */}
+      {/* JÁTÉK VÉGE Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -903,30 +1221,70 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         onRequestClose={() => {}}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.gameEndModal, {
-            width: isSmallScreen ? '90%' : '85%',
-            maxWidth: 360,
-          }]}>
-            <MaterialCommunityIcons name="flag-checkered" size={isSmallScreen ? 60 : 80} color="#FFB300" />
-            <Text style={[styles.gameEndTitle, {
-              fontSize: isSmallScreen ? 22 : 24,
-            }]}>Játék vége! 🏁</Text>
-            <Text style={[styles.gameEndText, {
-              fontSize: isSmallScreen ? 16 : 18,
-            }]}>{gameEndMessage}</Text>
+          <View
+            style={[
+              styles.gameEndModal,
+              {
+                width: isSmallScreen ? '90%' : '85%',
+                maxWidth: 360,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <MaterialCommunityIcons
+              name="flag-checkered"
+              size={isSmallScreen ? 60 : 80}
+              color="#FFB300"
+            />
+
+            {/* Cím */}
+            <Text
+              style={[
+                styles.gameEndTitle,
+                {
+                  fontSize: isSmallScreen ? 22 : 24,
+                },
+              ]}
+            >
+              Játék vége! 🏁
+            </Text>
+
+            {/* Üzenet */}
+            <Text
+              style={[
+                styles.gameEndText,
+                {
+                  fontSize: isSmallScreen ? 16 : 18,
+                },
+              ]}
+            >
+              {gameEndMessage}
+            </Text>
+
+            {/* Gomb */}
             <TouchableOpacity
-              style={[styles.gameEndButton, {
-                paddingVertical: isSmallScreen ? 10 : 12,
-              }]}
+              style={[
+                styles.gameEndButton,
+                {
+                  paddingVertical: isSmallScreen ? 10 : 12,
+                },
+              ]}
               onPress={() => {
                 setGameEndModalVisible(false);
                 setSzamlalo(0);
                 kerdesekBetoltve(false);
               }}
             >
-              <Text style={[styles.gameEndButtonText, {
-                fontSize: isSmallScreen ? 14 : 16,
-              }]}>Rendben</Text>
+              <Text
+                style={[
+                  styles.gameEndButtonText,
+                  {
+                    fontSize: isSmallScreen ? 14 : 16,
+                  },
+                ]}
+              >
+                Rendben
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1040,7 +1398,9 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         </View>
       </Modal>
 
-      {/* Telefonos segítség Modal */}
+      {/* ========== MODÁLIS ABLAKOK ========== */}
+
+      {/* TELEFON SEGÍTSÉG Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -1048,40 +1408,92 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         onRequestClose={() => setPhoneHelpModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.phoneHelpModal, {
-            width: isSmallScreen ? '90%' : '85%',
-            maxWidth: 360,
-          }]}>
-            <MaterialCommunityIcons name="phone" size={isSmallScreen ? 60 : 80} color="#2196F3" />
-            <Text style={[styles.phoneHelpTitle, {
-              fontSize: isSmallScreen ? 20 : 22,
-            }]}>Telefonos segítség</Text>
-            <View style={[styles.phoneHelpContent, {
-              marginVertical: isSmallScreen ? 10 : 15,
-            }]}>
-              <Text style={[styles.phoneHelpLabel, {
-                fontSize: isSmallScreen ? 12 : 14,
-              }]}>Szerintem a helyes válasz:</Text>
-              <Text style={[styles.phoneHelpAnswer, {
-                fontSize: isSmallScreen ? 16 : 18,
-                paddingVertical: isSmallScreen ? 10 : 12,
-              }]}>{phoneHelpAnswer}</Text>
+          <View
+            style={[
+              styles.phoneHelpModal,
+              {
+                width: isSmallScreen ? '90%' : '85%',
+                maxWidth: 360,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <MaterialCommunityIcons
+              name="phone"
+              size={isSmallScreen ? 60 : 80}
+              color="#2196F3"
+            />
+
+            {/* Cím */}
+            <Text
+              style={[
+                styles.phoneHelpTitle,
+                {
+                  fontSize: isSmallScreen ? 20 : 22,
+                },
+              ]}
+            >
+              Telefonos segítség
+            </Text>
+
+            {/* Tartalom */}
+            <View
+              style={[
+                styles.phoneHelpContent,
+                {
+                  marginVertical: isSmallScreen ? 10 : 15,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.phoneHelpLabel,
+                  {
+                    fontSize: isSmallScreen ? 12 : 14,
+                  },
+                ]}
+              >
+                Szerintem a helyes válasz:
+              </Text>
+              <Text
+                style={[
+                  styles.phoneHelpAnswer,
+                  {
+                    fontSize: isSmallScreen ? 16 : 18,
+                    paddingVertical: isSmallScreen ? 10 : 12,
+                  },
+                ]}
+              >
+                {phoneHelpAnswer}
+              </Text>
             </View>
+
+            {/* Gomb */}
             <TouchableOpacity
-              style={[styles.phoneHelpButton, {
-                paddingVertical: isSmallScreen ? 10 : 12,
-              }]}
+              style={[
+                styles.phoneHelpButton,
+                {
+                  paddingVertical: isSmallScreen ? 10 : 12,
+                },
+              ]}
               onPress={() => setPhoneHelpModalVisible(false)}
             >
-              <Text style={[styles.phoneHelpButtonText, {
-                fontSize: isSmallScreen ? 12 : 14,
-              }]}>Rendben</Text>
+              <Text
+                style={[
+                  styles.phoneHelpButtonText,
+                  {
+                    fontSize: isSmallScreen ? 12 : 14,
+                  },
+                ]}
+              >
+                Rendben
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Kilépés megerősítés Modal */}
+      {/* KILÉPÉS MEGERŐSÍTÉS Modal */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -1089,43 +1501,103 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         onRequestClose={() => setExitModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.exitConfirmModal, {
-            width: isSmallScreen ? '90%' : '85%',
-            maxWidth: 360,
-          }]}>
-            <MaterialCommunityIcons name="door-open" size={isSmallScreen ? 60 : 80} color="#FF6B6B" />
-            <Text style={[styles.exitConfirmTitle, {
-              fontSize: isSmallScreen ? 20 : 22,
-            }]}>Kilépés</Text>
-            <Text style={[styles.exitConfirmText, {
-              fontSize: isSmallScreen ? 12 : 14,
-            }]}>Biztosan ki szeretnél lépni? Az eddigi haladásod elveszik.</Text>
-            <View style={[styles.exitConfirmButtonContainer, {
-              gap: isSmallScreen ? 8 : 10,
-            }]}>
+          <View
+            style={[
+              styles.exitConfirmModal,
+              {
+                width: isSmallScreen ? '90%' : '85%',
+                maxWidth: 360,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <MaterialCommunityIcons
+              name="door-open"
+              size={isSmallScreen ? 60 : 80}
+              color="#FF6B6B"
+            />
+
+            {/* Cím */}
+            <Text
+              style={[
+                styles.exitConfirmTitle,
+                {
+                  fontSize: isSmallScreen ? 20 : 22,
+                },
+              ]}
+            >
+              Kilépés
+            </Text>
+
+            {/* Szöveg */}
+            <Text
+              style={[
+                styles.exitConfirmText,
+                {
+                  fontSize: isSmallScreen ? 12 : 14,
+                },
+              ]}
+            >
+              Biztosan ki szeretnél lépni? Az eddigi haladásod elveszik.
+            </Text>
+
+            {/* Gombok */}
+            <View
+              style={[
+                styles.exitConfirmButtonContainer,
+                {
+                  gap: isSmallScreen ? 8 : 10,
+                },
+              ]}
+            >
+              {/* NEM gomb */}
               <TouchableOpacity
-                style={[styles.exitConfirmButton, styles.exitCancelButton, {
-                  paddingVertical: isSmallScreen ? 10 : 12,
-                }]}
+                style={[
+                  styles.exitConfirmButton,
+                  styles.exitCancelButton,
+                  {
+                    paddingVertical: isSmallScreen ? 10 : 12,
+                  },
+                ]}
                 onPress={() => setExitModalVisible(false)}
               >
-                <Text style={[styles.exitConfirmButtonText, {
-                  fontSize: isSmallScreen ? 12 : 14,
-                }]}>Mégse</Text>
+                <Text
+                  style={[
+                    styles.exitConfirmButtonText,
+                    {
+                      fontSize: isSmallScreen ? 12 : 14,
+                    },
+                  ]}
+                >
+                  Mégse
+                </Text>
               </TouchableOpacity>
+
+              {/* KILÉPÉS gomb */}
               <TouchableOpacity
-                style={[styles.exitConfirmButton, styles.exitDestructiveButton, {
-                  paddingVertical: isSmallScreen ? 10 : 12,
-                }]}
+                style={[
+                  styles.exitConfirmButton,
+                  styles.exitDestructiveButton,
+                  {
+                    paddingVertical: isSmallScreen ? 10 : 12,
+                  },
+                ]}
                 onPress={() => {
                   setExitModalVisible(false);
                   setSzamlalo(0);
                   kerdesekBetoltve(false);
                 }}
               >
-                <Text style={[styles.exitConfirmDestructiveButtonText, {
-                  fontSize: isSmallScreen ? 12 : 14,
-                }]}>Kilépés</Text>
+                <Text
+                  style={[
+                    styles.exitConfirmDestructiveButtonText,
+                    {
+                      fontSize: isSmallScreen ? 12 : 14,
+                    },
+                  ]}
+                >
+                  Kilépés
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1349,7 +1821,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
 
-  // Loading/Winner
+
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -1371,7 +1843,7 @@ const styles = StyleSheet.create({
   winnerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#4A148C', // Deep Purple
+    color: '#4A148C', 
     marginTop: 20,
     marginBottom: 10,
     textAlign: 'center',
@@ -1379,11 +1851,11 @@ const styles = StyleSheet.create({
   winnerPrize: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#ffc107', // Amber/Gold matches top pill
+    color: '#ffc107', 
     marginBottom: 30,
   },
   primaryBtn: {
-    backgroundColor: '#8e24aa', // Purple
+    backgroundColor: '#8e24aa', 
     width: '100%',
     paddingVertical: 16,
     borderRadius: 16,
@@ -1402,7 +1874,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryBtnText: {
-    color: '#e1bee7', // Light purple
+    color: '#e1bee7', 
     fontSize: 16,
     fontWeight: '500',
   },
