@@ -118,7 +118,7 @@ app.post("/kerdesekNehez", (req, res) => {
 app.get("/kerdesekKonnyuVegyes", (req, res) => {
   const sql = `SELECT * 
                 from kerdesek
-                where kerdesek_nehezseg = 1 
+                where kerdesek_nehezseg = 1 AND kerdesek_kategoria BETWEEN 1 AND 5
                 ORDER BY rand()
                 LIMIT 3`;
   pool.query(sql, (err, result) => {
@@ -138,7 +138,7 @@ app.get("/kerdesekKonnyuVegyes", (req, res) => {
 app.get("/kerdesekKozepesVegyes", (req, res) => {
   const sql = `SELECT * 
                 from kerdesek
-                where kerdesek_nehezseg = 2
+                where kerdesek_nehezseg = 2 AND kerdesek_kategoria BETWEEN 1 AND 5
                 ORDER BY rand()
                 LIMIT 3`;
   pool.query(sql, (err, result) => {
@@ -158,7 +158,7 @@ app.get("/kerdesekKozepesVegyes", (req, res) => {
 app.get("/kerdesekNehezVegyes", (req, res) => {
   const sql = `SELECT * 
                 from kerdesek
-                where kerdesek_nehezseg = 3 
+                where kerdesek_nehezseg = 3 AND kerdesek_kategoria BETWEEN 1 AND 5
                 ORDER BY rand()
                 LIMIT 4`;
   pool.query(sql, (err, result) => {
