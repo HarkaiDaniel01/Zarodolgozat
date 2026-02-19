@@ -7,8 +7,10 @@ import {
   ActivityIndicator,
   FlatList,
   Switch,
-  Alert,
-  StatusBar
+  StatusBar,
+  ViewStyle,
+  TextStyle,
+  Modal
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,18 +19,28 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from "./Cim";
 import Kerdesek from "./Kerdesek"; 
 
-const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
-  const [adatok, setAdatok] = useState([]);
-  const [tolt, setTolt] = useState(true);
-  const [hiba, setHiba] = useState(false);
-  const [kerdesek, setKerdesek] = useState([]);
-  const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false);
-  const [kategoria, setKategoria] = useState(0);
-  const [isGyakorlas, setIsGyakorlas] = useState(false);
-  const [isHardcore, setIsHardcore] = useState(false);
-  const [geniuszKategoria, setGeniuszKategoria] = useState(null);
+interface KategoriaProps {
+  setHideTabBar: (value: boolean) => void;
+  navigateToProfile: () => void;
+}
 
-  const getIconName = (index) => {
+interface KategoriaItem {
+  kategoria_id: number;
+  kategoria_nev: string;
+}
+
+const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile }) => {
+  const [adatok, setAdatok] = useState<KategoriaItem[]>([]);
+  const [tolt, setTolt] = useState<boolean>(true);
+  const [hiba, setHiba] = useState<boolean>(false);
+  const [kerdesek, setKerdesek] = useState<any[]>([]);
+  const [kerdesekBetoltve, setKerdesekBetoltve] = useState<boolean>(false);
+  const [kategoria, setKategoria] = useState<number>(0);
+  const [isGyakorlas, setIsGyakorlas] = useState<boolean>(false);
+  const [isHardcore, setIsHardcore] = useState<boolean>(false);  const [hardcoreModeModalVisible, setHardcoreModeModalVisible] = useState<boolean>(false);
+  const [hardcoreModeAlert, setHardcoreModeAlert] = useState<'error' | 'info'>('info');  const [geniuszKategoria, setGeniuszKategoria] = useState<number | null>(null);
+
+  const getIconName = (index: number): any => {
     const icons = [
       "bank", 
       "earth", 
@@ -44,12 +56,12 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     return icons[index % icons.length];
   };
 
-  const [szinek] = useState([
+  const [szinek] = useState<string[]>([
     "#8E24AA", "#00C853", "#FF1744", "#F50057", "#FF6D00", 
     "#009688", "#607D8B", "#795548", "#3F51B5"
   ]);
   
-  const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
+  const kategoriaValaszt = async (kategoriaId: number, kategoriaNev: string): Promise<void> => {
     if (kategoriaNev === "Speedrun") kategoriaValasztSpeedrun(kategoriaId);
     else if (kategoriaNev === "Endless") kategoriaValasztEndless(kategoriaId);
     else if (kategoriaNev === "Gyakorlas") kategoriaValasztGyakorlas(kategoriaId);
@@ -64,7 +76,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     }
   };
 
-  const kategoriaValasztGeniusz = async (kategoriaId) => {
+  const kategoriaValasztGeniusz = async (kategoriaId: number): Promise<void> => {
     setKategoria(kategoriaId);
     const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes");
     const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes");
@@ -73,7 +85,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     setKerdesekBetoltve(true);
   };
 
-  const kategoriaValasztSpeedrun = async (kategoriaId) => {
+  const kategoriaValasztSpeedrun = async (kategoriaId: number): Promise<void> => {
     setKategoria(kategoriaId);
     const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes");
     const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes");
@@ -82,7 +94,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     setKerdesekBetoltve(true);
   };
 
-  const kategoriaValasztEndless = async (kategoriaId) => {
+  const kategoriaValasztEndless = async (kategoriaId: number): Promise<void> => {
     setKategoria(kategoriaId);
     try {
       const response = await fetch(Cim.Cim + `/endless-kerdesek`, { method: "GET" });
@@ -94,9 +106,10 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     } catch (error) { console.log('kategoriaValasztEndless Error:', error); }
   };
 
-  const kategoriaValasztGyakorlas = async (kategoriaId) => {
+  const kategoriaValasztGyakorlas = async (kategoriaId: number): Promise<void> => {
     if (isHardcore) {
-      Alert.alert("Ultrranehéz Mód", "Ultrranehéz módban nem lehet gyakorolni!");
+      setHardcoreModeAlert('error');
+      setHardcoreModeModalVisible(true);
       return;
     }
     setKategoria(kategoriaId);
@@ -111,7 +124,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     } catch (error) { console.log('kategoriaValasztGyakorlas Error:', error); }
   };
 
-  const KerdesekLetoltese = async (kategoriaId, vegpont) => {
+  const KerdesekLetoltese = async (kategoriaId: number, vegpont: string): Promise<any[]> => {
     try {
       const response = await fetch(Cim.Cim + vegpont, {
         method: "POST",
@@ -122,7 +135,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     } catch (error) { return []; }
   };
 
-  const KerdesekLetolteseVegyes = async (vegpont) => {
+  const KerdesekLetolteseVegyes = async (vegpont: string): Promise<any[]> => {
     try {
       const response = await fetch(Cim.Cim + vegpont, {
         method: "GET",
@@ -131,12 +144,12 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
     } catch (error) { console.log('KerdesekLetolteseVegyes Error:', error); return []; }
   };
 
-  const leToltes = async () => {
+  const leToltes = async (): Promise<void> => {
     try {
       const response = await fetch(Cim.Cim + "/kategoria");
       const data = await response.json();
       if (response.ok) { 
-        const szurtAdatok = data.filter(item => item.kategoria_nev !== "Vegyes" || item.kategoria_nev === "Géniusz");
+        const szurtAdatok = data.filter((item: KategoriaItem) => item.kategoria_nev !== "Vegyes" && item.kategoria_nev !== "Géniusz");
         setAdatok(szurtAdatok); 
       }
       else { setHiba(true); }
@@ -180,9 +193,12 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
                                     trackColor={{ false: "#BDBDBD", true: "#FF3D00" }}
                                     thumbColor={"#fff"}
                                     ios_backgroundColor="#3e3e3e"
-                                    onValueChange={(val) => {
+                                    onValueChange={(val: boolean) => {
                                         setIsHardcore(val);
-                                        if (val) Alert.alert("Ultranehéz Mód", "Az Ultranehéz mód aktiválva! Összes segitség kikapcsolva. Sok szerencsét! 🧠");
+                                        if (val) {
+                                          setHardcoreModeAlert('info');
+                                          setHardcoreModeModalVisible(true);
+                                        }
                                     }}
                                     value={isHardcore}
                                 />
@@ -196,7 +212,7 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
             <View style={styles.listWrapper}>
                 <FlatList
                     data={adatok}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item: KategoriaItem, index: number) => index.toString()}
                     contentContainerStyle={styles.listContainer}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item, index }) => (
@@ -289,6 +305,38 @@ const Kategoria = ({ setHideTabBar, navigateToProfile }) => {
             isHardcore={isHardcore}
         />
       )}
+
+      {/* Ultranehéz Mód Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={hardcoreModeModalVisible}
+        onRequestClose={() => setHardcoreModeModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modeModal}>
+            <MaterialCommunityIcons 
+              name={hardcoreModeAlert === 'error' ? 'alert-circle' : 'information'} 
+              size={60} 
+              color={hardcoreModeAlert === 'error' ? '#F44336' : '#FF9800'} 
+            />
+            <Text style={[styles.modeTitle, { color: hardcoreModeAlert === 'error' ? '#F44336' : '#FF9800' }]}>
+              Ultranehéz Mód
+            </Text>
+            <Text style={styles.modeMessage}>
+              {hardcoreModeAlert === 'error' 
+                ? 'Ultranehéz módban nem lehet gyakorolni!' 
+                : 'Az Ultranehéz mód aktiválva! Összes segítség kikapcsolva. Sok szerencse! 🧠'}
+            </Text>
+            <TouchableOpacity 
+              style={[styles.modeButton, { backgroundColor: hardcoreModeAlert === 'error' ? '#F44336' : '#FF9800' }]}
+              onPress={() => setHardcoreModeModalVisible(false)}
+            >
+              <Text style={styles.modeButtonText}>Rendben</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -395,6 +443,47 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modeModal: {
+    width: '85%',
+    maxWidth: 300,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  modeTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 12,
+  },
+  modeMessage: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 15,
+    lineHeight: 20,
+  },
+  modeButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 15,
+    width: '100%',
+  },
+  modeButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 14,
+  }
 });
 
 export default Kategoria;

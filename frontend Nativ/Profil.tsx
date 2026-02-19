@@ -6,11 +6,13 @@ import Register from './Register';
 import Felhasznalo from './Felhasznalo';
 import OsszesNyeremeny from './OsszesNyeremeny';
 
-const Profil = () => {
-  const [currentScreen, setCurrentScreen] = useState('loading');
+type CurrentScreen = 'loading' | 'register' | 'felhasznalo' | 'osszesNyeremeny' | 'login';
+
+const Profil: React.FC = () => {
+  const [currentScreen, setCurrentScreen] = useState<CurrentScreen>('loading');
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = async (): Promise<void> => {
       try {
         const token = await AsyncStorage.getItem('token');
         if (token) {
@@ -26,10 +28,10 @@ const Profil = () => {
     checkAuth();
   }, []);
 
-  const navigateToRegister = () => setCurrentScreen('register');
-  const navigateToLogin = () => setCurrentScreen('login');
-  const navigateToFelhasznalo = () => setCurrentScreen('felhasznalo');
-  const navigateToOsszesNyeremeny = () => setCurrentScreen('osszesNyeremeny');
+  const navigateToRegister = (): void => setCurrentScreen('register');
+  const navigateToLogin = (): void => setCurrentScreen('login');
+  const navigateToFelhasznalo = (): void => setCurrentScreen('felhasznalo');
+  const navigateToOsszesNyeremeny = (): void => setCurrentScreen('osszesNyeremeny');
 
   if (currentScreen === 'loading') {
     return <View style={{ flex: 1 }} />;

@@ -5,24 +5,32 @@ import {
   TextInput, 
   TouchableOpacity, 
   StyleSheet, 
-  Alert, 
   ScrollView, 
   KeyboardAvoidingView, 
-  Platform 
+  Platform,
+  Modal
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from './Cim';
 
-const Register = ({ onNavigateToLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordAgain, setPasswordAgain] = useState('');
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+interface RegisterProps {
+  onNavigateToLogin: () => void;
+}
 
-  const handleRegister = async () => {
+const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [passwordAgain, setPasswordAgain] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const [alertTitle, setAlertTitle] = useState<string>('');
+  const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+
+  const handleRegister = async (): Promise<void> => {
     // 1. Validáció: Mezők kitöltése
     if (!username || !password || !passwordAgain) {
       setError('Minden mező kitöltése kötelező!');
@@ -52,15 +60,24 @@ const Register = ({ onNavigateToLogin }) => {
         throw new Error(errData.message || 'Hiba a regisztráció során');
       }
 
-      // Siker esetén Alert és navigáció
-      Alert.alert('Siker', 'Sikeres regisztráció!', [
-        { text: 'OK', onPress: () => { if (onNavigateToLogin) onNavigateToLogin(); } }
-      ]);
+      // Siker esetén Modal és navigáció
+      setAlertTitle('Siker');
+      setAlertMessage('Sikeres regisztráció!');
+      setAlertType('success');
+      setAlertModalVisible(true);
+      // Navigate after short delay
+      setTimeout(() => {
+        if (onNavigateToLogin) onNavigateToLogin();
+      }, 1500);
       
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Ismeretlen hiba";
       console.log('Register Error:', err);
-      setError(err.message);
-      Alert.alert("Hiba", err.message);
+      setError(errorMessage);
+      setAlertTitle('Hiba');
+      setAlertMessage(errorMessage);
+      setAlertType('error');
+      setAlertModalVisible(true);
     }
   };
 
@@ -150,6 +167,37 @@ const Register = ({ onNavigateToLogin }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+
+        {/* Alert Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={alertModalVisible}
+          onRequestClose={() => setAlertModalVisible(false)}
+        >
+          <View style={styles.alertOverlay}>
+            <View style={styles.alertContainer}>
+              {alertType === 'error' && (
+                <MaterialCommunityIcons name="alert-circle" size={60} color="#F44336" />
+              )}
+              {alertType === 'success' && (
+                <MaterialCommunityIcons name="check-circle" size={60} color="#4CAF50" />
+              )}
+              <Text style={[styles.alertTitle, {
+                color: alertType === 'error' ? '#F44336' : '#4CAF50'
+              }]}>{alertTitle}</Text>
+              <Text style={styles.alertMessage}>{alertMessage}</Text>
+              {alertType === 'error' && (
+                <TouchableOpacity
+                  style={[styles.alertButton, { backgroundColor: '#F44336' }]}
+                  onPress={() => setAlertModalVisible(false)}
+                >
+                  <Text style={styles.alertButtonText}>Rendben</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </Modal>
       </LinearGradient>
     </KeyboardAvoidingView>
   );
@@ -268,6 +316,47 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
   },
+  alertOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  alertContainer: {
+    width: '85%',
+    maxWidth: 300,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 12,
+  },
+  alertMessage: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 15,
+    lineHeight: 20,
+  },
+  alertButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 15,
+    width: '100%',
+  },
+  alertButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 14,
+  }
 });
 
 export default Register;

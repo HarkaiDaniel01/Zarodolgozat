@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Kategoria from './Kategoria';
 import Profil from './Profil';
 import Rekordok from './Rekordok';
 import Cim from './Cim';
 
-function MyTabs() {
-  const [activeTab, setActiveTab] = useState('jatek');
-  const [hideTabBar, setHideTabBar] = useState(false);
+type TabType = 'jatek' | 'rekordok' | 'profil';
+
+function MyTabs(): React.JSX.Element {
+  const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState<TabType>('jatek');
+  const [hideTabBar, setHideTabBar] = useState<boolean>(false);
 
   useEffect(() => {
-    const validateUser = async () => {
+    const validateUser = async (): Promise<void> => {
       try {
         const token = await AsyncStorage.getItem('token');
         const userId = await AsyncStorage.getItem('userid');
@@ -38,7 +42,7 @@ function MyTabs() {
     validateUser();
   }, []);
 
-  const navigateToProfile = () => {
+  const navigateToProfile = (): void => {
     setActiveTab('profil');
   };
 
@@ -57,7 +61,7 @@ function MyTabs() {
 
       {/* Custom Tab Bar */}
       {!hideTabBar && (
-        <View style={styles.tabBar}>
+        <View style={[styles.tabBar, Platform.OS === 'android' && { paddingBottom: insets.bottom + 10 }]}>
           <TouchableOpacity
             style={styles.tab}
             onPress={() => setActiveTab('jatek')}

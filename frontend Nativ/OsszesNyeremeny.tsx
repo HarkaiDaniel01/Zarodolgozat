@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, JSX } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -6,15 +6,26 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Cim from './Cim';
 
-const OsszesNyeremeny = ({ onBack }) => {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+interface OsszesNyeremenyProps {
+  onBack: () => void;
+}
+
+interface WinningItem {
+  Eredmenyek_id: number;
+  kategoria_nev: string;
+  Eredmenyek_datum: string;
+  Eredmenyek_pont: number;
+}
+
+const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState<WinningItem[]>([]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<void> => {
     try {
       const userId = await AsyncStorage.getItem('userid');
       if (!userId) return;
@@ -36,7 +47,7 @@ const OsszesNyeremeny = ({ onBack }) => {
     }
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: WinningItem }): JSX.Element => (
     <View style={styles.card}>
       <View style={styles.iconContainer}>
         <MaterialCommunityIcons name="trophy" size={24} color="#FFD700" />
@@ -74,7 +85,7 @@ const OsszesNyeremeny = ({ onBack }) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item, index) => item.Eredmenyek_id ? item.Eredmenyek_id.toString() : index.toString()}
+          keyExtractor={(item: WinningItem, index: number) => item.Eredmenyek_id ? item.Eredmenyek_id.toString() : index.toString()}
           contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
