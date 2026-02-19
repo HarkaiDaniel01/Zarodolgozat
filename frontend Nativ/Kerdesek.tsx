@@ -325,23 +325,16 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       setEredmenyMutat(true);
 
       setTimeout(async () => {
-        if (valasz === kerdesekList[szamlalo].kerdesek_helyesValasz) {
-          if (isEndless && szamlalo === kerdesekList.length - 1) {
-            try {
-              const response = await fetch(Cim.Cim + `/endless-kerdesek`, { method: "GET" });
-              const ujKerdesek = await response.json();
-              if (response.ok) {
-                setKerdesekList(prev => [...prev, ...ujKerdesek]);
-              }
-            } catch (error) {
-              console.log('Endless kerdesek betoltese hiba:', error);
-            }
-          }
-          setSzamlalo(szamlalo + 1);
+        if (valasz === kerdesekList[szamlalo].kerdesek_helyesValasz) {  // Helyes?
+          setSzamlalo(szamlalo + 1);  // ← Inkrementálódik
           setMegjeloltValasz(null);
           setValaszMegjelolve(false);
           setEredmenyMutat(false);
-        } else {
+        } else {  // Hibás
+          // Hibás válasz - számláló -1
+          if (szamlalo > 0) {
+            setSzamlalo(szamlalo - 1);
+          }
           const leiras = stripHtml(kerdesekList[szamlalo].kerdesek_leiras || "");
           setWrongAnswerInfo({
             rightAnswer: kerdesekList[szamlalo].kerdesek_helyesValasz,
