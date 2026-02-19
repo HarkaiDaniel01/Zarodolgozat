@@ -302,7 +302,12 @@ app.post('/eredmenyFelvitel', (req, res) => {
 
         if (handleValidationErrors(req,res)) return 
 
-        const {nyeremeny, pontszam, jatekos, kategoria} =req.body
+        let {nyeremeny, pontszam, jatekos, kategoria} = req.body;
+
+        if (pontszam === undefined || pontszam === null) {
+          pontszam = 0;
+        }
+
         const datumValue = new Date();
         const sql=`insert into eredmenyek values (null,?,?,?,?,?)`
         pool.query(sql,[nyeremeny, pontszam, jatekos, datumValue, kategoria], (err, result) => {

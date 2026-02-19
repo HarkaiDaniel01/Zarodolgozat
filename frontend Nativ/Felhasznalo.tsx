@@ -1,38 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, Alert, StatusBar, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Cim from './Cim';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
-  const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState(null);
-  const [eredmenyek, setEredmenyek] = useState([]);
-  const [refresh, setRefresh] = useState(0);
+interface FelhasznaloProps {
+  onLogout: () => void;
+  onNavigateToWinnings: () => void;
+}
+
+interface UserData {
+  id: string;
+  nev: string;
+  osszesNyeremeny: number;
+  jatszottJatekok: number;
+}
+
+interface EredmenyItem {
+  [key: string]: any;
+}
+
+const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinnings }) => {
+  const insets = useSafeAreaInsets();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [eredmenyek, setEredmenyek] = useState<EredmenyItem[]>([]);
+  const [refresh, setRefresh] = useState<number>(0);
   
   // Jelszó változtatás state-ek
-  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState<boolean>(false);
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [passwordLoading, setPasswordLoading] = useState<boolean>(false);
   
   // Fiók törlés state-ek
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
+  const [deletePassword, setDeletePassword] = useState<string>('');
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
-  // Level logic (derived or state)
-  const calculateLevelInfo = (totalGames) => {
+  // Általános alert Modal state-ek
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const [alertTitle, setAlertTitle] = useState<string>('');
+  const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertType, setAlertType] = useState<'info' | 'success' | 'error' | 'warning'>('info');
+
+  // Kijelentkezés megerősítés Modal
+  const [logoutConfirmModalVisible, setLogoutConfirmModalVisible] = useState<boolean>(false);
+
+  // Level logic
+  const calculateLevelInfo = (totalGames: number | undefined) => {
     if (!totalGames) return { level: 0, currentXp: 0, maxXp: 100 };
     
     let lvl = 0;
     let gamesNeeded = 10;
     let gamesLeft = totalGames;
     
-    // Növekvő nehézség: minden szinthez +2 játék kell (pl. 10, 12, 14...)
     while (gamesLeft >= gamesNeeded) {
       gamesLeft -= gamesNeeded;
       lvl++;
@@ -41,14 +67,14 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
     
     return {
       level: lvl,
-      currentXp: gamesLeft * 10,     // 1 játék = 10 XP
-      maxXp: gamesNeeded * 10        // Szint max XP
+      currentXp: gamesLeft * 10,
+      maxXp: gamesNeeded * 10
     };
   };
 
   const { level, currentXp, maxXp } = calculateLevelInfo(userData?.jatszottJatekok);
 
-  const getRankName = (lvl) => {
+  const getRankName = (lvl: number): string => {
     if (lvl >= 30) return 'Szuperhős 🦸‍♂️';
     if (lvl >= 25) return 'Legenda 👑';
     if (lvl >= 20) return 'Mester 🎓';
@@ -60,7 +86,7 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserData = async (): Promise<void> => {
       try {
         const token = await AsyncStorage.getItem('token');
         const userId = await AsyncStorage.getItem('userid');
@@ -76,7 +102,6 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
           body: JSON.stringify({ jatekosId: userId }),
         });
 
-        // If user is deleted (404), logout immediately
         if (jatekosResponse.status === 404) {
           await AsyncStorage.removeItem('token');
           await AsyncStorage.removeItem('userid');
@@ -99,7 +124,7 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
         let jatekosNev = 'Ismeretlen';
         let osszesNyeremeny = 0;
         let jatszottJatekok = 0;
-        let eredmenyekLista = [];
+        let eredmenyekLista: EredmenyItem[] = [];
 
         if (jatekosResponse.ok) {
           const jatekosData = await jatekosResponse.json();
@@ -137,32 +162,24 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
     fetchUserData();
   }, [refresh]);
 
-  const handleLogout = async () => {
-   Alert.alert(
-      'Kijelentkezés',
-      'Biztosan ki szeretnél jelentkezni?',
-      [
-        { text: 'Mégse', style: 'cancel' },
-        { 
-          text: 'Kijelentkezés', 
-          onPress: async () => {
-            await AsyncStorage.removeItem('token');
-            await AsyncStorage.removeItem('userid');
-            if (onLogout) onLogout();
-          }
-        }
-      ]
-    );
+  const handleLogout = async (): Promise<void> => {
+    setLogoutConfirmModalVisible(true);
   };
 
-  const handleChangePassword = async () => {
+  const handleChangePassword = async (): Promise<void> => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert('Hiba', 'Kérlek tölts ki minden mezőt!');
+      setAlertTitle('Hiba');
+      setAlertMessage('Kérlek tölts ki minden mezőt!');
+      setAlertType('error');
+      setAlertModalVisible(true);
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert('Hiba', 'Az új jelszavak nem egyeznek!');
+      setAlertTitle('Hiba');
+      setAlertMessage('Az új jelszavak nem egyeznek!');
+      setAlertType('error');
+      setAlertModalVisible(true);
       return;
     }
 
@@ -183,33 +200,45 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
       });
 
       if (response.ok) {
-        Alert.alert('Siker', 'Jelszó sikeresen megváltoztatva!');
+        setAlertTitle('Siker');
+        setAlertMessage('Jelszó sikeresen megváltoztatva!');
+        setAlertType('success');
+        setAlertModalVisible(true);
         setPasswordModalVisible(false);
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
       } else {
         const errorData = await response.json();
-        Alert.alert('Hiba', errorData.error || 'Hiba történt a jelszó változtatás során.');
+        setAlertTitle('Hiba');
+        setAlertMessage(errorData.error || 'Hiba történt a jelszó változtatás során.');
+        setAlertType('error');
+        setAlertModalVisible(true);
       }
     } catch (error) {
       console.log(error);
-      Alert.alert('Hiba', 'Hálózati hiba történt.');
+      setAlertTitle('Hiba');
+      setAlertMessage('Hálózati hiba történt.');
+      setAlertType('error');
+      setAlertModalVisible(true);
     } finally {
       setPasswordLoading(false);
     }
   };
 
-  const handleDeleteAccount = async () => {
+  const handleDeleteAccount = async (): Promise<void> => {
      if (!deletePassword) {
-      Alert.alert('Hiba', 'Kérlek add meg a jelszavad a törléshez!');
+      setAlertTitle('Hiba');
+      setAlertMessage('Kérlek add meg a jelszavad a törléshez!');
+      setAlertType('error');
+      setAlertModalVisible(true);
       return;
     }
 
     setDeleteLoading(true);
     try {
-      const response = await fetch(`${Cim.Cim}/Admin/sajat-fiok-torles/${encodeURIComponent(userData?.nev)}`, {
-        method: 'DELETE', // Assuming DELETE, but sometimes POST
+      const response = await fetch(`${Cim.Cim}/Admin/sajat-fiok-torles/${encodeURIComponent(userData?.nev || '')}`, {
+        method: 'DELETE',
          headers: {
           'Content-Type': 'application/json',
         },
@@ -219,18 +248,27 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
       });
 
       if (response.ok) {
-        Alert.alert('Siker', 'Fiók sikeresen törölve.');
+        setAlertTitle('Siker');
+        setAlertMessage('Fiók sikeresen törölve.');
+        setAlertType('success');
+        setAlertModalVisible(true);
         setDeleteModalVisible(false);
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('userid');
         if (onLogout) onLogout();
       } else {
          const errorData = await response.json();
-        Alert.alert('Hiba', errorData.error || 'Hiba történt a törlés során.');
+        setAlertTitle('Hiba');
+        setAlertMessage(errorData.error || 'Hiba történt a törlés során.');
+        setAlertType('error');
+        setAlertModalVisible(true);
       }
     } catch (error) {
        console.log(error);
-       Alert.alert('Hiba', 'Hálózati hiba történt.');
+       setAlertTitle('Hiba');
+       setAlertMessage('Hálózati hiba történt.');
+       setAlertType('error');
+       setAlertModalVisible(true);
     } finally {
       setDeleteLoading(false);
     }
@@ -239,8 +277,10 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#6200EA" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header Gradient */}
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 100 : insets.bottom + 80 }}
+      >
         <LinearGradient
           colors={['#6200EA', '#AA00FF']}
           start={{ x: 0, y: 0 }}
@@ -438,6 +478,78 @@ const Felhasznalo = ({ onLogout, onNavigateToWinnings }) => {
                 )}
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Kijelentkezés megerősítés Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={logoutConfirmModalVisible}
+        onRequestClose={() => setLogoutConfirmModalVisible(false)}
+      >
+        <View style={styles.alertModalOverlay}>
+          <View style={styles.alertModal}>
+            <MaterialCommunityIcons name="logout" size={60} color="#FF9800" />
+            <Text style={[styles.alertTitle, { color: '#FF9800' }]}>Kijelentkezés</Text>
+            <Text style={styles.alertMessage}>Biztosan ki szeretnél jelentkezni?</Text>
+            <View style={styles.alertButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.alertButton, styles.cancelButton]}
+                onPress={() => setLogoutConfirmModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Mégse</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.alertButton, styles.confirmButton]}
+                onPress={async () => {
+                  setLogoutConfirmModalVisible(false);
+                  await AsyncStorage.removeItem('token');
+                  await AsyncStorage.removeItem('userid');
+                  if (onLogout) onLogout();
+                }}
+              >
+                <Text style={styles.confirmButtonText}>Kijelentkezés</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Általános Alert Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={alertModalVisible}
+        onRequestClose={() => setAlertModalVisible(false)}
+      >
+        <View style={styles.alertModalOverlay}>
+          <View style={styles.alertModal}>
+            {alertType === 'error' && (
+              <MaterialCommunityIcons name="alert-circle" size={60} color="#F44336" />
+            )}
+            {alertType === 'success' && (
+              <MaterialCommunityIcons name="check-circle" size={60} color="#4CAF50" />
+            )}
+            {alertType === 'warning' && (
+              <MaterialCommunityIcons name="alert" size={60} color="#FF9800" />
+            )}
+            {alertType === 'info' && (
+              <MaterialCommunityIcons name="information" size={60} color="#2196F3" />
+            )}
+            <Text style={[styles.alertTitle, { 
+              color: alertType === 'error' ? '#F44336' : alertType === 'success' ? '#4CAF50' : alertType === 'warning' ? '#FF9800' : '#2196F3'
+            }]}>{alertTitle}</Text>
+            <Text style={styles.alertMessage}>{alertMessage}</Text>
+            <TouchableOpacity 
+              style={[styles.alertButton, { 
+                backgroundColor: alertType === 'error' ? '#F44336' : alertType === 'success' ? '#4CAF50' : alertType === 'warning' ? '#FF9800' : '#2196F3'
+              }]}
+              onPress={() => setAlertModalVisible(false)}
+            >
+              <Text style={styles.alertButtonText}>Rendben</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -653,7 +765,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // Modal styles
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -711,6 +822,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  alertModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  alertModal: {
+    width: '85%',
+    maxWidth: 300,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 12,
+  },
+  alertMessage: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 15,
+    lineHeight: 20,
+  },
+  alertButtonContainer: {
+    flexDirection: 'row',
+    marginTop: 15,
+    gap: 10,
+    width: '100%',
+  },
+  alertButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 3,
+  },
+  cancelButton: {
+    backgroundColor: '#E0E0E0',
+  },
+  confirmButton: {
+    backgroundColor: '#2196F3',
+  },
+  cancelButtonText: {
+    fontWeight: 'bold',
+    color: '#555',
+  },
+  confirmButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  alertButtonText: {
     fontWeight: 'bold',
     color: '#fff',
   }

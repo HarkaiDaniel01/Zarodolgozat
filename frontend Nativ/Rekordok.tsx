@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, JSX } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Platform } from 'react-native';
 import Cim from './Cim';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const Rekordok = () => {
-  const [rekordok, setRekordok] = useState([]);
-  const [tolt, setTolt] = useState(true);
-  const [hiba, setHiba] = useState(null);
-  const [frissites, setFrissites] = useState(false);
+interface RecordItem {
+  jatekos_id: number;
+  jatekos_nev: string;
+  eredmeny: number;
+}
+
+const Rekordok: React.FC = () => {
+  const [rekordok, setRekordok] = useState<RecordItem[]>([]);
+  const [tolt, setTolt] = useState<boolean>(true);
+  const [hiba, setHiba] = useState<string | null>(null);
+  const [frissites, setFrissites] = useState<boolean>(false);
 
   // Fetch data
-  const adatLeker = async () => {
+  const adatLeker = async (): Promise<void> => {
     try {
       const response = await fetch(`${Cim.Cim}/rekordok`);
       if (!response.ok) {
@@ -21,7 +27,7 @@ const Rekordok = () => {
       const json = await response.json();
       setRekordok(json);
     } catch (error) {
-      setHiba(error.message);
+      setHiba(error instanceof Error ? error.message : 'Ismeretlen hiba');
     } finally {
       setTolt(false);
       setFrissites(false);
@@ -32,7 +38,7 @@ const Rekordok = () => {
     adatLeker();
   }, []);
 
-  const onRefresh = () => {
+  const onRefresh = (): void => {
     setFrissites(true);
     adatLeker();
   };
@@ -59,7 +65,7 @@ const Rekordok = () => {
   const topThree = rekordok.slice(0, 3);
   const restOfList = rekordok.slice(3);
 
-  const renderPodium = () => (
+  const renderPodium = (): JSX.Element => (
     <View style={styles.podiumContainer}>
       {/* 2nd Place */}
       {topThree[1] && (
@@ -114,7 +120,7 @@ const Rekordok = () => {
     </View>
   );
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item, index }: { item: RecordItem; index: number }): JSX.Element => {
     const rank = index + 4; // Start ranking from 4
 
     return (
@@ -127,7 +133,6 @@ const Rekordok = () => {
           {/* Name and Info */}
           <View style={styles.infoContainer}>
             <Text style={styles.nev}>{item.jatekos_nev}</Text>
-            {/* Optional: Add user level or title here if available */}
           </View>
           
           {/* Score */}
@@ -138,7 +143,7 @@ const Rekordok = () => {
     );
   };
 
-  const renderEmpty = () => (
+  const renderEmpty = (): JSX.Element => (
     <View style={{padding: 20, alignItems: 'center'}}>
         <Text style={{color: '#999'}}>Nincs több játékos a listán.</Text>
     </View>
@@ -162,7 +167,7 @@ const Rekordok = () => {
       <FlatList
         data={restOfList}
         renderItem={renderItem}
-        keyExtractor={(item) => (item.jatekos_id ? item.jatekos_id.toString() : Math.random().toString())}
+        keyExtractor={(item: RecordItem) => (item.jatekos_id ? item.jatekos_id.toString() : Math.random().toString())}
         contentContainerStyle={styles.lista}
         ListHeaderComponent={renderPodium}
         ListEmptyComponent={renderEmpty}
@@ -178,7 +183,7 @@ const Rekordok = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA', // Soft gray background
+    backgroundColor: '#F5F7FA',
   },
   headerGradient: {
     borderBottomLeftRadius: 30,
@@ -225,8 +230,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 30,
   },
-  
-  // PODIUM STYLES
   podiumContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: -20, // Overlap the bar
+    marginBottom: -20,
     zIndex: 5,
     elevation: 4,
     // @ts-ignore
@@ -305,12 +308,12 @@ const styles = StyleSheet.create({
       marginBottom: 2,
   },
   podiumNameFirst: {
-    color: '#D84315', // Darker orange/brown
+    color: '#D84315',
     fontSize: 15,
     fontWeight: '800',
     textAlign: 'center',
     marginBottom: 2,
-},
+  },
   podiumScore: {
       color: '#546E7A',
       fontSize: 11,
@@ -324,7 +327,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // LIST STYLES
   rekordSor: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -362,7 +364,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   scoreContainer: {
-      backgroundColor: '#E3F2FD', // Light Blue bg
+      backgroundColor: '#E3F2FD',
       paddingHorizontal: 10,
       paddingVertical: 5,
       borderRadius: 12,
@@ -370,7 +372,7 @@ const styles = StyleSheet.create({
   pont: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#1565C0', // Blue text
+    color: '#1565C0',
   },
   hibaText: {
     fontSize: 16,
@@ -380,4 +382,3 @@ const styles = StyleSheet.create({
 });
 
 export default Rekordok;
-

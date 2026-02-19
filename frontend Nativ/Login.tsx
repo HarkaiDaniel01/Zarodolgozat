@@ -5,26 +5,35 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Dimensions
+  Dimensions,
+  Modal
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from "./Cim";
 
+interface LoginProps {
+  onNavigateToRegister: () => void;
+  onLoginSuccess: () => void;
+}
+
 const { width } = Dimensions.get('window');
 
-const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) => {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const [alertTitle, setAlertTitle] = useState<string>('');
+  const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertType, setAlertType] = useState<'info' | 'success' | 'error'>('info');
 
-  const handleLogin = async () => {
+  const handleLogin = async (): Promise<void> => {
     if (!username || !password) {
       setError("Kérlek töltsd ki mindkét mezőt!");
       return;
@@ -77,9 +86,15 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
         });
 
         if (resEredmeny.ok) {
-          Alert.alert("Siker", "Korábbi eredmény feltöltve!");
+          setAlertTitle('Siker');
+          setAlertMessage('Korábbi eredmény feltöltve!');
+          setAlertType('success');
+          setAlertModalVisible(true);
         } else {
-          Alert.alert("Hiba", "Nem sikerült feltölteni a korábbi eredményt.");
+          setAlertTitle('Hiba');
+          setAlertMessage('Nem sikerült feltölteni a korábbi eredményt.');
+          setAlertType('error');
+          setAlertModalVisible(true);
         }
 
         await AsyncStorage.removeItem("taroltEredmeny");
@@ -87,13 +102,17 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
 
       if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Ismeretlen hiba";
       console.log("Login Error:", err);
-      setError(err.message);
-      Alert.alert("Hiba", err.message);
+      setError(errorMessage);
+      setAlertTitle('Hiba');
+      setAlertMessage(errorMessage);
+      setAlertType('error');
+      setAlertModalVisible(true);
     }
   };
 
-  const goToRegister = () => {
+  const goToRegister = (): void => {
     if (onNavigateToRegister) onNavigateToRegister();
   };
 
@@ -170,6 +189,40 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+
+        {/* Alert Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={alertModalVisible}
+          onRequestClose={() => setAlertModalVisible(false)}
+        >
+          <View style={styles.alertOverlay}>
+            <View style={styles.alertContainer}>
+              {alertType === 'error' && (
+                <MaterialCommunityIcons name="alert-circle" size={60} color="#F44336" />
+              )}
+              {alertType === 'success' && (
+                <MaterialCommunityIcons name="check-circle" size={60} color="#4CAF50" />
+              )}
+              {alertType === 'info' && (
+                <MaterialCommunityIcons name="information" size={60} color="#2196F3" />
+              )}
+              <Text style={[styles.alertTitle, {
+                color: alertType === 'error' ? '#F44336' : alertType === 'success' ? '#4CAF50' : '#2196F3'
+              }]}>{alertTitle}</Text>
+              <Text style={styles.alertMessage}>{alertMessage}</Text>
+              <TouchableOpacity
+                style={[styles.alertButton, {
+                  backgroundColor: alertType === 'error' ? '#F44336' : alertType === 'success' ? '#4CAF50' : '#2196F3'
+                }]}
+                onPress={() => setAlertModalVisible(false)}
+              >
+                <Text style={styles.alertButtonText}>Rendben</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </LinearGradient>
     </KeyboardAvoidingView>
   );
@@ -315,6 +368,47 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
   },
+  alertOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  alertContainer: {
+    width: '85%',
+    maxWidth: 300,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 12,
+  },
+  alertMessage: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 15,
+    lineHeight: 20,
+  },
+  alertButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 15,
+    width: '100%',
+  },
+  alertButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 14,
+  }
 });
 
 export default Login;
