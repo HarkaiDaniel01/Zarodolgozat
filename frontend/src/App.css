@@ -105,7 +105,6 @@ input{
   box-shadow: 0 0 22px rgba(46,196,182,0.7); 
 
   opacity: 0;
-  transition: opacity 0.5s ease-in;
   animation: fadeIn 1s ease forwards;
 }
 

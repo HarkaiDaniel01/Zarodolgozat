@@ -91,14 +91,18 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                 //joE = "helyes"
             } 
             else {
+                if (felezoSegitsegAktiv) {
+                    let randomHelytelen;
+                    do {
+                        randomHelytelen = Math.floor(Math.random() * 4)
+                    } while (valaszok[randomHelytelen] === helyesValasz)
 
-                let randomHelytelen;
-                do {
-                randomHelytelen = Math.floor(Math.random() * 4)
-                } while (valaszok[randomHelytelen] === helyesValasz)
-
-                telefonValasz = valaszok[randomHelytelen]
-                //joE = "helytelen"
+                    telefonValasz = valaszok[randomHelytelen]
+                    //joE = "helytelen"
+                } else {
+                    telefonValasz = helytelenValaszMarad
+                }
+                
 
             }
 
