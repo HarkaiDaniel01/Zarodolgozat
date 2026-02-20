@@ -1912,7 +1912,56 @@ const styles = StyleSheet.create({
   },
   progressDotCompleted: {
     backgroundColor: '#8E24AA',
-  }
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  winnerCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  winnerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginVertical: 15,
+  },
+  winnerPrize: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFB300',
+    marginVertical: 20,
+  },
+  primaryBtn: {
+    backgroundColor: '#8E24AA',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 12,
+    marginVertical: 10,
+    elevation: 3,
+  },
+  primaryBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  secondaryBtn: {
+    backgroundColor: '#E0E0E0',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 12,
+    marginVertical: 10,
+    elevation: 3,
+  },
+  secondaryBtnText: {
+    color: '#333',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
 
 export default Kerdesek;
