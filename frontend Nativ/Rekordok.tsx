@@ -151,18 +151,12 @@ const Rekordok: React.FC = () => {
 
   return (
     <View style={styles.container}>
-       <LinearGradient
-            colors={['#FFC107', '#FF9800']}
-            style={styles.headerGradient}
-       >
-            <SafeAreaView edges={['top', 'left', 'right']} style={{alignItems: 'center', paddingBottom: 25}}>
-                <View style={styles.headerRow}>
-                    <MaterialCommunityIcons name="podium-gold" size={32} color="#fff" />
-                    <Text style={styles.headerTitle}>Ranglista</Text>
-                </View>
-                <Text style={styles.subTitle}>A legügyesebb játékosok</Text>
-            </SafeAreaView>
-      </LinearGradient>
+       <SafeAreaView style={styles.headerArea}>
+            <View style={styles.headerRow}>
+                <Text style={styles.headerTitle}>Ranglista</Text>           
+            </View>
+            
+      </SafeAreaView>
 
       <FlatList
         data={restOfList}
@@ -173,9 +167,11 @@ const Rekordok: React.FC = () => {
         ListEmptyComponent={renderEmpty}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={frissites} onRefresh={onRefresh} colors={["#FFC107"]} />
+          <RefreshControl refreshing={frissites} onRefresh={onRefresh} colors={["#8E24AA"]} />
         }
       />
+      
+
     </View>
   );
 };
@@ -183,59 +179,71 @@ const Rekordok: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#FAFAFA',
   },
-  headerGradient: {
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    marginBottom: 10,
-    elevation: 8,
-    // @ts-ignore
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)',
-    zIndex: 100,
+  headerArea: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 15,
+    backgroundColor: '#FAFAFA',
   },
   headerRow: {
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 5,
+    marginBottom: 20,
   },
   headerTitle: {
-      fontSize: 26,
+      fontSize: 20,
       fontWeight: 'bold',
-      color: '#fff',
-      ...Platform.select({
-        web: {
-          textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-        },
-        default: {
-          textShadowColor: 'rgba(0,0,0,0.1)',
-          textShadowOffset: {width: 1, height: 1},
-          textShadowRadius: 2,
-        }
-      })
+      color: '#333',
   },
-  subTitle: {
-      fontSize: 14,
-      color: 'rgba(255,255,255,0.9)',
-      fontWeight: '500',
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    padding: 4,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+  activeTab: {
+    backgroundColor: '#F3E5F5',
+  },
+  activeTabText: {
+    color: '#8E24AA',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  inactiveTabText: {
+    color: '#999',
+    fontWeight: '600',
+    fontSize: 14,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#FAFAFA',
   },
   lista: {
     paddingHorizontal: 20,
-    paddingBottom: 30,
+    paddingBottom: 100,
   },
   podiumContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginBottom: 25,
-    marginTop: 15,
+    marginBottom: 30,
+    marginTop: 20,
     height: 220, 
   },
   podiumItem: {
@@ -264,8 +272,10 @@ const styles = StyleSheet.create({
     marginBottom: -20,
     zIndex: 5,
     elevation: 4,
-    // @ts-ignore
-    boxShadow: '0px 2px 4px rgba(0,0,0,0.15)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     borderWidth: 2,
     borderColor: '#fff',
   },
@@ -278,107 +288,127 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   badgeGold: {
-    position: 'absolute', bottom: -5, backgroundColor: '#FFD700', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2,
+    position: 'absolute', bottom: -5, backgroundColor: '#8E24AA', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
   },
   badgeSilver: {
-    position: 'absolute', bottom: -5, backgroundColor: '#B0BEC5', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2,
+    position: 'absolute', bottom: -5, backgroundColor: '#333', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
   },
   badgeBronze: {
-    position: 'absolute', bottom: -5, backgroundColor: '#D7CCC8', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2,
+    position: 'absolute', bottom: -5, backgroundColor: '#FF9800', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
   },
-  badgeText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
+  badgeText: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
 
   podiumBar: {
     width: '100%',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 30,
+    paddingTop: 35,
     paddingHorizontal: 5,
-    elevation: 3,
-    // @ts-ignore
-    boxShadow: '0px 3px 5px rgba(0,0,0,0.1)',
   },
   podiumName: {
-      color: '#455A64',
-      fontSize: 13,
-      fontWeight: '700',
+      color: '#333',
+      fontSize: 12,
+      fontWeight: 'bold',
       textAlign: 'center',
-      marginBottom: 2,
+      marginBottom: 4,
   },
   podiumNameFirst: {
-    color: '#D84315',
-    fontSize: 15,
-    fontWeight: '800',
+    color: '#333',
+    fontSize: 14,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   podiumScore: {
-      color: '#546E7A',
+      color: '#8E24AA',
       fontSize: 11,
-      fontWeight: '600',
+      fontWeight: 'bold',
       textAlign: 'center',
   },
   podiumScoreFirst: {
-    color: '#BF360C',
+    color: '#8E24AA',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 
   rekordSor: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 15,
     paddingHorizontal: 15,
     backgroundColor: '#fff',
-    borderRadius: 16,
-    marginBottom: 10,
+    borderRadius: 20,
+    marginBottom: 12,
     elevation: 2,
-    // @ts-ignore
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
   },
   rankBadge: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      backgroundColor: '#EFF0F4',
+      width: 30,
       justifyContent: 'center',
       alignItems: 'center',
-      marginRight: 15,
+      marginRight: 10,
   },
   rankText: {
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: 'bold',
-      color: '#757575',
+      color: '#999',
   },
   infoContainer: {
       flex: 1,
-      justifyContent: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
   },
   nev: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#37474F',
-    marginBottom: 2,
+    fontWeight: 'bold',
+    color: '#333',
+    marginLeft: 15,
   },
   scoreContainer: {
-      backgroundColor: '#E3F2FD',
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderRadius: 12,
+      backgroundColor: '#F3E5F5',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 15,
   },
   pont: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#1565C0',
+    color: '#8E24AA',
   },
   hibaText: {
     fontSize: 16,
     color: 'red',
     textAlign: 'center',
   },
+  bottomButtonContainer: {
+    position: 'absolute',
+    bottom: 100,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  startQuizButton: {
+    backgroundColor: '#8E24AA',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    elevation: 5,
+    shadowColor: '#8E24AA',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+  },
+  startQuizButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  }
 });
 
 export default Rekordok;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar, Platform, useWindowDimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -24,6 +24,8 @@ interface EredmenyItem {
 }
 
 const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinnings }) => {
+  const { width } = useWindowDimensions();
+  const isTablet = width > 768;
   const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -276,33 +278,47 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#6200EA" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 100 : insets.bottom + 80 }}
       >
-        <LinearGradient
-          colors={['#6200EA', '#AA00FF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.headerGradient}
-        >
-          <SafeAreaView edges={['top']} style={styles.headerContent}>
-            <View style={styles.avatarContainer}>
-              <MaterialCommunityIcons name="account" size={50} color="#6200EA" />
+        <SafeAreaView edges={['top']} style={styles.headerArea}>
+            <View style={styles.headerRow}>
+                <Text style={styles.headerTitle}>Profil</Text>
+                <TouchableOpacity style={styles.settingsButton} onPress={() => setPasswordModalVisible(true)}>
+                    <MaterialCommunityIcons name="cog-outline" size={18} color="#666" />
+                    <Text style={styles.settingsText}>Jelszó változtatás</Text>
+                </TouchableOpacity>
             </View>
-            <Text style={styles.headerUserName}>{userData?.nev || 'Betöltés...'}</Text>
-            <Text style={styles.headerUserLabel}>Játékos</Text>
-          </SafeAreaView>
-        </LinearGradient>
+            
+            <View style={styles.profileInfoContainer}>
+                <Text style={styles.userName}>{userData?.nev || 'Betöltés...'}</Text>
+                <View style={styles.titleBadge}>
+                    <MaterialCommunityIcons name="medal-outline" size={14} color="#8E24AA" />
+                    <Text style={styles.titleText}>{userData?.nev === 'Admin' ? 'Adminisztrátor' : 'Felhasználó'}</Text>
+                </View>
+            </View>
+        </SafeAreaView>
 
         <View style={styles.contentContainer}>
           
           {/* Stats Row */}
+          <View style={styles.totalXpCard}>
+              <View style={styles.xpIconContainer}>
+                  <MaterialCommunityIcons name="lightning-bolt" size={24} color="#FF9800" />
+              </View>
+              <View style={styles.xpTextContainer}>
+                  <Text style={styles.xpLabel}>Total XP</Text>
+                  <Text style={styles.xpValue}>{currentXp.toLocaleString()}</Text>
+              </View>
+              <MaterialCommunityIcons name="chevron-right" size={24} color="#ccc" />
+          </View>
+
           <View style={styles.statsRow}>
               <View style={styles.statCard}>
-                  <View style={[styles.statIconContainer, { backgroundColor: '#E0F7FA' }]}>
-                      <MaterialCommunityIcons name="wallet" size={24} color="#00BCD4" />
+                  <View style={[styles.statIconContainer, { backgroundColor: '#F3E5F5' }]}>
+                      <MaterialCommunityIcons name="trophy-outline" size={24} color="#8E24AA" />
                   </View>
                   <Text style={styles.statLabel}>Összes nyeremény</Text>
                   <Text style={styles.statValue}>{userData?.osszesNyeremeny?.toLocaleString('hu-HU')} Ft</Text>
@@ -310,64 +326,27 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
               
               <View style={styles.statCard}>
                   <View style={[styles.statIconContainer, { backgroundColor: '#E3F2FD' }]}>
-                      <MaterialCommunityIcons name="gamepad-variant" size={24} color="#448AFF" />
+                      <MaterialCommunityIcons name="gamepad-variant-outline" size={24} color="#2196F3" />
                   </View>
                   <Text style={styles.statLabel}>Játszott játékok</Text>
                   <Text style={styles.statValue}>{userData?.jatszottJatekok}</Text>
               </View>
           </View>
 
-          <Text style={styles.sectionTitle}>Játék Előzmények</Text>
-          <TouchableOpacity style={[styles.actionButton, {backgroundColor: '#00BCD4'}]} onPress={onNavigateToWinnings}>
-              <View style={styles.actionIcon}>
-                  <MaterialCommunityIcons name="trophy-outline" size={22} color="#fff" />
-              </View>
-              <Text style={styles.actionText}>Nyeremények megtekintése</Text>
-              <MaterialCommunityIcons name="chevron-right" size={24} color="#fff" />
-          </TouchableOpacity>
+          <View style={styles.actionButtonsContainer}>
+              <TouchableOpacity style={styles.actionIconButton} onPress={onNavigateToWinnings}>
+                  <MaterialCommunityIcons name="history" size={24} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionIconButton} onPress={() => setDeleteModalVisible(true)}>
+                  <MaterialCommunityIcons name="delete-outline" size={24} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionIconButton, styles.primaryActionButton]} onPress={handleLogout}>
+                  <MaterialCommunityIcons name="logout" size={28} color="#fff" />
+              </TouchableOpacity>
 
-          <Text style={styles.sectionTitle}>Profil Beállítások</Text>
-
-          <TouchableOpacity style={[styles.actionButton, {backgroundColor: '#2979FF'}]} onPress={() => setPasswordModalVisible(true)}>
-              <View style={styles.actionIcon}>
-                  <MaterialCommunityIcons name="lock-reset" size={22} color="#fff" />
-              </View>
-              <Text style={styles.actionText}>Jelszó változtatás</Text>
-              <MaterialCommunityIcons name="chevron-right" size={24} color="#fff" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.actionButton, {backgroundColor: '#F50057'}]} onPress={() => setDeleteModalVisible(true)}>
-              <View style={styles.actionIcon}>
-                  <MaterialCommunityIcons name="delete" size={22} color="#fff" />
-              </View>
-              <Text style={styles.actionText}>Fiók törlése</Text>
-              <MaterialCommunityIcons name="chevron-right" size={24} color="#fff" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.actionButton, {backgroundColor: '#FF6D00'}]} onPress={handleLogout}>
-              <View style={styles.actionIcon}>
-                  <MaterialCommunityIcons name="logout" size={22} color="#fff" />
-              </View>
-              <Text style={styles.actionText}>Kijelentkezés</Text>
-              <MaterialCommunityIcons name="chevron-right" size={24} color="#fff" />
-          </TouchableOpacity>
-
-          <Text style={styles.sectionTitle}>Fejlődésed</Text>
-          
-          <View style={styles.levelCard}>
-              <View style={[styles.iconContainer, {backgroundColor: '#EDE7F6', marginRight: 15}]}>
-                  <MaterialCommunityIcons name="trending-up" size={28} color="#7E57C2" />
-              </View>
-              <View style={{flex: 1}}>
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
-                      <Text style={styles.levelTitle}>{getRankName(level)}</Text>
-                      <Text style={styles.xpText}>{currentXp} / {maxXp} XP</Text>
-                  </View>
-                  <Text style={{color: '#666', marginBottom: 8}}>Szint {level}</Text>
-                  <View style={styles.progressBarBackground}>
-                      <View style={[styles.progressBarFill, {width: `${Math.min(100, (currentXp / maxXp) * 100)}%`}]} />
-                  </View>
-              </View>
+              <TouchableOpacity style={styles.actionIconButton}>
+                  <MaterialCommunityIcons name="download" size={24} color="#fff" />
+              </TouchableOpacity>
           </View>
 
         </View>
@@ -560,210 +539,268 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#FAFAFA',
   },
-  headerGradient: {
-    paddingBottom: 50,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    ...Platform.select({
-      web: {
-        boxShadow: '0px 4px 15px rgba(98, 0, 234, 0.3)',
-      },
-      default: {
-        shadowColor: "#6200EA",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 10,
-      }
-    })
-  },
-  headerContent: {
-    alignItems: 'center',
+  headerArea: {
+    paddingHorizontal: 20,
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 20,
+    backgroundColor: '#FAFAFA',
   },
-  avatarContainer: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
-    ...Platform.select({
-      web: {
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-      },
-      default: {
-        elevation: 5,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      }
-    })
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  headerUserName: {
-    fontSize: 26,
+  settingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  settingsText: {
+    marginLeft: 5,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  profileInfoContainer: {
+    alignItems: 'center',
+  },
+  avatarWrapper: {
+    position: 'relative',
+    marginBottom: 15,
+  },
+  avatarContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#E1BEE7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 4,
+    borderColor: '#fff',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+  },
+  onlineIndicator: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#4CAF50',
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
+  userName: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 2,
-    ...Platform.select({
-      web: {
-        textShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
-      },
-      default: {
-        textShadowColor: 'rgba(0, 0, 0, 0.1)',
-        textShadowOffset: { width: 0, height: 1 },
-        textShadowRadius: 2,
-      }
-    })
+    color: '#333',
+    marginBottom: 5,
   },
-  headerUserLabel: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '500',
+  titleBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3E5F5',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 15,
+    marginBottom: 15,
+  },
+  titleText: {
+    color: '#8E24AA',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginLeft: 4,
+  },
+  bioText: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 14,
+    lineHeight: 20,
+    paddingHorizontal: 20,
   },
   contentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  totalXpCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
     padding: 20,
-    marginTop: -40,
+    marginBottom: 15,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  xpIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFF3E0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  xpTextContainer: {
+    flex: 1,
+  },
+  xpLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 2,
+  },
+  xpValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
   },
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 25,
+    marginBottom: 20,
+    gap: 15,
   },
   statCard: {
     backgroundColor: '#fff',
-    width: '48%',
-    borderRadius: 16,
+    flex: 1, 
+    borderRadius: 20,
     padding: 15,
-    alignItems: 'flex-start',
-    ...Platform.select({
-      web: {
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
-      },
-      default: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-      }
-    })
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
   },
   statIconContainer: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
   },
   statLabel: {
     fontSize: 12,
-    color: '#757575',
+    color: '#999',
     marginBottom: 5,
+    textAlign: 'center',
   },
   statValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  sectionTitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 10,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginLeft: 5,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 12,
-    ...Platform.select({
-      web: {
-        boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.1)',
-      },
-      default: {
-        elevation: 2,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      }
-    })
-  },
-  actionIcon: {
-    width: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  actionText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-    flex: 1,
-  },
-  levelCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
-    ...Platform.select({
-      web: {
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
-      },
-      default: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-      }
-    })
-  },
-  iconContainer: {
-      width: 50,
-      height: 50,
-      borderRadius: 15,
-      justifyContent: 'center', 
-      alignItems: 'center',
-  },
-  levelTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
   },
-  xpText: {
-    fontSize: 14,
-    color: '#2962FF',
-    fontWeight: '600',
+  actionButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#333',
+    borderRadius: 30,
+    padding: 10,
+    marginBottom: 25,
   },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 4,
-    width: '100%',
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: '#7E57C2',
-    borderRadius: 4,
-  },
-  center: {
-    flex: 1,
+  actionIconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  primaryActionButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#8E24AA',
+    marginTop: -20,
+    elevation: 4,
+    shadowColor: '#8E24AA',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+  },
+  achievementsContainer: {
+    gap: 15,
+  },
+  achievementItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 15,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  achievementIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  achievementTextContainer: {
+    flex: 1,
+  },
+  achievementTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 2,
+  },
+  achievementDesc: {
+    fontSize: 12,
+    color: '#666',
+  },
+  achievementProgress: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 2,
+    marginLeft: 10,
+  },
+  achievementProgressFill: {
+    height: '100%',
+    borderRadius: 2,
   },
   modalOverlay: {
     flex: 1,
@@ -817,7 +854,7 @@ const styles = StyleSheet.create({
   modalConfirmButton: {
     flex: 1,
     padding: 12,
-    backgroundColor: '#2962FF',
+    backgroundColor: '#8E24AA',
     borderRadius: 10,
     alignItems: 'center',
   },
@@ -870,7 +907,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E0E0E0',
   },
   confirmButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#8E24AA',
   },
   cancelButtonText: {
     fontWeight: 'bold',

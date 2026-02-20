@@ -61,48 +61,50 @@ function MyTabs(): React.JSX.Element {
 
       {/* Custom Tab Bar */}
       {!hideTabBar && (
-        <View style={[styles.tabBar, Platform.OS === 'android' && { paddingBottom: insets.bottom + 10 }]}>
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => setActiveTab('jatek')}
-          >
-            <MaterialCommunityIcons 
-              name={activeTab === 'jatek' ? "play-circle" : "play-circle-outline"} 
-              size={28} 
-              color={activeTab === 'jatek' ? "#2962FF" : "#9E9E9E"} 
-            />
-            <Text style={[styles.tabText, activeTab === 'jatek' && styles.activeTabText]}>
-              Játék
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => setActiveTab('rekordok')}
-          >
-             <MaterialCommunityIcons 
-              name={activeTab === 'rekordok' ? "check-decagram" : "check-decagram-outline"} 
-              size={28} 
-              color={activeTab === 'rekordok' ? "#2962FF" : "#9E9E9E"} 
-            />
-            <Text style={[styles.tabText, activeTab === 'rekordok' && styles.activeTabText]}>
-              Rekordok
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => setActiveTab('profil')}
-          >
-            <MaterialCommunityIcons 
-              name={activeTab === 'profil' ? "account" : "account-outline"} 
-              size={28} 
-              color={activeTab === 'profil' ? "#2962FF" : "#9E9E9E"} 
-            />
-            <Text style={[styles.tabText, activeTab === 'profil' && styles.activeTabText]}>
-              Profil
-            </Text>
-          </TouchableOpacity>
+        <View style={styles.tabBarContainer}>
+          <View style={[styles.tabBar, Platform.OS === 'android' && { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }]}>
+            <TouchableOpacity
+              style={styles.tab}
+              onPress={() => setActiveTab('jatek')}
+            >
+              <MaterialCommunityIcons 
+                name={activeTab === 'jatek' ? "home" : "home-outline"} 
+                size={28} 
+                color={activeTab === 'jatek' ? "#8E24AA" : "#B0BEC5"} 
+              />
+              <Text style={[styles.tabText, activeTab === 'jatek' && styles.activeTabText]}>
+                HOME
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.tab}
+              onPress={() => setActiveTab('rekordok')}
+            >
+               <MaterialCommunityIcons 
+                name={activeTab === 'rekordok' ? "trophy" : "trophy-outline"} 
+                size={28} 
+                color={activeTab === 'rekordok' ? "#8E24AA" : "#B0BEC5"} 
+              />
+              <Text style={[styles.tabText, activeTab === 'rekordok' && styles.activeTabText]}>
+                MODES
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.tab}
+              onPress={() => setActiveTab('profil')}
+            >
+              <MaterialCommunityIcons 
+                name={activeTab === 'profil' ? "account" : "account-outline"} 
+                size={28} 
+                color={activeTab === 'profil' ? "#8E24AA" : "#B0BEC5"} 
+              />
+              <Text style={[styles.tabText, activeTab === 'profil' && styles.activeTabText]}>
+                PROFILE
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
@@ -110,23 +112,32 @@ function MyTabs(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
+  tabBarContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    alignItems: 'center',
+  },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-    paddingVertical: 8,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
-    elevation: 8,
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    elevation: 10,
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     ...Platform.select({
       ios: {
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 3,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
       },
       web: {
-        boxShadow: '0px -2px 3px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
       }
     }),
   },
@@ -137,13 +148,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   tabText: {
-    fontSize: 12,
-    color: '#9E9E9E',
-    fontWeight: '500',
+    fontSize: 10,
+    color: '#B0BEC5',
+    fontWeight: '700',
+    textTransform: 'uppercase',
   },
   activeTabText: {
-    color: '#2962FF',
-    fontWeight: '700',
+    color: '#8E24AA',
   },
 });
 

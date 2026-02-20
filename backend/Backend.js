@@ -298,7 +298,12 @@ app.post("/jatekos", (req, res) => {
 });
 
 //eredmény felvitele
-app.post('/eredmenyFelvitel', (req, res) => {
+app.post('/eredmenyFelvitel', 
+  body("nyeremeny").exists(),
+  body("pontszam").exists(), 
+  body("jatekos").exists(),
+  body("kategoria").exists(),
+  (req, res) => {
 
         if (handleValidationErrors(req,res)) return 
 
@@ -309,7 +314,8 @@ app.post('/eredmenyFelvitel', (req, res) => {
         }
 
         const datumValue = new Date();
-        const sql=`insert into eredmenyek values (null,?,?,?,?,?)`
+        // Fixed SQL: Explicitly state columns to ensure correct mapping
+        const sql=`INSERT INTO eredmenyek (Eredmenyek_pont, Eredmenyek_pontszam, Eredmenyek_jatekos, Eredmenyek_datum, Eredmenyek_kategoria) VALUES (?,?,?,?,?)`
         pool.query(sql,[nyeremeny, pontszam, jatekos, datumValue, kategoria], (err, result) => {
         if (err) {
             console.log(err)
@@ -319,9 +325,6 @@ app.post('/eredmenyFelvitel', (req, res) => {
         return res.status(200).json({message:"Sikeres felvitel"})
         })
 })
-
-
-
 
 //nehéz kérdések
 app.get("/nehezVegyes", (req, res) => {

@@ -535,181 +535,77 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     const timerIconSize = isSmallScreen ? 12 : 16;
 
     return (
-      <LinearGradient 
-        colors={bgGradientColors} 
-        style={customStyles.fullScreen} 
-        start={{ x: 0, y: 0 }} 
-        end={{ x: 1, y: 1 }}
-      >
-        <StatusBar 
-          barStyle="light-content" 
-          backgroundColor="transparent" 
-          translucent={true} 
-        />
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView 
-            contentContainerStyle={{ paddingBottom: 20 }} 
-            showsVerticalScrollIndicator={false}
-          >
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: '#F8F9FA' }]}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
+        <ScrollView
+          contentContainerStyle={[
+            styles.scrollContent,
+            {
+              paddingTop: isSmallScreen ? 10 : 20,
+            },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.contentContainer}>
             {/* ========== FEJLÉC ========== */}
-            <View
-              style={[
-                customStyles.headerDetailsContainer,
-                {
-                  paddingHorizontal: responsivePadding.headerHorizontal,
-                  marginTop: responsivePadding.headerVertical,
-                  marginBottom: responsivePadding.headerVertical,
-                },
-              ]}
-            >
-              {/* Kilépés gomb */}
-              <TouchableOpacity 
-                style={[
-                  customStyles.headerExitBtn,
-                  {
-                    width: isSmallScreen ? 36 : 40,
-                    height: isSmallScreen ? 36 : 40,
-                    borderRadius: isSmallScreen ? 18 : 20,
-                  },
-                ]} 
+            <View style={styles.newHeaderRow}>
+              <TouchableOpacity
+                style={styles.newHeaderIconBtn}
                 onPress={handleExit}
               >
-                <MaterialCommunityIcons 
-                  name="door-open" 
-                  size={exitIconSize} 
-                  color="#8e24aa" 
-                />
+                <MaterialCommunityIcons name="arrow-left" size={24} color="#333" />
               </TouchableOpacity>
 
-              {/* Fejléc statisztika */}
-              <View style={customStyles.headerStatsContainer}>
-                {/* Kérdés szám */}
-                <View
-                  style={[
-                    customStyles.headerPillLeft,
-                    {
-                      paddingVertical: responsivePadding.headerVertical,
-                    },
-                  ]}
-                >
-                  <MaterialCommunityIcons 
-                    name="star-four-points-outline" 
-                    size={starIconSize} 
-                    color="#8e24aa" 
+              <Text style={styles.newHeaderText}>
+                Kérdés {szamlalo + 1} / {isEndless ? '∞' : kerdesekList.length}
+              </Text>
+
+              <TouchableOpacity
+                style={styles.newHeaderIconBtn}
+                onPress={handleExit}
+              >
+                <MaterialCommunityIcons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            {/* ========== PROGRESS DOTS ========== */}
+            <View style={styles.progressDotsContainer}>
+              {kerdesekList.map((_, index) => {
+                // Csak a környező pöttyöket mutatjuk, ha túl sok van
+                if (kerdesekList.length > 15) {
+                  if (index < szamlalo - 3 || index > szamlalo + 3) {
+                    if (index === 0 || index === kerdesekList.length - 1) {
+                      // Első és utolsó mindig látszik
+                    } else if (index === szamlalo - 4 || index === szamlalo + 4) {
+                      return <Text key={index} style={{color: '#ccc', fontSize: 10}}>...</Text>;
+                    } else {
+                      return null;
+                    }
+                  }
+                }
+                
+                return (
+                  <View
+                    key={index}
+                    style={[
+                      styles.progressDot,
+                      index === szamlalo ? styles.progressDotActive : null,
+                      index < szamlalo ? styles.progressDotCompleted : null,
+                    ]}
                   />
-                  <Text
-                    style={[
-                      customStyles.headerPillTextLeft,
-                      {
-                        fontSize: responsiveFontSizes.headerPill,
-                      },
-                    ]}
-                  >
-                    {szamlalo + 1}/{isEndless ? '∞' : kerdesekList.length}
-                  </Text>
-                </View>
-
-                {/* Nyeremény vagy Idő */}
-                {!isGyakorlas && !isSpeedrun && (
-                  <View
-                    style={[
-                      customStyles.headerPillRight,
-                      {
-                        paddingVertical: responsivePadding.headerVertical,
-                      },
-                    ]}
-                  >
-                    <MaterialCommunityIcons 
-                      name="trophy-outline" 
-                      size={trophyIconSize} 
-                      color="#3e2723" 
-                    />
-                    <Text
-                      style={[
-                        customStyles.headerPillTextRight,
-                        {
-                          fontSize: responsiveFontSizes.headerPill,
-                        },
-                      ]}
-                    >
-                      {pontszam.toLocaleString('hu-HU')}
-                    </Text>
-                  </View>
-                )}
-
-                {isSpeedrun && (
-                  <View
-                    style={[
-                      customStyles.headerPillRight,
-                      {
-                        paddingVertical: responsivePadding.headerVertical,
-                      },
-                    ]}
-                  >
-                    <MaterialCommunityIcons 
-                      name="timer-outline" 
-                      size={timerIconSize} 
-                      color="#3e2723" 
-                    />
-                    <Text
-                      style={[
-                        customStyles.headerPillTextRight,
-                        {
-                          fontSize: responsiveFontSizes.headerPill,
-                        },
-                      ]}
-                    >
-                      {ido}s
-                    </Text>
-                  </View>
-                )}
-              </View>
+                );
+              })}
             </View>
 
             {/* ========== KÉRDÉS KÁRTYA ========== */}
-            <View
-              style={[
-                customStyles.questionCard,
-                {
-                  padding: responsivePadding.questionPadding,
-                  marginHorizontal: responsivePadding.questionMargin,
-                  marginTop: responsivePadding.questionMargin,
-                  marginBottom: responsivePadding.questionMargin,
-                  minHeight: isSmallScreen ? 120 : isMediumScreen ? 140 : isTablet ? 160 : 180,
-                },
-              ]}
-            >
-              <LinearGradient 
-                colors={pinkBadgeGradient}
-                start={{ x: 0, y: 0 }} 
-                end={{ x: 1, y: 0 }}
-                style={customStyles.floatingBadge}
-              >
-                <Text style={customStyles.floatingBadgeText}>Kérdés</Text>
-              </LinearGradient>
-              <Text
-                style={[
-                  customStyles.questionText,
-                  {
-                    fontSize: responsiveFontSizes.question,
-                  },
-                ]}
-              >
+            <View style={styles.newQuestionCard}>
+              <Text style={styles.newQuestionText}>
                 {kerdesekList[szamlalo].kerdesek_kerdes}
               </Text>
             </View>
 
             {/* ========== VÁLASZOK ========== */}
-            <View
-              style={[
-                customStyles.answersContainer,
-                {
-                  paddingHorizontal: responsivePadding.questionMargin,
-                  gap: responsivePadding.answerMargin,
-                  marginBottom: responsivePadding.bottomPadding,
-                },
-              ]}
-            >
+            <View style={styles.newAnswersContainer}>
               {valaszok.map((elem, index) => {
                 const isHidden = 
                   felezoMegjelol && 
@@ -717,68 +613,23 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                 const isSelectedSubstitute = megjeloltValasz === elem;
                 const isCorrect = elem === kerdesekList[szamlalo].kerdesek_helyesValasz;
                 
-                // Gradiens és stílus meghatározása
-                let gradientColors: readonly [string, string, ...string[]] | null = null;
-                let useGradient = false;
+                let answerStyle: any = styles.newAnswerBtn;
+                let textStyle: any = styles.newAnswerText;
 
                 if (eredmenyMutat) {
                   if (isCorrect) {
-                    gradientColors = greenGradient;
-                    useGradient = true;
+                    answerStyle = [styles.newAnswerBtn, styles.newAnswerBtnCorrect];
+                    textStyle = [styles.newAnswerText, styles.newAnswerTextCorrect];
                   } else if (isSelectedSubstitute) {
-                    gradientColors = redGradient;
-                    useGradient = true;
+                    answerStyle = [styles.newAnswerBtn, styles.newAnswerBtnWrong];
+                    textStyle = [styles.newAnswerText, styles.newAnswerTextWrong];
                   }
                 } else {
                   if (isSelectedSubstitute) {
-                    gradientColors = goldGradient;
-                    useGradient = true;
+                    answerStyle = [styles.newAnswerBtn, styles.newAnswerBtnSelected];
+                    textStyle = [styles.newAnswerText, styles.newAnswerTextSelected];
                   }
                 }
-
-                const answerContent = (
-                  <>
-                    {/* Betű doboz */}
-                    <View
-                      style={[
-                        customStyles.letterBox,
-                        {
-                          width: isSmallScreen ? 50 : isMediumScreen ? 55 : 60,
-                        },
-                        useGradient && { backgroundColor: selectedLetterColor },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          customStyles.letterText,
-                          {
-                            fontSize: isSmallScreen ? 16 : isMediumScreen ? 18 : 20,
-                          },
-                        ]}
-                      >
-                        {betuk[index]}
-                      </Text>
-                    </View>
-
-                    {/* Válasz szöveg */}
-                    <View style={customStyles.answerTextContainer}>
-                      <Text
-                        style={[
-                          customStyles.answerText,
-                          {
-                            fontSize: responsiveFontSizes.answerText,
-                          },
-                          useGradient && customStyles.answerTextSelected,
-                        ]}
-                      >
-                        {elem}
-                        {kozonsegMegjelol && szazalek[index] 
-                          ? `  (${szazalek[index]})` 
-                          : ''}
-                      </Text>
-                    </View>
-                  </>
-                );
 
                 return (
                   <TouchableOpacity
@@ -786,189 +637,87 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                     activeOpacity={0.9}
                     disabled={valaszMegjelolve || isHidden}
                     onPress={() => valaszEllenoriz(elem)}
-                    style={{ opacity: isHidden ? 0 : 1 }}
+                    style={[{ opacity: isHidden ? 0 : 1 }, answerStyle]}
                   >
-                    {useGradient && gradientColors ? (
-                      <Animated.View
-                        style={{
-                          opacity: isCorrect && eredmenyMutat ? blinkAnim : 1,
-                        }}
-                      >
-                        <LinearGradient
-                          colors={gradientColors}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={[
-                            customStyles.answerRow,
-                            customStyles.answerRowSelected,
-                            {
-                              height: responsivePadding.answerHeight,
-                              marginBottom: responsivePadding.answerMargin,
-                            },
-                          ]}
-                        >
-                          {answerContent}
-                        </LinearGradient>
-                      </Animated.View>
-                    ) : (
-                      <View
-                        style={[
-                          customStyles.answerRow,
-                          {
-                            height: responsivePadding.answerHeight,
-                            marginBottom: responsivePadding.answerMargin,
-                          },
-                        ]}
-                      >
-                        {answerContent}
-                      </View>
-                    )}
+                    <Text style={textStyle}>
+                      {elem}
+                      {kozonsegMegjelol && szazalek[index] 
+                        ? `  (${szazalek[index]})` 
+                        : ''}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}
             </View>
 
             {/* ========== KONTROL SÁV (SEGÍTSÉGEK) ========== */}
-            <View
-              style={[
-                customStyles.bottomSection,
-                {
-                  paddingHorizontal: responsivePadding.questionMargin,
-                  paddingBottom: responsivePadding.bottomPadding,
-                },
-              ]}
-            >
-              <View
-                style={[
-                  customStyles.controlBar,
-                  {
-                    paddingVertical: isSmallScreen ? 8 : 10,
-                    paddingHorizontal: isSmallScreen ? 8 : 10,
-                  },
-                ]}
-              >
-                {/* TELEFON segítség */}
-                <TouchableOpacity
-                  style={[
-                    customStyles.controlItem,
-                    !telefonSegitsegAktiv && { opacity: 0.5 },
-                  ]}
-                  onPress={telefonSegitseg}
-                  disabled={!telefonSegitsegAktiv}
-                >
-                  <View
-                    style={[
-                      customStyles.controlIconCircle,
-                      {
-                        width: controlSize,
-                        height: controlSize,
-                        borderRadius: controlSize / 2,
-                      },
-                      telefonSegitsegAktiv && customStyles.controlIconCircleActive,
-                    ]}
-                  >
-                    <MaterialCommunityIcons
-                      name="phone"
-                      size={controlIconSize}
-                      color={telefonSegitsegAktiv ? '#F57C00' : '#B0BEC5'}
-                    />
-                  </View>
-                  <Text
-                    style={[
-                      customStyles.controlText,
-                      {
-                        fontSize: responsiveFontSizes.controlText,
-                      },
-                    ]}
-                  >
-                    Telefon
-                  </Text>
-                </TouchableOpacity>
-
-                {/* KÖZÖNSÉG segítség */}
-                <TouchableOpacity
-                  style={[
-                    customStyles.controlItem,
-                    !kozonsegSegitsegAktiv && { opacity: 0.5 },
-                  ]}
-                  onPress={kozonsegSegitseg}
-                  disabled={!kozonsegSegitsegAktiv}
-                >
-                  <View
-                    style={[
-                      customStyles.controlIconCircle,
-                      {
-                        width: controlSize,
-                        height: controlSize,
-                        borderRadius: controlSize / 2,
-                      },
-                      kozonsegSegitsegAktiv && customStyles.controlIconCircleActive,
-                    ]}
-                  >
-                    <MaterialCommunityIcons
-                      name="account-group"
-                      size={controlIconSize}
-                      color={kozonsegSegitsegAktiv ? '#F57C00' : '#B0BEC5'}
-                    />
-                  </View>
-                  <Text
-                    style={[
-                      customStyles.controlText,
-                      {
-                        fontSize: responsiveFontSizes.controlText,
-                      },
-                    ]}
-                  >
-                    Közönség
-                  </Text>
-                </TouchableOpacity>
-
+            <View style={styles.newLifelinesContainer}>
+              <Text style={styles.newLifelinesTitle}>LIFELINES AVAILABLE</Text>
+              <View style={styles.newLifelinesRow}>
                 {/* FELEZŐ (50:50) segítség */}
                 <TouchableOpacity
                   style={[
-                    customStyles.controlItem,
+                    styles.newLifelineBtn,
                     !felezoSegitsegAktiv && { opacity: 0.5 },
                   ]}
                   onPress={felezoSegitseg}
                   disabled={!felezoSegitsegAktiv}
                 >
-                  <View
-                    style={[
-                      customStyles.controlIconCircle,
-                      {
-                        width: controlSize,
-                        height: controlSize,
-                        borderRadius: controlSize / 2,
-                      },
-                      felezoSegitsegAktiv && customStyles.controlIconCircleActive,
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        color: felezoSegitsegAktiv ? '#F57C00' : '#B0BEC5',
-                        fontWeight: 'bold',
-                        fontSize: isSmallScreen ? 10 : 12,
-                      }}
-                    >
-                      50:50
-                    </Text>
+                  <MaterialCommunityIcons
+                    name="circle-slice-8" 
+                    size={24}
+                    color="#8E24AA"
+                  />
+                </TouchableOpacity>
+
+                {/* TELEFON segítség - MOST IDŐ */}
+                 {/* A mockupban a második ikon egy óra */}
+                 {isSpeedrun && (
+                  <View style={styles.newLifelineBtn}>
+                     <MaterialCommunityIcons
+                      name="clock-outline"
+                      size={24}
+                      color="#8E24AA"
+                    />
                   </View>
-                  <Text
-                    style={[
-                      customStyles.controlText,
-                      {
-                        fontSize: responsiveFontSizes.controlText,
-                      },
-                    ]}
-                  >
-                    Felező
-                  </Text>
+                )}
+
+
+                {/* TELEFON segítség - MOST VILLANYKÖRTE */}
+                <TouchableOpacity
+                  style={[
+                    styles.newLifelineBtn,
+                    !telefonSegitsegAktiv && { opacity: 0.5 },
+                  ]}
+                  onPress={telefonSegitseg}
+                  disabled={!telefonSegitsegAktiv}
+                >
+                  <MaterialCommunityIcons
+                    name="lightbulb-outline"
+                    size={24}
+                    color="#8E24AA"
+                  />
+                </TouchableOpacity>
+
+                {/* KÖZÖNSÉG segítség - MOST EMBEREK */}
+                <TouchableOpacity
+                  style={[
+                    styles.newLifelineBtn,
+                    !kozonsegSegitsegAktiv && { opacity: 0.5 },
+                  ]}
+                  onPress={kozonsegSegitseg}
+                  disabled={!kozonsegSegitsegAktiv}
+                >
+                  <MaterialCommunityIcons
+                    name="account-group-outline"
+                    size={24}
+                    color="#8E24AA"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
-
+          </View>
         </ScrollView>
-      </SafeAreaView>
 
       {/* Idő lejárt Modal */}
       {/* IDŐ LEJÁRT Modal */}
@@ -1596,7 +1345,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
           </View>
         </View>
       </Modal>
-      </LinearGradient>
+      </SafeAreaView>
     );
 
   } else if (szamlalo >= kerdesekList.length && tolt) {
@@ -1605,11 +1354,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       setMentve(true);
     };
     return (
-      <LinearGradient
-          colors={['#AB47BC', '#7B1FA2', '#4A148C']}
-          style={styles.centerContainer}
-      >
-        <StatusBar barStyle="light-content" />
+      <SafeAreaView style={styles.centerContainer}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
         <View style={styles.winnerCard}>
             <MaterialCommunityIcons name="trophy" size={80} color="#FFD700" />
             <Text style={styles.winnerTitle}>Játék Vége!</Text>
@@ -1628,13 +1374,13 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               <Text style={styles.secondaryBtnText}>Vissza a menübe</Text>
             </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </SafeAreaView>
     );
   } else {
     return (
         <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#fff" />
-            <Text style={{marginTop: 15, color: '#fff', fontSize: 16}}>Betöltés...</Text>
+            <ActivityIndicator size="large" color="#8E24AA" />
+            <Text style={{marginTop: 15, color: '#333', fontSize: 16}}>Betöltés...</Text>
         </View>
     );
   }
@@ -1658,236 +1404,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     justifyContent: 'space-between',
-  },
-  // Header
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
-    marginTop: 10,
-  },
-  exitBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.3)',
-  },
-  prizeBadge: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  prizeText: {
-    fontWeight: 'bold',
-    color: '#3e2723',
-    fontSize: 15,
-  },
-  
-  // Question
-  questionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    padding: 24,
-    minHeight: 160,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 40,
-    elevation: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-  },
-  questionText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a237e',
-    textAlign: 'center',
-    lineHeight: 30,
-  },
-
-  // Answers
-  answersContainer: {
-    gap: 14,
-    marginBottom: 30,
-  },
-  answerBtn: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 18,
-    paddingVertical: 18,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  answerBtnSelected: {
-    backgroundColor: '#FFF9C4',
-    borderColor: '#FFD700',
-    transform: [{scale: 0.98}],
-  },
-  letterBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#3949AB', 
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-    elevation: 2,
-  },
-  letterText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  answerText: {
-    flex: 1,
-    fontSize: 17,
-    color: '#333',
-    fontWeight: '600',
-  },
-  percentageText: {
-    color: '#3949AB',
-    fontWeight: '800',
-    marginLeft: 5,
-  },
-  
-  // Helpers
-  helpersContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'flex-end',
-    marginBottom: 10,
-  },
-  helperWrapper: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  helperBtn: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-  },
-  helperBtnDisabled: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    elevation: 0,
-  },
-  helperIconText: {
-    fontSize: 22, 
-    fontWeight: '900', 
-    color: '#3949AB'
-  },
-  helperLabel: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: {width: 0, height: 1},
-    textShadowRadius: 2,
-  },
-
-
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  winnerCard: {
-    backgroundColor: '#fff',
-    width: '85%',
-    maxWidth: 360,
-    borderRadius: 30,
-    padding: 30,
-    alignItems: 'center',
-    elevation: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-  },
-  winnerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#4A148C', 
-    marginTop: 20,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  winnerPrize: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffc107', 
-    marginBottom: 30,
-  },
-  primaryBtn: {
-    backgroundColor: '#8e24aa', 
-    width: '100%',
-    paddingVertical: 16,
-    borderRadius: 16,
-    alignItems: 'center',
-    marginBottom: 12,
-    elevation: 4,
-  },
-  primaryBtnText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  secondaryBtn: {
-    paddingVertical: 15,
-    width: '100%',
-    alignItems: 'center',
-  },
-  secondaryBtnText: {
-    color: '#e1bee7', 
-    fontSize: 16,
-    fontWeight: '500',
-  },
-
-  // Speedrun
-  timerBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    borderRadius: 20,
-    padding: 8,
-    paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-  },
-  timerText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginLeft: 8,
-    fontSize: 16
   },
   // Modal styles
   modalOverlay: {
@@ -2245,6 +1761,157 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     color: '#fff',
+  },
+  newQuestionCard: {
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    padding: 30,
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 30,
+    minHeight: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  newQuestionText: {
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: '#2C3E50',
+    lineHeight: 28,
+  },
+  newAnswersContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  newAnswerBtn: {
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  newAnswerBtnSelected: {
+    backgroundColor: '#E1BEE7',
+  },
+  newAnswerBtnCorrect: {
+    backgroundColor: '#C8E6C9',
+  },
+  newAnswerBtnWrong: {
+    backgroundColor: '#FFCDD2',
+  },
+  newAnswerText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+  },
+  newAnswerTextSelected: {
+    color: '#4A148C',
+  },
+  newAnswerTextCorrect: {
+    color: '#1B5E20',
+  },
+  newAnswerTextWrong: {
+    color: '#B71C1C',
+  },
+  newLifelinesContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+  newLifelinesTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#9E9E9E',
+    marginBottom: 15,
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+  newLifelinesRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+  },
+  newLifelineBtn: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  newLifelineText5050: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#8E24AA',
+  },
+  newHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  newHeaderIconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  newHeaderText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#8E24AA', // Purple color for the header
+  },
+  progressDotsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    gap: 6,
+    flexWrap: 'wrap',
+    paddingHorizontal: 20,
+  },
+  progressDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#E0E0E0',
+  },
+  progressDotActive: {
+    backgroundColor: '#8E24AA',
+    width: 24,
+    height: 8,
+  },
+  progressDotCompleted: {
+    backgroundColor: '#8E24AA',
   }
 });
 
