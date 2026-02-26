@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Navbar from './Navbar';
 import Kategoria from './Menu1/Kategoria';
-import './App.css'
+import './AppTeszt.css'
 import 'sweetalert2/dist/sweetalert2.min.css';
 import Login from './Login';
 import Register from './Register';

@@ -1,0 +1,395 @@
+h2 {
+  text-align: center;
+  font-family: Cambria, Cochin;
+  color:#F5F7FA;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+h1{
+  text-align: center;
+  font-family: Cambria, Cochin;
+  color:#F5F7FA;
+  font-weight: bold;
+  margin-bottom: 40px;
+  font-size: 40px;
+}
+
+.kartya{
+  border:1px solid black;
+  margin:20px 150px;
+  padding:30px;
+  font-size: 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px;
+
+}
+.szoveg{
+  text-align: justify;
+}
+.datum{
+  color:blue;
+  font-size: smaller;
+}
+.ki{
+  color:rgb(0, 255, 13);
+  font-size: 15px;
+  font-style: italic;
+}
+.nev{
+  color:rgb(255, 0, 157);
+  text-align: right;
+}
+span{
+  font-size: 10px;
+}
+
+.zoldGomb{
+  background-color: rgb(11, 236, 30);
+  color:white;
+  border:none;
+  border-radius: 8px;
+  padding:10px 15px;
+  font-size:16px;
+  cursor:pointer;
+  margin-top: 8px;
+}
+.urlapDoboz{
+  border:2px solid green;
+  text-align: center;
+  margin:20px 250px;
+  padding:10px;
+  border-radius: 5px;
+}
+
+input{
+  margin:5px;
+  border-radius: 5px;
+  padding:5px
+}
+.gombok{
+  width: 30px;
+  
+}
+
+.doboz {
+  margin: 150px auto 0 auto;
+  width: 600px;
+
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px;
+  padding: 15px;
+  background-color: rgba(20, 24, 40, 0.7);
+
+  justify-content: center;
+  margin-top: 150px;
+}
+
+.gombDoboz > .gomb {
+  width: 300px;              
+  padding: 12px 20px;         
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 20px;        
+  background: linear-gradient(135deg, #4DA3FF, #7B5CFF);
+  border: 0px solid #000000;  
+  margin-bottom: 15px;
+  min-height: 56px;
+  color:#F5F7FA;
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                  
+  
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(46,196,182,0.7); 
+
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+.gombDoboz > .gomb:nth-child(1) { animation-delay: 0.5s; }
+.gombDoboz > .gomb:nth-child(2) { animation-delay: 1s; }
+.gombDoboz > .gomb:nth-child(3) { animation-delay: 1.5s; }
+.gombDoboz > .gomb:nth-child(4) { animation-delay: 2s; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+.gombLetiltva {
+  width: 300px;              
+  padding: 12px 20px;         
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 20px;         
+  border: 0px solid #000000;  
+  margin-bottom: 15px;
+  min-height: 56px;
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                  
+  
+  cursor: not-allowed;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+}
+
+.kategoriaGomb {
+  width: 300px;              
+  padding: 12px 20px;         
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 20px;        
+  background: linear-gradient(135deg, #4DA3FF, #7B5CFF);  
+  border: 0px solid #000000;  
+  margin-bottom: 15px;
+  min-height: 56px;
+  opacity: 100%;
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+  gap: 10px;     
+  color:#F5F7FA;       
+  
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(46,196,182,0.6);
+
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+  animation: fadeIn 1s ease forwards;
+}
+
+.gomb:hover {
+  background-color: #f0f0f0;  
+  transform: translateY(-2px); 
+  box-shadow: 0 0 32px rgba(46,196,182,0.9);
+}
+
+.kategoriaGomb:hover {
+  background-color: #f0f0f0;  
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 0 30px rgba(77,163,255,0.8);
+}
+
+.gombDoboz {
+  margin: 15px auto;  
+  width: 300px;
+}
+
+body {
+  background-color: #f4f4f7;
+  background-image: url("Kepek/hatterTeszt.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+h4 {
+  text-align: center;
+  color:#F5F7FA;
+  font-weight: bold;
+}
+
+.segitsegGomb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;              
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;   
+  background-color: #ffcc00;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: 0.2s;
+}
+
+.segitsegGomb:hover {
+  transform: translateY(-2px);
+  background: #ddd;
+  transition: 0.2s;
+}
+
+.segitsegGombLetiltva {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;              
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;   
+  background-color: gray;
+  color: #333;
+  cursor: not-allowed;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: 0.2s;
+}
+
+.atlatszoGomb {
+  opacity: 0;              
+  pointer-events: none;     
+  transition: opacity 0.3s;
+  visibility: visible;
+
+  height: 56px;
+  width: 300px;              
+  padding: 12px 20px;         
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 20px;        
+  background-color: #ffffff;  
+  border: 1px solid #000000;  
+  margin-bottom: 15px;
+  
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                  
+}
+
+i {
+  color:#F5F7FA;
+}
+
+td, th {
+  text-align: center;
+}
+
+.nav .hamburger{
+  position: fixed; /* vagy fixed */
+  z-index: 9999;
+}
+
+
+
+.swal2-success-line-tip, .swal2-success-line-long {
+  font-size: 16px !important;
+}
+
+.swal2-x-mark-line-right, .swal2-x-mark-line-left {
+  font-size: 16px !important;
+} 
+
+/*.swal2-popup {
+  background: #1E2433;
+  color: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}*/
+
+.swal2-popup {
+  background: #1F2540; /* ne fekete */
+  color: #FFFFFF;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.swal2-confirm, .swal2-cancel {
+  width: 230px;              
+  padding: 12px 20px;         
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  background-color: '#2EC4B6';
+  color: '#F5F7FA';
+
+  
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                  
+  
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+  
+}
+
+.swal2-confirm:hover, .swal2-cancel:hover {
+  transform: translateY(-2px);
+  transition: 0.2s;
+  
+}
+
+.sorKijelolve td {
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+.nincsKijeloles {
+  font-weight: normal;
+  color: black;
+}
+
+.grafikon {
+  text-align: center;
+}
+
+.dropdown-menu {
+  list-style: none;
+  padding-left: 0;
+}
+
+.nav-item {
+  list-style: none;
+}
+
+.kerdes {
+  height: 120px;
+  overflow-y: auto;
+}
+
+
+@media (max-width:1000px){
+  .kartya{
+    margin:10px;
+    padding: 10px;
+    font-size: 15px;
+
+  }
+
+  .doboz{
+    margin:10px;
+    padding: 10px;
+    font-size: 15px;
+    margin: 50px auto 0 auto;
+  }
+
+  .urlapDoboz{
+    margin:20px 20px;
+    padding:10px;
+  }
+
+  .tablazat table{
+    width: 100%;
+    margin:0 auto
+  }
+
+}
+
+
+@media (max-width: 767px) {
+  .doboz {
+    width: 410px;
+    margin: 50px auto 0 auto;
+  }
+
+  .tablazat{
+    margin:0 auto;
+    table-layout: fixed;
+  }
+
+}
