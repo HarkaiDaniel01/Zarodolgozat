@@ -36,7 +36,7 @@ const customStyles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -331,8 +331,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
           setValaszMegjelolve(false);
           setEredmenyMutat(false);
         } else {  // Hibás
-          // Hibás válasz - számláló -1
-          if (szamlalo > 0) {
+          // Hibás válasz - számláló -1 (csak nem-gyakorlás módban)
+          if (!isGyakorlas && szamlalo > 0) {
             setSzamlalo(szamlalo - 1);
           }
           const leiras = stripHtml(kerdesekList[szamlalo].kerdesek_leiras || "");
@@ -413,21 +413,27 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   };
 
   const eredmenyMentes = async (cim: string, tartalom: string) => {
-    if (isEndless || isSpeedrun || isGyakorlas) {
+    if (isGyakorlas) {
       setGameEndMessage(`Elért pontszámod: ${szamlalo}`);
       setGameEndModalVisible(true);
       return;
     }
 
+    let saveContent = tartalom;
+    if (isSpeedrun || isEndless) {
+      saveContent = `Elért pontszám: ${szamlalo}`; 
+    } else {
+      saveContent = tartalom + `\nNyeremény: ${pontszam} Ft`;
+    }
+
     setConfirmSaveModalInfo({
       title: cim,
-      content: tartalom + `\nNyeremény: ${pontszam} Ft`
+      content: saveContent
     });
     setConfirmSaveModalVisible(true);
   };
 
-  const handleConfirmSaveYes = async () => {
-    setConfirmSaveModalVisible(false);
+  const performSave = async () => {
     try {
       const userId = await AsyncStorage.getItem('userid');
       const token = await AsyncStorage.getItem('token');
@@ -455,7 +461,11 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     } catch (error) {
       console.log('Eredmeny mentes error:', error);
     }
-    
+  };
+
+  const handleConfirmSaveYes = async () => {
+    setConfirmSaveModalVisible(false);
+    await performSave();
     setSzamlalo(0); 
     kerdesekBetoltve(false);
   };
@@ -507,27 +517,27 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     
     // ============= RESPONSIV FONT MÉRETEK =============
     const responsiveFontSizes = {
-      headerPill: isSmallScreen ? 12 : isMediumScreen ? 13 : 14,
-      question: isSmallScreen ? 16 : isMediumScreen ? 18 : isTablet ? 20 : 22,
-      answerText: isSmallScreen ? 14 : isMediumScreen ? 15 : isTablet ? 16 : 17,
-      controlText: isSmallScreen ? 9 : isMediumScreen ? 10 : 11,
+      headerPill: isSmallScreen ? 12 : isMediumScreen ? 13 : isTablet ? 16 : 18,
+      question: isSmallScreen ? 18 : isMediumScreen ? 20 : isTablet ? 24 : 28,
+      answerText: isSmallScreen ? 14 : isMediumScreen ? 16 : isTablet ? 18 : 20,
+      controlText: isSmallScreen ? 9 : isMediumScreen ? 11 : 13,
     };
     
     // ============= RESPONSIV SZÓKÖZÖK ÉS PADDING =============
     const responsivePadding = {
-      headerHorizontal: isSmallScreen ? 12 : isMediumScreen ? 15 : isTablet ? 20 : 25,
+      headerHorizontal: isSmallScreen ? 12 : isMediumScreen ? 15 : isTablet ? 30 : 40,
       headerVertical: isSmallScreen ? 8 : 10,
-      questionPadding: isSmallScreen ? 20 : isMediumScreen ? 24 : isTablet ? 28 : 30,
-      questionMargin: isSmallScreen ? 12 : isMediumScreen ? 15 : isTablet ? 20 : 25,
-      answerMargin: isSmallScreen ? 8 : isMediumScreen ? 10 : isTablet ? 12 : 14,
-      answerPadding: isSmallScreen ? 14 : isMediumScreen ? 16 : isTablet ? 18 : 20,
-      answerHeight: isSmallScreen ? 60 : isMediumScreen ? 65 : isTablet ? 70 : 75,
-      bottomPadding: isSmallScreen ? 15 : isMediumScreen ? 20 : isTablet ? 25 : 30,
+      questionPadding: isSmallScreen ? 20 : isMediumScreen ? 24 : isTablet ? 40 : 50,
+      questionMargin: isSmallScreen ? 12 : isMediumScreen ? 15 : isTablet ? 30 : 40,
+      answerMargin: isSmallScreen ? 8 : isMediumScreen ? 10 : isTablet ? 15 : 20,
+      answerPadding: isSmallScreen ? 14 : isMediumScreen ? 16 : isTablet ? 20 : 25,
+      answerHeight: isSmallScreen ? 60 : isMediumScreen ? 65 : isTablet ? 80 : 90,
+      bottomPadding: isSmallScreen ? 15 : isMediumScreen ? 20 : isTablet ? 40 : 50,
     };
     
     // ============= RESPONSIV KOMPONENS MÉRETEK =============
-    const controlSize = isSmallScreen ? 36 : isMediumScreen ? 40 : isTablet ? 45 : 50;
-    const controlIconSize = isSmallScreen ? 20 : isMediumScreen ? 22 : isTablet ? 24 : 26;
+    const controlSize = isSmallScreen ? 36 : isMediumScreen ? 40 : isTablet ? 55 : 65;
+    const controlIconSize = isSmallScreen ? 20 : isMediumScreen ? 22 : isTablet ? 30 : 34;
     const iconSize = isSmallScreen ? 60 : 80;
     const exitIconSize = isSmallScreen ? 18 : 22;
     const starIconSize = isSmallScreen ? 12 : 16;
@@ -535,8 +545,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     const timerIconSize = isSmallScreen ? 12 : 16;
 
     return (
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: '#F8F9FA' }]}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: '#F4F6FB' }]}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F4F6FB" />
         <ScrollView
           contentContainerStyle={[
             styles.scrollContent,
@@ -546,27 +556,42 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
           ]}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.contentContainer}>
+          <View style={[styles.contentContainer, isTablet && { maxWidth: 800 }, isLargeTablet && { maxWidth: 1000 }]}>
             {/* ========== FEJLÉC ========== */}
             <View style={styles.newHeaderRow}>
               <TouchableOpacity
-                style={styles.newHeaderIconBtn}
+                style={styles.exitDoorBtn}
                 onPress={handleExit}
               >
-                <MaterialCommunityIcons name="arrow-left" size={24} color="#333" />
+                <MaterialCommunityIcons name="door-open" size={24} color="#FF6B6B" />
+                <Text style={styles.exitDoorText}>Kilépés</Text>
               </TouchableOpacity>
 
-              <Text style={styles.newHeaderText}>
+              <Text style={[styles.newHeaderText, { flex: 1, textAlign: 'center' }]}>
                 Kérdés {szamlalo + 1} / {isEndless ? '∞' : kerdesekList.length}
               </Text>
 
-              <TouchableOpacity
-                style={styles.newHeaderIconBtn}
-                onPress={handleExit}
-              >
-                <MaterialCommunityIcons name="close" size={24} color="#333" />
-              </TouchableOpacity>
+              <View style={styles.exitDoorSpacer} />
             </View>
+
+
+            {/* ========== IDŐMÉRŐ (CSAK SPEEDRUN) ========== */}
+            {isSpeedrun && (
+              <View style={{ 
+                marginHorizontal: 20, 
+                marginBottom: 15, 
+                height: 10, 
+                backgroundColor: '#E0E0E0', 
+                borderRadius: 5, 
+                overflow: 'hidden' 
+              }}>
+                <View style={{ 
+                  height: '100%', 
+                  width: `${progress * 100}%`, 
+                  backgroundColor: progress > 0.3 ? '#AB47BC' : '#FF6B6B' 
+                }} />
+              </View>
+            )}
 
             {/* ========== PROGRESS DOTS ========== */}
             <View style={styles.progressDotsContainer}>
@@ -652,7 +677,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
             {/* ========== KONTROL SÁV (SEGÍTSÉGEK) ========== */}
             <View style={styles.newLifelinesContainer}>
-              <Text style={styles.newLifelinesTitle}>LIFELINES AVAILABLE</Text>
+              <Text style={styles.newLifelinesTitle}>ELÉRHETŐ SEGÍTSÉGEK</Text>
               <View style={styles.newLifelinesRow}>
                 {/* FELEZŐ (50:50) segítség */}
                 <TouchableOpacity
@@ -663,25 +688,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                   onPress={felezoSegitseg}
                   disabled={!felezoSegitsegAktiv}
                 >
-                  <MaterialCommunityIcons
-                    name="circle-slice-8" 
-                    size={24}
-                    color="#8E24AA"
-                  />
+                  <Text style={{ color: '#8E24AA', fontWeight: 'bold', fontSize: 14 }}>50:50</Text>
                 </TouchableOpacity>
-
-                {/* TELEFON segítség - MOST IDŐ */}
-                 {/* A mockupban a második ikon egy óra */}
-                 {isSpeedrun && (
-                  <View style={styles.newLifelineBtn}>
-                     <MaterialCommunityIcons
-                      name="clock-outline"
-                      size={24}
-                      color="#8E24AA"
-                    />
-                  </View>
-                )}
-
 
                 {/* TELEFON segítség - MOST VILLANYKÖRTE */}
                 <TouchableOpacity
@@ -693,7 +701,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                   disabled={!telefonSegitsegAktiv}
                 >
                   <MaterialCommunityIcons
-                    name="lightbulb-outline"
+                    name="phone"
                     size={24}
                     color="#8E24AA"
                   />
@@ -895,18 +903,28 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                 },
               ]}
             >
-              {/* VISSZA gomb */}
+              {/* VISSZA / TOVÁBB gomb */}
               <TouchableOpacity
                 style={[
                   styles.wrongAnswerButton,
+                  wrongAnswerInfo.isTraining && { backgroundColor: '#8E24AA' },
                   {
                     paddingVertical: isSmallScreen ? 10 : 12,
                   },
                 ]}
                 onPress={() => {
                   setShowWrongAnswerModal(false);
-                  setSzamlalo(0);
-                  kerdesekBetoltve(false);
+                  setMegjeloltValasz(null);
+                  setValaszMegjelolve(false);
+                  setEredmenyMutat(false);
+                  if (wrongAnswerInfo.isTraining) {
+                    // Gyakorlásban: következő kérdés
+                    setSzamlalo(prev => prev + 1);
+                  } else {
+                    // Normál módban: visszalép
+                    setSzamlalo(0);
+                    kerdesekBetoltve(false);
+                  }
                 }}
               >
                 <Text
@@ -917,7 +935,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                     },
                   ]}
                 >
-                  Vissza
+                  {wrongAnswerInfo.isTraining ? 'Tovább' : 'Vissza'}
                 </Text>
               </TouchableOpacity>
 
@@ -1350,7 +1368,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
   } else if (szamlalo >= kerdesekList.length && tolt) {
     const handleSave = async () => {
-      await eredmenyMentes("Gratulálok, nyertél! 🏆", "Végigvitted a játékot!");
+      await performSave();
       setMentve(true);
     };
     return (
@@ -1765,87 +1783,91 @@ const styles = StyleSheet.create({
   newQuestionCard: {
     backgroundColor: '#fff',
     borderRadius: 24,
-    padding: 30,
-    marginHorizontal: 20,
+    padding: 28,
+    marginHorizontal: 16,
     marginTop: 10,
-    marginBottom: 30,
-    minHeight: 180,
+    marginBottom: 24,
+    minHeight: 170,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: "#000",
+    shadowColor: '#6C5CE7',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    elevation: 4,
   },
   newQuestionText: {
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: '700',
     textAlign: 'center',
-    color: '#2C3E50',
+    color: '#1A1A2E',
     lineHeight: 28,
   },
   newAnswersContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginBottom: 10,
   },
   newAnswerBtn: {
     backgroundColor: '#fff',
-    borderRadius: 25,
-    paddingVertical: 18,
+    borderRadius: 16,
+    paddingVertical: 16,
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 12,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   newAnswerBtnSelected: {
-    backgroundColor: '#E1BEE7',
+    backgroundColor: '#EDE9FF',
+    borderColor: '#6C5CE7',
   },
   newAnswerBtnCorrect: {
-    backgroundColor: '#C8E6C9',
+    backgroundColor: '#DCFCE7',
+    borderColor: '#22C55E',
   },
   newAnswerBtnWrong: {
-    backgroundColor: '#FFCDD2',
+    backgroundColor: '#FEF2F2',
+    borderColor: '#EF4444',
   },
   newAnswerText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
+    color: '#374151',
+    flex: 1,
   },
   newAnswerTextSelected: {
-    color: '#4A148C',
+    color: '#4C1D95',
   },
   newAnswerTextCorrect: {
-    color: '#1B5E20',
+    color: '#15803D',
   },
   newAnswerTextWrong: {
-    color: '#B71C1C',
+    color: '#DC2626',
   },
   newLifelinesContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
+    marginTop: 16,
+    paddingHorizontal: 16,
     paddingBottom: 30,
   },
   newLifelinesTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#9E9E9E',
-    marginBottom: 15,
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#9CA3AF',
+    marginBottom: 14,
     textAlign: 'center',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   newLifelinesRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 20,
+    gap: 16,
   },
   newLifelineBtn: {
     width: 56,
@@ -1854,23 +1876,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 3,
-    shadowColor: "#000",
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    shadowColor: '#6C5CE7',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
   newLifelineText5050: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#8E24AA',
+    color: '#6C5CE7',
   },
   newHeaderRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 20,
+    marginBottom: 16,
+    paddingHorizontal: 6,
   },
   newHeaderIconBtn: {
     width: 40,
@@ -1882,19 +1905,39 @@ const styles = StyleSheet.create({
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+  },
+  exitDoorBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF2F2',
+    borderRadius: 20,
+    paddingVertical: 9,
+    paddingHorizontal: 16,
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+  exitDoorText: {
+    color: '#EF4444',
+    fontWeight: '700',
+    fontSize: 13,
+    marginLeft: 4,
+  },
+  exitDoorSpacer: {
+    width: 90,
   },
   newHeaderText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#8E24AA', // Purple color for the header
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1A1A2E',
   },
   progressDotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
     gap: 6,
     flexWrap: 'wrap',
     paddingHorizontal: 20,
@@ -1903,15 +1946,17 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E5E7EB',
   },
   progressDotActive: {
-    backgroundColor: '#8E24AA',
+    backgroundColor: '#6C5CE7',
     width: 24,
     height: 8,
+    borderRadius: 4,
   },
   progressDotCompleted: {
-    backgroundColor: '#8E24AA',
+    backgroundColor: '#6C5CE7',
+    opacity: 0.4,
   },
   centerContainer: {
     flex: 1,
@@ -1925,41 +1970,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   winnerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#1A1A2E',
     marginVertical: 15,
   },
   winnerPrize: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFB300',
+    color: '#F59E0B',
     marginVertical: 20,
   },
   primaryBtn: {
-    backgroundColor: '#8E24AA',
-    paddingVertical: 14,
+    backgroundColor: '#6C5CE7',
+    paddingVertical: 15,
     paddingHorizontal: 40,
-    borderRadius: 12,
+    borderRadius: 14,
     marginVertical: 10,
-    elevation: 3,
+    elevation: 4,
+    shadowColor: '#6C5CE7',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   primaryBtnText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '700',
     fontSize: 16,
   },
   secondaryBtn: {
-    backgroundColor: '#E0E0E0',
-    paddingVertical: 14,
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 15,
     paddingHorizontal: 40,
-    borderRadius: 12,
+    borderRadius: 14,
     marginVertical: 10,
-    elevation: 3,
+    elevation: 1,
   },
   secondaryBtnText: {
-    color: '#333',
-    fontWeight: 'bold',
+    color: '#374151',
+    fontWeight: '700',
     fontSize: 16,
   },
 });

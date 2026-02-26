@@ -45,7 +45,7 @@ const Kategoriafeltolt = () => {
 
   const leToltes = async () => {
     try {
-      const response = await fetch(Cim.Cim + "/kategoria");
+      const response = await fetch(Cim.Cim + "/kategoriaadmin");
       const data = await response.json();
 
       if (response.ok) {
@@ -298,7 +298,7 @@ const Kategoriafeltolt = () => {
                   color: darkMode ? "#9ca3af" : "#6b7280",
                   marginBottom: "0.25rem"
                 }}>
-                  ID: {elem.kategoria_id}
+                  Kérdések száma: {elem.db}
                 </div>
                 <div style={{
                   fontSize: "1.25rem",

@@ -8,6 +8,7 @@ import {
   ScrollView, 
   KeyboardAvoidingView, 
   Platform,
+  useWindowDimensions,
   Modal
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,6 +20,10 @@ interface RegisterProps {
 }
 
 const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 600; // Adjusted for tablet breakpoint
+  const isSmallScreen = width < 380;
+
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordAgain, setPasswordAgain] = useState<string>('');
@@ -86,74 +91,80 @@ const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-       <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.container}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          <View style={styles.card}>
-            <View style={{alignItems: 'center'}}>
-                <MaterialCommunityIcons name="account-plus" size={50} color="#3b5998" />
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={[styles.scrollContainer, { alignItems: 'center' }]} showsVerticalScrollIndicator={false}>
+          <View style={styles.logoContainer}>
+            <View style={styles.iconCircle}>
+              <MaterialCommunityIcons name="account-plus" size={isSmallScreen ? 34 : 40} color="#fff" />
             </View>
-            <Text style={styles.title}>Regisztráció</Text>
-            
+            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 26 : 32 }]}>KvízMester</Text>
+            <Text style={styles.appSubtitle}>Csatlakozz a játékhoz!</Text>
+          </View>
+
+          <View style={[styles.card, { width: isTablet ? 480 : '100%', maxWidth: 480 }]}>
+            <Text style={[styles.title, { fontSize: isSmallScreen ? 20 : 24 }]}>Fiók létrehozása</Text>
+            <Text style={styles.subtitle}>Kérlek töltsd ki az összes mezőt</Text>
+
             {error ? (
               <View style={styles.errorContainer}>
-                <MaterialCommunityIcons name="alert-circle" size={20} color="#fff" />
+                <MaterialCommunityIcons name="alert-circle-outline" size={18} color="#EF4444" />
                 <Text style={styles.errorText}>{error}</Text>
               </View>
             ) : null}
 
-            <View style={styles.inputContainer}>
-              <MaterialCommunityIcons name="account" size={24} color="#666" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Felhasználónév"
-                placeholderTextColor="#999"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
-              />
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>FELHASZNÁLÓNÉV</Text>
+              <View style={styles.inputContainer}>
+                <MaterialCommunityIcons name="account-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Felhasználónév"
+                  placeholderTextColor="#9CA3AF"
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
+                />
+              </View>
             </View>
 
-            <View style={styles.inputContainer}>
-              <MaterialCommunityIcons name="lock" size={24} color="#666" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Jelszó"
-                placeholderTextColor="#999"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <MaterialCommunityIcons name={showPassword ? "eye-off" : "eye"} size={24} color="#666" />
-              </TouchableOpacity>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>JELSZÓ</Text>
+              <View style={styles.inputContainer}>
+                <MaterialCommunityIcons name="lock-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Jelszó"
+                  placeholderTextColor="#9CA3AF"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                  <MaterialCommunityIcons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#9CA3AF" />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            <View style={styles.inputContainer}>
-              <MaterialCommunityIcons name="lock-check" size={24} color="#666" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Jelszó megerősítése"
-                placeholderTextColor="#999"
-                value={passwordAgain}
-                onChangeText={setPasswordAgain}
-                secureTextEntry={!showConfirmPassword}
-              />
-              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
-                <MaterialCommunityIcons name={showConfirmPassword ? "eye-off" : "eye"} size={24} color="#666" />
-              </TouchableOpacity>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>JELSZÓ MEGERŐSÍTÉSE</Text>
+              <View style={styles.inputContainer}>
+                <MaterialCommunityIcons name="lock-check-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Jelszó megerősítése"
+                  placeholderTextColor="#9CA3AF"
+                  value={passwordAgain}
+                  onChangeText={setPasswordAgain}
+                  secureTextEntry={!showConfirmPassword}
+                />
+                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+                  <MaterialCommunityIcons name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#9CA3AF" />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
-              <LinearGradient
-                colors={['#4CAF50', '#2E7D32']}
-                style={styles.gradientButton}
-              >
-                <Text style={styles.buttonText}>REGISZTRÁCIÓ</Text>
-                <MaterialCommunityIcons name="check-circle" size={20} color="#fff" style={{marginLeft: 10}} />
-              </LinearGradient>
+            <TouchableOpacity style={styles.loginButton} onPress={handleRegister} activeOpacity={0.85}>
+              <Text style={styles.buttonText}>Regisztráció</Text>
             </TouchableOpacity>
 
             <View style={styles.divider}>
@@ -162,8 +173,9 @@ const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
               <View style={styles.dividerLine} />
             </View>
 
-            <TouchableOpacity style={styles.registerButton} onPress={() => { if (onNavigateToLogin) onNavigateToLogin(); }}>
-              <Text style={styles.registerButtonText}>Már van fiókod? Jelentkezz be!</Text>
+            <TouchableOpacity style={styles.registerButton} onPress={() => { if (onNavigateToLogin) onNavigateToLogin(); }} activeOpacity={0.7}>
+              <Text style={styles.registerText}>Már van fiókod? </Text>
+              <Text style={styles.registerTextBold}>Jelentkezz be</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -177,186 +189,241 @@ const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
         >
           <View style={styles.alertOverlay}>
             <View style={styles.alertContainer}>
-              {alertType === 'error' && (
-                <MaterialCommunityIcons name="alert-circle" size={60} color="#F44336" />
-              )}
-              {alertType === 'success' && (
-                <MaterialCommunityIcons name="check-circle" size={60} color="#4CAF50" />
-              )}
-              <Text style={[styles.alertTitle, {
-                color: alertType === 'error' ? '#F44336' : '#4CAF50'
-              }]}>{alertTitle}</Text>
+              {alertType === 'error' && <MaterialCommunityIcons name="alert-circle" size={56} color="#EF4444" />}
+              {alertType === 'success' && <MaterialCommunityIcons name="check-circle" size={56} color="#22C55E" />}
+              <Text style={[styles.alertTitle, { color: alertType === 'error' ? '#EF4444' : '#22C55E' }]}>{alertTitle}</Text>
               <Text style={styles.alertMessage}>{alertMessage}</Text>
               {alertType === 'error' && (
-                <TouchableOpacity
-                  style={[styles.alertButton, { backgroundColor: '#F44336' }]}
-                  onPress={() => setAlertModalVisible(false)}
-                >
+                <TouchableOpacity style={[styles.alertButton, { backgroundColor: '#EF4444' }]} onPress={() => setAlertModalVisible(false)}>
                   <Text style={styles.alertButtonText}>Rendben</Text>
                 </TouchableOpacity>
               )}
             </View>
           </View>
         </Modal>
-      </LinearGradient>
+      </View>
     </KeyboardAvoidingView>
   );
 };
 
+const PRIMARY = '#6C5CE7';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F4F6FB',
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "center",
-    padding: 20,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: PRIMARY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 14,
+    ...Platform.select({
+      default: {
+        shadowColor: PRIMARY,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.35,
+        shadowRadius: 12,
+        elevation: 8,
+      }
+    })
+  },
+  appTitle: {
+    fontWeight: '800',
+    color: '#1A1A2E',
+    letterSpacing: 0.5,
+  },
+  appSubtitle: {
+    color: '#6B7280',
+    fontSize: 15,
+    marginTop: 4,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 30,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 28,
     ...Platform.select({
-      web: {
-        boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
-      },
+      web: { boxShadow: '0px 4px 24px rgba(108, 92, 231, 0.08)' },
       default: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.1,
+        shadowColor: PRIMARY,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
         shadowRadius: 20,
-        elevation: 10,
+        elevation: 6,
       }
     })
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-    marginTop: 10,
+    fontWeight: '700',
+    color: '#1A1A2E',
+    marginBottom: 6,
+  },
+  subtitle: {
+    color: '#6B7280',
+    fontSize: 14,
+    marginBottom: 22,
+  },
+  fieldGroup: {
+    marginBottom: 15,
+  },
+  fieldLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#9CA3AF',
+    letterSpacing: 0.8,
+    marginBottom: 7,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#F3F4F6',
     borderRadius: 12,
-    marginBottom: 15,
-    paddingHorizontal: 15,
-    height: 55,
+    paddingHorizontal: 14,
+    height: 52,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: '#E5E7EB',
   },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    color: '#333',
-    fontSize: 16,
+    color: '#1A1A2E',
+    fontSize: 15,
   },
   eyeIcon: {
-    padding: 5,
+    padding: 4,
   },
   loginButton: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    elevation: 3,
-    marginBottom: 20,
-    marginTop: 10,
-  },
-  gradientButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: PRIMARY,
+    borderRadius: 14,
     paddingVertical: 15,
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 22,
+    ...Platform.select({
+      default: {
+        shadowColor: PRIMARY,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 5,
+      }
+    })
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-    letterSpacing: 1,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 22,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E5E7EB',
   },
   dividerText: {
-    marginHorizontal: 10,
-    color: '#999',
-    fontWeight: 'bold',
+    marginHorizontal: 12,
+    color: '#9CA3AF',
+    fontWeight: '600',
     fontSize: 12,
+    letterSpacing: 0.5,
   },
   registerButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
   },
-  registerButtonText: {
-    color: '#666',
-    fontSize: 15,
+  registerText: {
+    color: '#6B7280',
+    fontSize: 14,
+  },
+  registerTextBold: {
+    color: PRIMARY,
+    fontSize: 14,
+    fontWeight: '700',
   },
   errorContainer: {
-    backgroundColor: '#F44336',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    padding: 12,
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 16,
   },
   errorText: {
-    color: '#fff',
+    color: '#DC2626',
     marginLeft: 8,
     flex: 1,
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: '500',
   },
   alertOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   alertContainer: {
     width: '85%',
-    maxWidth: 300,
+    maxWidth: 320,
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 25,
+    borderRadius: 24,
+    padding: 28,
     alignItems: 'center',
     elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
   },
   alertTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 19,
+    fontWeight: '700',
     textAlign: 'center',
     marginVertical: 12,
   },
   alertMessage: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
     textAlign: 'center',
-    marginVertical: 15,
+    marginBottom: 20,
     lineHeight: 20,
   },
   alertButton: {
-    paddingVertical: 12,
+    paddingVertical: 13,
     paddingHorizontal: 30,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 15,
     width: '100%',
   },
   alertButtonText: {
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#fff',
-    fontSize: 14,
-  }
+    fontSize: 15,
+  },
+  // legacy
+  gradientButton: { paddingVertical: 15 },
 });
 
 export default Register;

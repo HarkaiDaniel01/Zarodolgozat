@@ -43,7 +43,21 @@ app.get('/kategoria', (req, res) => {
     return res.status(200).json(result);
   });
 });
+//valtozas!!!!
+app.get('/kategoriaadmin', (req, res) => {
+        const sql=`SELECT kategoria_id,kategoria_nev,count(kerdesek.kerdesek_id) as db from kategoria left join kerdesek on kerdesek.kerdesek_kategoria=kategoria_id GROUP by kategoria_nev;`
+        pool.query(sql, (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({error:"Hiba"})
+        }
+        if (result.length===0){
+            return res.status(404).json({error:"Nincs adat"})
+        }
 
+    return res.status(200).json(result);
+  });
+});
 
 //Kérdések lekérése kategória és könnyű nehézségi szint szerint
 app.post("/kerdesekKonnyu", (req, res) => {
@@ -532,7 +546,7 @@ app.post("/kerdesekkeres", (req, res) => {
   });
 });
 app.get("/endless-kerdesek",(req,res)=>{
-  const sql=`SELECT * FROM kerdesek ORDER BY RAND() LIMIT 200`;
+  const sql=`SELECT * FROM kerdesek ORDER BY RAND()`;
   pool.query(sql,(err,result)=>{
     if(err){
       console.log(err);
@@ -557,23 +571,6 @@ app.get("/Gyakorlo-kerdesek",(req,res)=>{
     return res.status(200).json(result);
   });
 });
-//osszes nyeremeny
-app.get("/osszesNyeremeny", (req, res) => {
-  const sql = `SELECT SUM(Eredmenyek_pont) AS ossz FROM eredmenyek`;
-  pool.query(sql, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Hiba" });
-    }
-    return res.status(200).json(result);
-  });
-});
-
-
-
-// NYEREMÉNY KEZELÉS (A Frontend Nyeremenykezelo.js komponenséhez szükséges)
-// Mivel a Frontend 'nyeremeny_nev', 'nyeremeny_kep', stb. adatokat küld, 
-// ezeknek szükségük van a 'nyeremeny' táblára, mert az 'eredmenyek' tábla csak pontszámokat tárol.
 
 // Nyeremények lekérdezése (A Frontend '/osszeseredmenyek' végpontot hívja)
 app.get('/osszeseredmenyek', (req, res) => {

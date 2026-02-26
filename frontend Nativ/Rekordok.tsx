@@ -74,13 +74,13 @@ const Rekordok: React.FC = () => {
              <MaterialCommunityIcons name="account" size={30} color="#B0BEC5" />
              <View style={styles.badgeSilver}><Text style={styles.badgeText}>2</Text></View>
           </View>
-          <View style={[
-              styles.podiumBar, 
-              {backgroundColor: '#CFD8DC', height: 110} 
-            ]}>
+          <LinearGradient
+              colors={['#E0E0E0', '#BDBDBD']}
+              style={[styles.podiumBar, {height: 110}]}
+          >
              <Text style={styles.podiumName} numberOfLines={1}>{topThree[1].jatekos_nev}</Text>
              <Text style={styles.podiumScore}>{topThree[1].eredmeny?.toLocaleString('hu-HU')} Ft</Text>
-          </View>
+          </LinearGradient>
         </View>
       )}
 
@@ -91,13 +91,13 @@ const Rekordok: React.FC = () => {
              <MaterialCommunityIcons name="trophy" size={35} color="#FFD700" />
              <View style={styles.badgeGold}><Text style={styles.badgeText}>1</Text></View>
           </View>
-          <View style={[
-              styles.podiumBar, 
-              {backgroundColor: '#FFE082', height: 140}
-            ]}>
+          <LinearGradient
+              colors={['#FFF59D', '#FFC107']}
+              style={[styles.podiumBar, {height: 140}]}
+          >
              <Text style={styles.podiumNameFirst} numberOfLines={1}>{topThree[0].jatekos_nev}</Text>
              <Text style={styles.podiumScoreFirst}>{topThree[0].eredmeny?.toLocaleString('hu-HU')} Ft</Text>
-          </View>
+          </LinearGradient>
         </View>
       )}
 
@@ -108,13 +108,13 @@ const Rekordok: React.FC = () => {
              <MaterialCommunityIcons name="account" size={30} color="#D7CCC8" />
              <View style={styles.badgeBronze}><Text style={styles.badgeText}>3</Text></View>
           </View>
-           <View style={[
-               styles.podiumBar, 
-               {backgroundColor: '#D7CCC8', height: 90}
-            ]}>
+           <LinearGradient
+               colors={['#EFEBE9', '#D7CCC8']}
+               style={[styles.podiumBar, {height: 90}]}
+           >
              <Text style={styles.podiumName} numberOfLines={1}>{topThree[2].jatekos_nev}</Text>
              <Text style={styles.podiumScore}>{topThree[2].eredmeny?.toLocaleString('hu-HU')} Ft</Text>
-          </View>
+          </LinearGradient>
         </View>
       )}
     </View>
@@ -132,6 +132,9 @@ const Rekordok: React.FC = () => {
 
           {/* Name and Info */}
           <View style={styles.infoContainer}>
+            <View style={styles.listAvatar}>
+              <MaterialCommunityIcons name="account" size={20} color="#8E24AA" />
+            </View>
             <Text style={styles.nev}>{item.jatekos_nev}</Text>
           </View>
           
@@ -179,24 +182,25 @@ const Rekordok: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F4F6FB',
   },
   headerArea: {
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 15,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F4F6FB',
   },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 8,
   },
   headerTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#333',
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#1A1A2E',
+    letterSpacing: 0.3,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F4F6FB',
   },
   lista: {
     paddingHorizontal: 20,
@@ -271,11 +275,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: -20,
     zIndex: 5,
-    elevation: 4,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
     borderWidth: 2,
     borderColor: '#fff',
   },
@@ -288,10 +292,10 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   badgeGold: {
-    position: 'absolute', bottom: -5, backgroundColor: '#8E24AA', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
+    position: 'absolute', bottom: -5, backgroundColor: '#6C5CE7', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
   },
   badgeSilver: {
-    position: 'absolute', bottom: -5, backgroundColor: '#333', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
+    position: 'absolute', bottom: -5, backgroundColor: '#757575', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
   },
   badgeBronze: {
     position: 'absolute', bottom: -5, backgroundColor: '#FF9800', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
@@ -306,29 +310,34 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingTop: 35,
     paddingHorizontal: 5,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   podiumName: {
-      color: '#333',
+      color: '#424242',
       fontSize: 12,
       fontWeight: 'bold',
       textAlign: 'center',
       marginBottom: 4,
   },
   podiumNameFirst: {
-    color: '#333',
+    color: '#3E2723',
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
   },
   podiumScore: {
-      color: '#8E24AA',
-      fontSize: 11,
-      fontWeight: 'bold',
-      textAlign: 'center',
+    color: '#6C5CE7',
+    fontSize: 11,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   podiumScoreFirst: {
-    color: '#8E24AA',
+    color: '#6C5CE7',
     fontSize: 12,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -337,16 +346,23 @@ const styles = StyleSheet.create({
   rekordSor: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     backgroundColor: '#fff',
-    borderRadius: 20,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    borderRadius: 18,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#F0F0F7',
+    ...Platform.select({
+      web: { boxShadow: '0px 2px 8px rgba(108,92,231,0.07)' },
+      default: {
+        shadowColor: '#6C5CE7',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.07,
+        shadowRadius: 6,
+        elevation: 2,
+      }
+    })
   },
   rankBadge: {
       width: 30,
@@ -357,29 +373,37 @@ const styles = StyleSheet.create({
   rankText: {
       fontSize: 16,
       fontWeight: 'bold',
-      color: '#999',
+      color: '#9E9E9E',
   },
   infoContainer: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
   },
+  listAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#EDE9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   nev: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginLeft: 15,
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1A1A2E',
+    marginLeft: 12,
   },
   scoreContainer: {
-      backgroundColor: '#F3E5F5',
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 15,
+    backgroundColor: '#EDE9FF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   pont: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#8E24AA',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#6C5CE7',
   },
   hibaText: {
     fontSize: 16,

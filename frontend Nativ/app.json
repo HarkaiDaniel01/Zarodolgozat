@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "kvizjatekopenalpha",
+    "name": "kvizjatekclosedbeta",
+    "slug": "kvizjatekclosedbeta",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,9 +27,12 @@
     },
     "extra": {
       "eas": {
-        "projectId": "dfb6af82-e3b0-4d58-95d9-b1eee09c8abb"
+        "projectId": "46a3f994-ca14-4da9-ba59-e86fd79f596a"
       }
     },
-    "owner": "itsmenifftys-organization"
+    "owner": "itsmeniffty",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

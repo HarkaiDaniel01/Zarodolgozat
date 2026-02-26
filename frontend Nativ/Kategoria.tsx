@@ -11,7 +11,8 @@ import {
   ViewStyle,
   TextStyle,
   Modal,
-  Image
+  Image,
+  Platform
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -49,24 +50,42 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
   const [hardcoreModeAlert, setHardcoreModeAlert] = useState<'error' | 'info'>('info');
   const [geniuszKategoria, setGeniuszKategoria] = useState<number | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [hardcoreKattintas, setHardcoreKattintas] = useState<number>(0);
+  const [easterEggVisible, setEasterEggVisible] = useState<boolean>(false);
 
-  const getIconName = (index: number): any => {
-    const icons = [
-      "leaf", 
-      "palette", 
-      "history", 
-      "rocket-launch", 
-      "earth", 
-      "book-open-variant", 
-      "music", 
-      "dumbbell", 
-      "coffee", 
-      "dice-5", 
-      "brain", 
-      "desktop-tower", 
-      "gamepad-variant"
-    ];
-    return icons[index % icons.length];
+  const getIconName = (nev: string): any => {
+    const nevKisbetus = nev.toLowerCase();
+    if (nevKisbetus.includes('karácsony') || nevKisbetus.includes('karacsony')) return 'pine-tree';
+    if (nevKisbetus.includes('természet') || nevKisbetus.includes('termeszet')) return 'leaf';
+    if (nevKisbetus.includes('állat') || nevKisbetus.includes('allat')) return 'paw';
+    if (nevKisbetus.includes('történelem') || nevKisbetus.includes('tortenelem')) return 'bank';
+    if (nevKisbetus.includes('tudomány') || nevKisbetus.includes('tudomany')) return 'flask';
+    if (nevKisbetus.includes('fizika')) return 'atom';
+    if (nevKisbetus.includes('kémia') || nevKisbetus.includes('kemia')) return 'flask-outline';
+    if (nevKisbetus.includes('biológia') || nevKisbetus.includes('biologia')) return 'dna';
+    if (nevKisbetus.includes('matematika') || nevKisbetus.includes('matek')) return 'calculator';
+    if (nevKisbetus.includes('informatika') || nevKisbetus.includes('számítástechnika')) return 'laptop';
+    if (nevKisbetus.includes('techno')) return 'desktop-tower';
+    if (nevKisbetus.includes('földrajz') || nevKisbetus.includes('foldrajz')) return 'earth';
+    if (nevKisbetus.includes('irodalom')) return 'book-open-variant';
+    if (nevKisbetus.includes('könyv') || nevKisbetus.includes('konyv')) return 'book-open-variant';
+    if (nevKisbetus.includes('zene') || nevKisbetus.includes('musik')) return 'music';
+    if (nevKisbetus.includes('film') || nevKisbetus.includes('mozi')) return 'movie-open';
+    if (nevKisbetus.includes('sport')) return 'dumbbell';
+    if (nevKisbetus.includes('foci') || nevKisbetus.includes('futball')) return 'soccer';
+    if (nevKisbetus.includes('konyha') || nevKisbetus.includes('étel') || nevKisbetus.includes('etel') || nevKisbetus.includes('gasztro')) return 'food-fork-drink';
+    if (nevKisbetus.includes('auto') || nevKisbetus.includes('autó') || nevKisbetus.includes('jármű')) return 'car';
+    if (nevKisbetus.includes('politika')) return 'account-tie';
+    if (nevKisbetus.includes('vallás') || nevKisbetus.includes('vallas')) return 'church';
+    if (nevKisbetus.includes('művészet') || nevKisbetus.includes('muveszet')) return 'palette';
+    if (nevKisbetus.includes('játék') || nevKisbetus.includes('jatek')) return 'gamepad-variant';
+    if (nevKisbetus.includes('bolt') || nevKisbetus.includes('üzlet')) return 'store';
+    if (nevKisbetus.includes('egészség') || nevKisbetus.includes('egeszseg')) return 'heart-pulse';
+    if (nevKisbetus.includes('sorozat') || nevKisbetus.includes('tv')) return 'television-play';
+    if (nevKisbetus.includes('celebr') || nevKisbetus.includes('sztár') || nevKisbetus.includes('sztar')) return 'star';
+    if (nevKisbetus.includes('internet') || nevKisbetus.includes('web')) return 'web';
+    if (nevKisbetus.includes('anime') || nevKisbetus.includes('manga')) return 'television-shimmer';
+    return 'help-circle-outline';
   };
 
   const [szinek] = useState<string[]>([
@@ -168,7 +187,12 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
       const data = await response.json();
       if (response.ok) { 
         const szurtAdatok = data.filter((item: KategoriaItem) => item.kategoria_nev !== "Vegyes" && item.kategoria_nev !== "Géniusz");
-        setAdatok(szurtAdatok); 
+        setAdatok(szurtAdatok);
+        const unlocked = await AsyncStorage.getItem("geniuszUnlocked");
+        if (unlocked === "true") {
+          const geniuszItem = data.find((item: KategoriaItem) => item.kategoria_nev === "Géniusz");
+          if (geniuszItem) setGeniuszKategoria(geniuszItem.kategoria_id);
+        }
       }
       else { setHiba(true); }
     } catch (error) { 
@@ -190,9 +214,10 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
         });
         if (response.ok) {
           const data = await response.json();
+          const jatekos = Array.isArray(data) ? data[0] : data;
           setUserData({
-            nev: data.jatekos_nev,
-            jatszottJatekok: data.jatszott_jatekok || 0
+            nev: jatekos.jatekos_nev,
+            jatszottJatekok: jatekos.jatszott_jatekok || 0
           });
         }
       }
@@ -232,16 +257,32 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
     <View style={styles.container}>
       {!kerdesekBetoltve ? (
         <SafeAreaView edges={['top', 'left', 'right']} style={{ flex: 1 }}>
+            {/* Greeting Header */}
+            <View style={styles.greetingCard}>
+              <View style={styles.greetingRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.greetingTitle}>
+                    {userData ? `Helló, ${userData.nev}! 👋` : 'Helló! 👋'}
+                  </Text>
+                  <Text style={styles.greetingSubtitle}>Kész vagy a kihívásra ma? 🎯</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.greetingIconBtn}
+                  onPress={() => {
+                    const ujKattintas = hardcoreKattintas + 1;
+                    setHardcoreKattintas(ujKattintas);
+                    if (ujKattintas >= 5) {
+                      setHardcoreKattintas(0);
+                      setEasterEggVisible(true);
+                    }
+                  }}
+                >
+                  <MaterialCommunityIcons name="brain" size={28} color="#6C5CE7" />
+                </TouchableOpacity>
+              </View>
+            </View>
             <View style={styles.headerContent}>
-                <View style={styles.headerRow}>
-                    <Text style={styles.headerTitle}>Kezdőlap</Text>
-                </View>
-
-              
-
-                <View style={styles.exploreHeader}>
-                    <Text style={styles.exploreTitle}>Válasz Kategoriát!</Text>
-                </View>
+                <Text style={styles.sectionLabel}>Kategóriák</Text>
             </View>
 
             <View style={styles.listWrapper}>
@@ -256,7 +297,7 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
                     <View style={styles.cardContainer}>
                         <View style={[styles.card, { backgroundColor: szinek[index % szinek.length] }]}>
                             <View style={styles.cardIconContainer}>
-                                <MaterialCommunityIcons name={getIconName(index)} size={32} color={iconSzinek[index % iconSzinek.length]} />
+                                <MaterialCommunityIcons name={getIconName(item.kategoria_nev)} size={32} color={iconSzinek[index % iconSzinek.length]} />
                             </View>
                             <Text style={[styles.cardText, { color: iconSzinek[index % iconSzinek.length] }]} numberOfLines={1} adjustsFontSizeToFit>
                                 {item.kategoria_nev}
@@ -314,6 +355,42 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
                             <MaterialCommunityIcons name="chevron-right" size={24} color="#4CAF50" />
                         </TouchableOpacity>
 
+                        {/* Hardcore mód kapcsoló */}
+                        <TouchableOpacity
+                            style={[
+                              styles.hardcoreBtn,
+                              isHardcore && styles.hardcoreBtnActive
+                            ]}
+                            onPress={() => {
+                              const newVal = !isHardcore;
+                              setIsHardcore(newVal);
+                              if (newVal) {
+                                setHardcoreModeAlert('info');
+                                setHardcoreModeModalVisible(true);
+                              }
+                            }}
+                        >
+                            <View style={[styles.specialIconContainer, { backgroundColor: isHardcore ? '#F44336' : '#9E9E9E', marginRight: 15 }]}>
+                                <MaterialCommunityIcons name="skull-crossbones" size={24} color="#fff" />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={[styles.specialCardText, { color: isHardcore ? '#F44336' : '#555' }]}>Ultranehéz mód</Text>
+                                <Text style={{ fontSize: 12, color: isHardcore ? '#F44336' : '#999' }}>{isHardcore ? '✅ Bekapcsolva' : 'Koppints a bekapcsoláshoz'}</Text>
+                            </View>
+                            <Switch
+                              value={isHardcore}
+                              onValueChange={(val) => {
+                                setIsHardcore(val);
+                                if (val) {
+                                  setHardcoreModeAlert('info');
+                                  setHardcoreModeModalVisible(true);
+                                }
+                              }}
+                              trackColor={{ false: '#ccc', true: '#FFCDD2' }}
+                              thumbColor={isHardcore ? '#F44336' : '#f4f3f4'}
+                            />
+                        </TouchableOpacity>
+
                         {geniuszKategoria && (
                         <TouchableOpacity
                             style={[styles.specialCard, { backgroundColor: '#E8EAF6' }]}
@@ -344,6 +421,37 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
             isHardcore={isHardcore}
         />
       )}
+
+      {/* Easter Egg Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={easterEggVisible}
+        onRequestClose={() => setEasterEggVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modeModal, { backgroundColor: '#1a1a2e' }]}>
+            <Text style={{ fontSize: 48 }}>🐣</Text>
+            <Text style={[styles.modeTitle, { color: '#FFD700' }]}>Easter Egg!</Text>
+<Text style={[styles.modeMessage, { color: '#aaa' }]}>
+  Megtaláltad a titkot! 🎉{'\n\n'}Ez az alkalmazást
+</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 5 }}>
+              Daróczi Gergő és Harkai Dániel
+            </Text>
+<Text style={[styles.modeMessage, { color: '#aaa', marginTop: 5 }]}>
+  fejlesztették szeretettel. 💜{'\n\n'}Köszönjük, hogy játszol! 🚀
+  tipp:Géniusz módot 20030826 a felhasznalónévhez
+</Text>
+            <TouchableOpacity
+              style={[styles.modeButton, { backgroundColor: '#FFD700' }]}
+              onPress={() => setEasterEggVisible(false)}
+            >
+              <Text style={[styles.modeButtonText, { color: '#1a1a2e' }]}>😎 Klassz!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Ultranehéz Mód Modal */}
       <Modal
@@ -380,16 +488,65 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
   );
 };
 
+const PRIMARY = '#6C5CE7';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F4F6FB',
+  },
+  greetingCard: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    ...Platform.select({
+      web: { boxShadow: '0px 2px 16px rgba(108,92,231,0.08)' },
+      default: {
+        shadowColor: '#6C5CE7',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 4,
+      }
+    })
+  },
+  greetingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  greetingTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#1A1A2E',
+    marginBottom: 4,
+  },
+  greetingSubtitle: {
+    fontSize: 13,
+    color: '#6B7280',
+  },
+  greetingIconBtn: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#EDE9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 12,
+  },
+  sectionLabel: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1A1A2E',
+    marginBottom: 2,
   },
   headerContent: {
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 15,
-    backgroundColor: '#FAFAFA',
+    paddingTop: 12,
+    paddingBottom: 8,
+    backgroundColor: '#F4F6FB',
   },
   headerRow: {
     flexDirection: 'row',
@@ -515,14 +672,21 @@ const styles = StyleSheet.create({
   },
   exploreHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
   },
   exploreTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 28,
+    fontWeight: '900',
+    color: PRIMARY,
+    letterSpacing: 0.5,
+  },
+  exploreSubtitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginTop: 4,
   },
   viewAllText: {
     fontSize: 14,
@@ -545,19 +709,21 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 20,
-    padding: 15,
+    padding: 18,
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    elevation: 3,
+    shadowColor: '#6C5CE7',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    height: 160,
+    justifyContent: 'space-between',
   },
   cardIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#fff',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255,255,255,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
@@ -584,26 +750,31 @@ const styles = StyleSheet.create({
   startButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 13,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1A1A2E',
     marginBottom: 15,
     marginLeft: 5,
   },
   specialCard: {
-    borderRadius: 15,
-    padding: 15,
+    borderRadius: 20,
+    padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   specialIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
@@ -612,54 +783,83 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  hardcoreBtn: {
+    borderRadius: 20,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+    borderStyle: 'dashed',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+  },
+  hardcoreBtnActive: {
+    backgroundColor: '#FFEBEE',
+    borderColor: '#F44336',
+    borderStyle: 'solid',
+    elevation: 5,
+    shadowColor: '#F44336',
+    shadowOpacity: 0.3,
+  },
   textContainer: {
     flex: 1,
   },
   center: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F4F6FB',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modeModal: {
     width: '85%',
-    maxWidth: 300,
+    maxWidth: 320,
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 25,
+    borderRadius: 24,
+    padding: 30,
     alignItems: 'center',
-    elevation: 10,
+    elevation: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
   },
   modeTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 12,
-  },
-  modeMessage: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 22,
+    fontWeight: '800',
     textAlign: 'center',
     marginVertical: 15,
-    lineHeight: 20,
+  },
+  modeMessage: {
+    fontSize: 15,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 25,
+    lineHeight: 22,
   },
   modeButton: {
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 30,
-    borderRadius: 10,
+    borderRadius: 14,
     alignItems: 'center',
-    marginTop: 15,
     width: '100%',
   },
   modeButtonText: {
     fontWeight: 'bold',
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
+    letterSpacing: 0.5,
   }
 });
 

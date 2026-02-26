@@ -70,10 +70,10 @@ function MyTabs(): React.JSX.Element {
               <MaterialCommunityIcons 
                 name={activeTab === 'jatek' ? "home" : "home-outline"} 
                 size={28} 
-                color={activeTab === 'jatek' ? "#8E24AA" : "#B0BEC5"} 
+                color={activeTab === 'jatek' ? "#6C5CE7" : "#B0BEC5"} 
               />
               <Text style={[styles.tabText, activeTab === 'jatek' && styles.activeTabText]}>
-                HOME
+                Kezdőlap
               </Text>
             </TouchableOpacity>
             
@@ -84,10 +84,10 @@ function MyTabs(): React.JSX.Element {
                <MaterialCommunityIcons 
                 name={activeTab === 'rekordok' ? "trophy" : "trophy-outline"} 
                 size={28} 
-                color={activeTab === 'rekordok' ? "#8E24AA" : "#B0BEC5"} 
+                color={activeTab === 'rekordok' ? "#6C5CE7" : "#B0BEC5"} 
               />
               <Text style={[styles.tabText, activeTab === 'rekordok' && styles.activeTabText]}>
-                MODES
+                Eredmények
               </Text>
             </TouchableOpacity>
             
@@ -98,10 +98,10 @@ function MyTabs(): React.JSX.Element {
               <MaterialCommunityIcons 
                 name={activeTab === 'profil' ? "account" : "account-outline"} 
                 size={28} 
-                color={activeTab === 'profil' ? "#8E24AA" : "#B0BEC5"} 
+                color={activeTab === 'profil' ? "#6C5CE7" : "#B0BEC5"} 
               />
               <Text style={[styles.tabText, activeTab === 'profil' && styles.activeTabText]}>
-                PROFILE
+                Fiók
               </Text>
             </TouchableOpacity>
           </View>
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   activeTabText: {
-    color: '#8E24AA',
+    color: '#6C5CE7',
   },
 });
 

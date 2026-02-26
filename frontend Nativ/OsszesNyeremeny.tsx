@@ -1,4 +1,4 @@
-import React, { useState, useEffect, JSX } from 'react';
+﻿import React, { useState, useEffect, JSX } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -16,6 +16,24 @@ interface WinningItem {
   Eredmenyek_datum: string;
   Eredmenyek_pont: number;
 }
+
+const formatDate = (raw: string): string => {
+  try {
+    const d = new Date(raw);
+    return d.toLocaleDateString('hu-HU', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch {
+    return raw;
+  }
+};
+
+const CARD_COLORS = [
+  { bg: '#F3E5F5', icon: '#9C27B0' },
+  { bg: '#E8EAF6', icon: '#3F51B5' },
+  { bg: '#E0F7FA', icon: '#00838F' },
+  { bg: '#FFF3E0', icon: '#E65100' },
+  { bg: '#FCE4EC', icon: '#C2185B' },
+  { bg: '#E8F5E9', icon: '#2E7D32' },
+];
 
 const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,50 +65,81 @@ const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
     }
   };
 
-  const renderItem = ({ item }: { item: WinningItem }): JSX.Element => (
-    <View style={styles.card}>
-      <View style={styles.iconContainer}>
-        <MaterialCommunityIcons name="trophy" size={24} color="#FFD700" />
+  const totalPont = data.reduce((sum, item) => sum + (item.Eredmenyek_pont || 0), 0);
+  const legjobb = data.length ? Math.max(...data.map(i => i.Eredmenyek_pont)) : 0;
+
+  const renderItem = ({ item, index }: { item: WinningItem; index: number }): JSX.Element => {
+    const color = CARD_COLORS[index % CARD_COLORS.length];
+    return (
+      <View style={[styles.card, { borderLeftColor: color.icon }]}>
+        <View style={[styles.iconContainer, { backgroundColor: color.bg }]}>
+          <MaterialCommunityIcons name="trophy" size={22} color={color.icon} />
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardTitle} numberOfLines={1}>{item.kategoria_nev}</Text>
+          <View style={styles.dateRow}>
+            <MaterialCommunityIcons name="calendar-outline" size={12} color="#999" />
+            <Text style={styles.cardDate}> {formatDate(item.Eredmenyek_datum)}</Text>
+          </View>
+        </View>
+        <View style={[styles.amountBadge, { backgroundColor: color.bg }]}>
+          <Text style={[styles.amountText, { color: color.icon }]}>{item.Eredmenyek_pont}</Text>
+          <Text style={[styles.amountUnit, { color: color.icon }]}>pont</Text>
+        </View>
       </View>
-      <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.kategoria_nev}</Text>
-        <Text style={styles.cardDate}>{item.Eredmenyek_datum}</Text>
-      </View>
-      <View style={styles.amountContainer}>
-         <Text style={styles.amountText}>{item.Eredmenyek_pont} Ft</Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.header}
-      >
+      <LinearGradient colors={['#6C5CE7', '#5A4BD1', '#4A148C']} style={styles.header}>
         <SafeAreaView edges={['top', 'left', 'right']} style={styles.headerContent}>
           <TouchableOpacity onPress={onBack} style={styles.backButton}>
-            <MaterialCommunityIcons name="arrow-left" size={28} color="#fff" />
+            <MaterialCommunityIcons name="arrow-left" size={26} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Összes Nyeremény</Text>
-          <View style={{ width: 28 }} /> 
+          <View style={styles.headerCenter}>
+            <MaterialCommunityIcons name="trophy-award" size={22} color="#FFD700" />
+            <Text style={styles.headerTitle}> Előző Eredményeim</Text>
+          </View>
+          <View style={{ width: 36 }} />
         </SafeAreaView>
+
+        {!loading && data.length > 0 && (
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{data.length}</Text>
+              <Text style={styles.statLabel}>Játék</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{totalPont}</Text>
+              <Text style={styles.statLabel}>Összpont</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{legjobb}</Text>
+              <Text style={styles.statLabel}>Legjobb</Text>
+            </View>
+          </View>
+        )}
       </LinearGradient>
 
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#3b5998" />
+          <ActivityIndicator size="large" color="#6C5CE7" />
         </View>
       ) : (
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item: WinningItem, index: number) => item.Eredmenyek_id ? item.Eredmenyek_id.toString() : index.toString()}
+          keyExtractor={(item, index) => item.Eredmenyek_id ? item.Eredmenyek_id.toString() : index.toString()}
           contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <MaterialCommunityIcons name="emoticon-sad-outline" size={64} color="#ccc" />
-              <Text style={styles.emptyText}>Még nincs nyereményed.</Text>
+              <MaterialCommunityIcons name="trophy-outline" size={80} color="#E1BEE7" />
+              <Text style={styles.emptyTitle}>Még nincs eredményed</Text>
+              <Text style={styles.emptyText}>Játssz egy kvízt és itt láthatod az eredményeidet!</Text>
             </View>
           }
         />
@@ -102,27 +151,76 @@ const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F8F9FA',
   },
   header: {
     paddingBottom: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    ...Platform.select({
+      default: {
+        shadowColor: '#6C5CE7',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 12,
+      }
+    })
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 10,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  headerCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
+    letterSpacing: 0.5,
   },
   backButton: {
-    padding: 5,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+  },
+  statBox: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statValue: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  statLabel: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    height: 36,
+    backgroundColor: 'rgba(255,255,255,0.3)',
   },
   center: {
     flex: 1,
@@ -131,72 +229,86 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     padding: 16,
+    paddingTop: 20,
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    borderLeftWidth: 4,
     ...Platform.select({
-      web: {
-         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-      },
+      web: { boxShadow: '0px 2px 8px rgba(0,0,0,0.08)' },
       default: {
         shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 3.84,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.07,
+        shadowRadius: 6,
+        elevation: 3,
       }
     })
   },
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#FFF8E1',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 14,
   },
   cardContent: {
     flex: 1,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#222',
+    marginBottom: 4,
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   cardDate: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+    fontSize: 12,
+    color: '#999',
   },
-  amountContainer: {
-    backgroundColor: '#E8F5E9',
+  amountBadge: {
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 20,
+    alignItems: 'center',
+    minWidth: 60,
   },
   amountText: {
-    color: '#2E7D32',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
+  },
+  amountUnit: {
+    fontSize: 10,
+    fontWeight: '600',
+    marginTop: 1,
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 100,
+    paddingTop: 80,
+    paddingHorizontal: 30,
+  },
+  emptyTitle: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#555',
   },
   emptyText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#999',
+    marginTop: 8,
+    fontSize: 14,
+    color: '#aaa',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });
 
