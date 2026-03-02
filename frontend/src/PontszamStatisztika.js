@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Cim from "./Cim";
 import React from "react";
 import MyPlot from "./MyPlot";
-import { data } from "react-router-dom";
+//import { data } from "react-router-dom";
 import Lenyilo from "./Lenyilo";
 //import { useNavigate } from "react-router-dom";
 
 const PontszamStatisztika = () => {
 
     const [jatekosId, setJatekosId] = useState(null);
-    const [adatok,setAdatok]=useState([])
+    //const [adatok, setAdatok]=useState([])
 
     const [tolt,setTolt]=useState(true)
     const [hiba,setHiba]=useState(false)
@@ -46,7 +46,7 @@ const PontszamStatisztika = () => {
                         if (response.ok)
                             {   
 
-                                setAdatok(data)
+                                //setAdatok(data)
                                 
                                 const eredmenyTomb = data.map(sor => sor.Eredmenyek_pontszam)
                                 

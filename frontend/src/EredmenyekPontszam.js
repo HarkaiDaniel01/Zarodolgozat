@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Cim from "./Cim";
 import React from "react";
 import MyPlot from "./MyPlot";
-import { data } from "react-router-dom";
+//import { data } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 
 const EredmenyekPontszam = () => {
@@ -96,11 +96,11 @@ const EredmenyekPontszam = () => {
                                 const eredmenyTomb = data.map(sor => sor.eredmeny)
                                 const utolsoHetDatum = datumTomb.slice(-5).map(d => d.toString().split('T')[0])
                                 const utolsoHetEredmeny = eredmenyTomb.slice(-5)
-                                const ujEredmenyekTomb = []
+                                //const ujEredmenyekTomb = []
                                 //alert(data.map(sor => sor.nap))
 
-                                const ma = new Date()
-                                const datumok = []
+                                //const ma = new Date()
+                                //const datumok = []
 
                                 setDatumokTomb(utolsoHetDatum)
                                 setEredmenyekTomb(utolsoHetEredmeny)
@@ -178,7 +178,7 @@ const EredmenyekPontszam = () => {
                         const data=await response.json()
                         if (response.ok)
                             {
-                                console.log(osszes)
+                                //console.log(osszes)
                                 if (data[0].ossz !== undefined && data[0].ossz !== null && data[0].ossz !== 0) setOsszes(data[0].ossz)
                                     else setOsszes(0) 
                                 setOsszEredmenyTolt(false)

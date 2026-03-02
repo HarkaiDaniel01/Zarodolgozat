@@ -273,14 +273,14 @@ const Kategoria=()=>{
             
         {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}} >
 
-                <h1>Itt lesz a cím!</h1>
+                <h1>Te is lehetsz milliomos!</h1>
                 <h2>Válassz kategóriát!</h2>
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
                     
                         <button key={index} className="kategoriaGomb" onClick={() => kategoriaValaszt(elem.kategoria_id, elem.kategoria_nev)}>{ikonok[index]} {elem.kategoria_nev}</button>
                     
-                ))}
+                ))} 
 
                 {/*<button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[6]} Vegyes</button>
                 <button className="gomb" onClick={() => kategoriaValasztNehez()}>{ikonok[7]} Géniusz</button>*/}

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cim from './Cim';
+import Swal from 'sweetalert2';
+
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -33,7 +35,13 @@ const Register = () => {
         throw new Error(errData.message || 'Hiba a regisztráció során');
       }
 
-      alert('Sikeres regisztráció!');
+      Swal.fire({
+                title: `Sikeres regisztráció!`,
+                html: `Sikeres regisztráció`,
+                icon: `success`,
+                confirmButtonText: `Rendben`,
+              });
+
       navigate('/login'); // vissza a login oldalra
     } catch (err) {
       setError(err.message);
@@ -105,7 +113,7 @@ const styles = {
     padding: '30px',
     textAlign: 'center',
     borderRadius: '10px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    //boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
     backgroundColor: 'rgba(10, 10, 20, 0.8)',
     marginTop : "150px",
     boxShadow: "5px 5px 5px"
@@ -113,7 +121,7 @@ const styles = {
   title: {
     marginBottom: '20px',
     fontSize: '2rem',
-    color: '#333',
+    //color: '#333',
     color: "#F2F2F2"
   },
   form: {

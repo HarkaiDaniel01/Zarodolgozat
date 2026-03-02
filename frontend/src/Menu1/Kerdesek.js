@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import {useState,  useEffect } from "react"
+import {useState,  useEffect, useCallback } from "react"
 import 'sweetalert2/dist/sweetalert2.min.css';
 import Cim from "../Cim";
 import { useNavigate } from 'react-router-dom';
@@ -251,10 +251,10 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
             const ujPontozas = Math.round(ujKerdesPont * segitsegSzorzo * ujSzamlalo)
             setPontozas(ujPontozas)
-            console.log(ujKerdesPont)
-            console.log(segitsegSzorzo)
-            console.log(ujSzamlalo)
-            console.log(ujPontozas)
+            //console.log(ujKerdesPont)
+            //console.log(segitsegSzorzo)
+            //console.log(ujSzamlalo)
+            //console.log(ujPontozas)
             
             
             //valaszKever()
@@ -307,7 +307,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     });
     }
 
-    const eredmenyMentes = (cim, tartalom, ikon) => {
+    const eredmenyMentes = useCallback((cim, tartalom, ikon) => {
 
         /*showAlert(
             "Sajnos nem nyertél! 😿", 
@@ -360,20 +360,20 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
         }
     });
-    }
+    }, [jatekosId, kategoria, navigate, pontozas, pontszam]);
 
 
 
 
-    const valaszKever = () => {
+    const valaszKever = useCallback(() => {
 
         if (szamlalo < kerdesek.length) {
 
             setFelezoMegjelol(false)
-        setKozonsegMegjelol(false)
+            setKozonsegMegjelol(false)
 
-        //alert(szamlalo)
-        let tomb =  [kerdesek[szamlalo].kerdesek_helyesValasz, 
+            //alert(szamlalo)
+            let tomb =  [kerdesek[szamlalo].kerdesek_helyesValasz, 
                     kerdesek[szamlalo].kerdesek_helytelenValasz1, 
                     kerdesek[szamlalo].kerdesek_helytelenValasz2, 
                     kerdesek[szamlalo].kerdesek_helytelenValasz3]
@@ -381,22 +381,20 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         
 
 
-        let csere
-        for (let i = 0; i < 100; i++) {
-            const rand1 = Math.floor(Math.random() * 4)
-            const rand2 = Math.floor(Math.random() * 4)
+            let csere
+            for (let i = 0; i < 100; i++) {
+                const rand1 = Math.floor(Math.random() * 4)
+                const rand2 = Math.floor(Math.random() * 4)
 
-            csere = tomb[rand1]
-            tomb[rand1] = tomb[rand2]
-            tomb[rand2] = csere
+                csere = tomb[rand1]
+                tomb[rand1] = tomb[rand2]
+                tomb[rand2] = csere
+            }
 
-            
-        }
+            setValaszok(tomb)
+            setHelyesValasz(kerdesek[szamlalo].kerdesek_helyesValasz)
 
-        setValaszok(tomb)
-        setHelyesValasz(kerdesek[szamlalo].kerdesek_helyesValasz)
-
-        let randomHelytelen
+            let randomHelytelen
 
             do {
                 randomHelytelen = Math.floor(Math.random() * 4)
@@ -404,31 +402,25 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
         
             setHelytelenValaszMarad(tomb[randomHelytelen])
+            setTolt(true)
+            setPontszam(nyeremenyek[szamlalo])
 
-        
-
-        
-        
-        setTolt(true)
-
-        setPontszam(nyeremenyek[szamlalo])
-
-        /*switch (szamlalo + 1) {
-            case 1: setPontszam(5000);break;
-            case 2: setPontszam(50000);break;
-            case 3: setPontszam(100000);break;
-            case 4: setPontszam(500000);break;
-            case 5: setPontszam(750000);break;
-            case 6: setPontszam(1500000);break;
-            case 7: setPontszam(2000000);break;
-            case 8: setPontszam(10000000);break;
-            case 9: setPontszam(15000000);break;
-            default: setPontszam(50000000);break;
-        }*/
+            /*switch (szamlalo + 1) {
+                case 1: setPontszam(5000);break;
+                case 2: setPontszam(50000);break;
+                case 3: setPontszam(100000);break;
+                case 4: setPontszam(500000);break;
+                case 5: setPontszam(750000);break;
+                case 6: setPontszam(1500000);break;
+                case 7: setPontszam(2000000);break;
+                case 8: setPontszam(10000000);break;
+                case 9: setPontszam(15000000);break;
+                default: setPontszam(50000000);break;
+            }*/
 
         }
         
-    }
+    }, [kerdesek, nyeremenyek, szamlalo]);
 
     /*const helytelenValasz = () => {
 
@@ -467,8 +459,8 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
     useEffect(()=>{
         valaszKever()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[szamlalo])
+        
+    },[szamlalo, valaszKever])
 
     /*useEffect(()=>{
         pontozasSzamol()
@@ -493,7 +485,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
             kerdesekBetoltve(false);
         }
-    }, [szamlalo, pontozas]);
+    }, [szamlalo, pontozas, eredmenyMentes, kerdesek.length, kerdesekBetoltve, pontszam]);
 
     if (szamlalo < kerdesek.length) {
 
