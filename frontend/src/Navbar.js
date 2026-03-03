@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "./Navbar.css";
 
@@ -6,6 +6,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [role, setRole] = useState(localStorage.getItem("role"));
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -39,14 +41,41 @@ const Navbar = () => {
     setMenuOpen(prev => !prev);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target) && buttonRef.current &&!buttonRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+  }, []);
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <button className="hamburger" onClick={toggleMenu}>
+        <button ref={buttonRef} className="hamburger" onClick={toggleMenu}>
           ☰
         </button>
 
-        <div className={`menu ${menuOpen ? "open" : ""}`}>
+        <div ref={menuRef} className={`menu ${menuOpen ? "open" : ""}`}>
           <Link to="/Kategoria" className="link" onClick={() => setMenuOpen(false)}>
             Játék
           </Link>
@@ -75,10 +104,10 @@ const Navbar = () => {
 
               <ul className="dropdown-menu">
                 <li>
-                  <Link className="dropdown-item" to="/felhasznalo">Nyeremények</Link>
+                  <Link className="dropdown-item" to="/felhasznalo" onClick={() => setMenuOpen(false)}>Nyeremények</Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/eredmenyekPontszam">Pontszámok</Link>
+                  <Link className="dropdown-item" to="/eredmenyekPontszam" onClick={() => setMenuOpen(false)}>Pontszámok</Link>
                 </li>
               </ul>
           </li>}
@@ -95,10 +124,10 @@ const Navbar = () => {
 
               <ul className="dropdown-menu">
                 <li>
-                  <Link className="dropdown-item" to="/statisztika">Nyeremények</Link>
+                  <Link className="dropdown-item" to="/statisztika" onClick={() => setMenuOpen(false)}>Nyeremények </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/pontszamStatisztika">Pontszámok</Link>
+                  <Link className="dropdown-item" to="/pontszamStatisztika" onClick={() => setMenuOpen(false)}>Pontszámok</Link>
                 </li>
               </ul>
           </li>}
@@ -115,10 +144,10 @@ const Navbar = () => {
 
               <ul className="dropdown-menu">
                 <li>
-                  <Link className="dropdown-item" to="/rekordok">Nyeremények</Link>
+                  <Link className="dropdown-item" to="/rekordok" onClick={() => setMenuOpen(false)}>Nyeremények </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/pontszamRekordok">Pontszámok</Link>
+                  <Link className="dropdown-item" to="/pontszamRekordok" onClick={() => setMenuOpen(false)}>Pontszámok</Link>
                 </li>
               </ul>
           </li>}

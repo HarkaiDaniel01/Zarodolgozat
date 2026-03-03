@@ -11,6 +11,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 0 0 16px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  z-index: 99999;
 }
 
 /* --- Bal oldali hamburger és menü --- */
@@ -43,6 +44,7 @@
   background-color: #764ba2;
   padding: 10px;
   border-radius: px;
+  z-index: 9999;
 }
 
 .link {
@@ -80,6 +82,26 @@
 
 .loginButton:hover, .logoutButton:hover {
   background: rgba(255,255,255,0.25);
+}
+
+.nav-item.dropdown {
+  position: relative
+}
+
+.nav-item.dropdown-toggle {
+  position: relative;
+  z-index: 1;
+}
+
+.dropdown-menu {
+  position: absolute;
+  z-index: 9999 !important;
+  background-color: #764ba2;
+}
+
+.dropdown-item {
+  background-color: #764ba2;
+  color: #fff;
 }
 
 /* --- Responsive (mobil) --- */
