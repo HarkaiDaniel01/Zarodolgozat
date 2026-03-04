@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react"
+import { useState,useRef, useEffect } from "react"
 import Cim from "../Cim"
 import Kerdesek from "./Kerdesek"
 //import Swal from "sweetalert2"
@@ -11,10 +11,14 @@ const Kategoria=()=>{
     const [kerdesekBetoltve, setKerdesekBetoltve] = useState(false)
     const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠", "🐱‍👤", "🎮"])
     const [kategoria, setKategoria] = useState(0)
+    const isFetching = useRef(false);
 
  
     const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
         //alert(`Választott kategória: ${kategoriaId}`)
+
+        if (isFetching.current) return
+        isFetching.current = true;
 
         if (kategoriaNev === "Vegyes") {
             kategoriaValasztVegyes(kategoriaId)
@@ -44,6 +48,8 @@ const Kategoria=()=>{
             setKerdesekBetoltve(true)
         
         }
+
+        isFetching.current = false;
     }
 
     /*const fejlesztesAlatt = () => {
