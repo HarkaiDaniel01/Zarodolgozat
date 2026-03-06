@@ -168,7 +168,7 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
             <View style={styles.iconCircle}>
               <MaterialCommunityIcons name="brain" size={isSmallScreen ? 34 : 40} color="#fff" />
             </View>
-            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 12 : 24, textAlign: 'center' }]}>Te is lehetsz Milliomomos</Text>
+            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 12 : 24, textAlign: 'center' }]}>A tudás torna!</Text>
             <Text style={[styles.appSubtitle, { textAlign: 'center' }]}>Teszteld a tudásod!</Text>
           </View>
 
