@@ -145,7 +145,7 @@ npm start
 
 | Képernyő | Leírás |
 |---|---|
-| ![Bejelentkezés](./Githubkepek/Login.png) | Bejelentkezési képernyő |
+| ![Bejelentkezés](./Githubkepek/Login.png) |Admin Bejelentkezési képernyő |
 | ![Kategória választó](./Githubkepek/Kategoria.png) | Játékmód és kategória választó |
 | ![Kérdés](./Githubkepek/Kerdes.png) | Aktív kvíz kérdés segítségekkel |
 | ![Ranglista](./Githubkepek/Rekordok.png) | Globális nyeremény ranglista |
