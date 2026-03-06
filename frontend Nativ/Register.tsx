@@ -14,6 +14,8 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from './Cim';
+import { useTheme } from './ThemeContext';
+import { rf } from './theme';
 
 interface RegisterProps {
   onNavigateToLogin: () => void;
@@ -21,8 +23,10 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
   const { width } = useWindowDimensions();
-  const isTablet = width >= 600; // Adjusted for tablet breakpoint
+  const isTablet = width >= 600;
   const isSmallScreen = width < 380;
+  const { colors, isDark } = useTheme();
+  const styles = getStyles(colors, isDark, width);
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -208,10 +212,10 @@ const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
 
 const PRIMARY = '#6C5CE7';
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -243,16 +247,16 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontWeight: '800',
-    color: '#1A1A2E',
+    color: colors.text,
     letterSpacing: 0.5,
   },
   appSubtitle: {
-    color: '#6B7280',
-    fontSize: 15,
+    color: colors.text_secondary,
+    fontSize: rf(15, width),
     marginTop: 4,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 28,
     ...Platform.select({
@@ -268,19 +272,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '700',
-    color: '#1A1A2E',
+    color: colors.text,
     marginBottom: 6,
   },
   subtitle: {
-    color: '#6B7280',
-    fontSize: 14,
+    color: colors.text_secondary,
+    fontSize: rf(14, width),
     marginBottom: 22,
   },
   fieldGroup: {
     marginBottom: 15,
   },
   fieldLabel: {
-    fontSize: 11,
+    fontSize: rf(11, width),
     fontWeight: '700',
     color: '#9CA3AF',
     letterSpacing: 0.8,
@@ -289,20 +293,20 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: isDark ? colors.surface : '#F3F4F6',
     borderRadius: 12,
     paddingHorizontal: 14,
     height: 52,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
   },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    color: '#1A1A2E',
-    fontSize: 15,
+    color: colors.text,
+    fontSize: rf(15, width),
   },
   eyeIcon: {
     padding: 4,
@@ -326,7 +330,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: rf(16, width),
     fontWeight: '700',
     letterSpacing: 0.3,
   },
@@ -344,7 +348,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     color: '#9CA3AF',
     fontWeight: '600',
-    fontSize: 12,
+    fontSize: rf(12, width),
     letterSpacing: 0.5,
   },
   registerButton: {
@@ -353,12 +357,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   registerText: {
-    color: '#6B7280',
-    fontSize: 14,
+    color: colors.text_secondary,
+    fontSize: rf(14, width),
   },
   registerTextBold: {
     color: PRIMARY,
-    fontSize: 14,
+    fontSize: rf(14, width),
     fontWeight: '700',
   },
   errorContainer: {
@@ -375,7 +379,7 @@ const styles = StyleSheet.create({
     color: '#DC2626',
     marginLeft: 8,
     flex: 1,
-    fontSize: 13,
+    fontSize: rf(13, width),
     fontWeight: '500',
   },
   alertOverlay: {
@@ -387,7 +391,7 @@ const styles = StyleSheet.create({
   alertContainer: {
     width: '85%',
     maxWidth: 320,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 28,
     alignItems: 'center',
@@ -398,14 +402,14 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
   },
   alertTitle: {
-    fontSize: 19,
+    fontSize: rf(19, width),
     fontWeight: '700',
     textAlign: 'center',
     marginVertical: 12,
   },
   alertMessage: {
-    fontSize: 14,
-    color: '#6B7280',
+    fontSize: rf(14, width),
+    color: colors.text_secondary,
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 20,
@@ -420,7 +424,7 @@ const styles = StyleSheet.create({
   alertButtonText: {
     fontWeight: '700',
     color: '#fff',
-    fontSize: 15,
+    fontSize: rf(15, width),
   },
   // legacy
   gradientButton: { paddingVertical: 15 },

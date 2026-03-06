@@ -1,11 +1,13 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar, Platform, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar, Platform, useWindowDimensions, Switch } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Cim from './Cim';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from './ThemeContext';
+import { FONT_WEIGHTS, SPACING, BORDER_RADIUS, rf } from './theme';
 
 interface FelhasznaloProps {
   onLogout: () => void;
@@ -25,35 +27,33 @@ interface EredmenyItem {
 
 const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinnings }) => {
   const { width } = useWindowDimensions();
-  const isTablet = width >= 600; // Adjusted for tablet breakpoint
+  const isTablet = width >= 600;
   const insets = useSafeAreaInsets();
+  const { isDark, colors, setIsDark } = useTheme();
+  const styles = getStyles(colors, isDark, width);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [eredmenyek, setEredmenyek] = useState<EredmenyItem[]>([]);
   const [refresh, setRefresh] = useState<number>(0);
   
-  // JelszÃ³ vÃ¡ltoztatÃ¡s state-ek
   const [passwordModalVisible, setPasswordModalVisible] = useState<boolean>(false);
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [passwordLoading, setPasswordLoading] = useState<boolean>(false);
   
-  // FiÃ³k tÃ¶rlÃ©s state-ek
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
   const [deletePassword, setDeletePassword] = useState<string>('');
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
-  // ÃltalÃ¡nos alert Modal state-ek
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const [alertTitle, setAlertTitle] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertType, setAlertType] = useState<'info' | 'success' | 'error' | 'warning'>('info');
 
-  // KijelentkezÃ©s megerÅ‘sÃ­tÃ©s Modal
   const [logoutConfirmModalVisible, setLogoutConfirmModalVisible] = useState<boolean>(false);
 
-  // Level logic
   const calculateLevelInfo = (totalGames: number | undefined) => {
     if (!totalGames) return { level: 0, currentXp: 0, maxXp: 100 };
     
@@ -278,22 +278,20 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#8E24AA" />
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={colors.gradient_end} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 100 : insets.bottom + 80 }}
       >
-        {/* Purple gradient header */}
-        <LinearGradient colors={['#6C5CE7', '#5A4BD1', '#4A148C']} style={styles.headerGradient}>
+        <LinearGradient colors={[colors.gradient_start, colors.gradient_mid, colors.gradient_end]} style={styles.headerGradient}>
           <SafeAreaView edges={['top']} style={[styles.headerArea, isTablet && { maxWidth: 700, alignSelf: 'center', width: '100%' }]}>
             <View style={styles.headerTopRow}>
               <Text style={styles.headerTitle}>Profil</Text>
               <TouchableOpacity style={styles.settingsButton} onPress={() => setPasswordModalVisible(true)}>
-                <MaterialCommunityIcons name="cog-outline" size={20} color="#fff" />
+                <MaterialCommunityIcons name="cog-outline" size={20} color={colors.text_inverted} />
               </TouchableOpacity>
             </View>
 
-            {/* Avatar + name */}
             <View style={styles.avatarSection}>
               <View style={styles.avatarCircle}>
                 <Text style={styles.avatarInitial}>
@@ -302,91 +300,96 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
               </View>
               <Text style={styles.userName}>{userData?.nev || 'Betöltés...'}</Text>
               <View style={styles.rankBadge}>
-                <MaterialCommunityIcons name="medal" size={13} color="#FFD700" />
+                <MaterialCommunityIcons name="medal" size={13} color={colors.accent} />
                 <Text style={styles.rankText}>{getRankName(level)}</Text>
               </View>
             </View>
 
-            {/* XP bar inside header */}
             <View style={styles.xpBarContainer}>
               <View style={styles.xpBarRow}>
                 <Text style={styles.xpLabel}>Szint {level}</Text>
                 <Text style={styles.xpLabel}>{currentXp} / {maxXp} XP</Text>
               </View>
               <View style={styles.xpTrack}>
-                <View style={[styles.xpFill, { width: `${Math.min(100, (currentXp / maxXp) * 100)}%` as any }]} />
+                <View style={[styles.xpFill, { width: `${Math.min(100, (currentXp / maxXp) * 100)}%` }]} />
               </View>
             </View>
           </SafeAreaView>
         </LinearGradient>
 
         <View style={[styles.contentContainer, isTablet && { maxWidth: 700, alignSelf: 'center', width: '100%' }]}>
+          
+          <View style={styles.themeSwitcherRow}>
+            <Text style={styles.themeSwitcherText}>Sötét Mód</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: colors.primary_light }}
+              thumbColor={isDark ? colors.primary : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={setIsDark}
+              value={isDark}
+            />
+          </View>
 
-          {/* Stat cards */}
           <View style={styles.statsRow}>
             <View style={styles.statCard}>
-              <View style={[styles.statIconWrap, { backgroundColor: '#F3E5F5' }]}>
-                <MaterialCommunityIcons name="trophy-outline" size={22} color="#8E24AA" />
+              <View style={[styles.statIconWrap, { backgroundColor: `${colors.primary}30` }]}>
+                <MaterialCommunityIcons name="trophy-outline" size={22} color={colors.primary} />
               </View>
-              <Text style={styles.statValue}>{userData?.osszesNyeremeny?.toLocaleString('hu-HU')}</Text>
+              <Text style={styles.statValue}>{userData?.osszesNyeremeny?.toLocaleString('hu-HU')} Ft</Text>
               <Text style={styles.statLabel}>Összes Nyeremény</Text>
             </View>
             <View style={styles.statCard}>
-              <View style={[styles.statIconWrap, { backgroundColor: '#E3F2FD' }]}>
-                <MaterialCommunityIcons name="gamepad-variant-outline" size={22} color="#2196F3" />
+              <View style={[styles.statIconWrap, { backgroundColor: `${colors.secondary}30` }]}>
+                <MaterialCommunityIcons name="gamepad-variant-outline" size={22} color={colors.secondary} />
               </View>
               <Text style={styles.statValue}>{userData?.jatszottJatekok ?? 0}</Text>
               <Text style={styles.statLabel}>Játszott Játékok</Text>
             </View>
             <View style={styles.statCard}>
-              <View style={[styles.statIconWrap, { backgroundColor: '#FFF3E0' }]}>
-                <MaterialCommunityIcons name="star-outline" size={22} color="#FF9800" />
+              <View style={[styles.statIconWrap, { backgroundColor: `${colors.accent}30` }]}>
+                <MaterialCommunityIcons name="star-outline" size={22} color={colors.accent} />
               </View>
               <Text style={styles.statValue}>{level}</Text>
               <Text style={styles.statLabel}>szint</Text>
             </View>
           </View>
 
-          {/* Action buttons row */}
           <View style={styles.actionRow}>
             <TouchableOpacity style={styles.actionBtn} onPress={onNavigateToWinnings}>
-              <View style={[styles.actionBtnIcon, { backgroundColor: '#E8EAF6' }]}>
-                <MaterialCommunityIcons name="history" size={22} color="#3F51B5" />
+              <View style={[styles.actionBtnIcon, { backgroundColor: `${colors.primary}30` }]}>
+                <MaterialCommunityIcons name="history" size={22} color={colors.primary} />
               </View>
-              <Text style={[styles.actionBtnLabel, { color: '#3F51B5' }]}>Játék előmények</Text>
+              <Text style={[styles.actionBtnLabel, { color: colors.primary }]}>Előzmények</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionBtn} onPress={handleLogout}>
-              <View style={[styles.actionBtnIcon, { backgroundColor: '#FFF3E0' }]}>
-                <MaterialCommunityIcons name="logout" size={22} color="#FF9800" />
+              <View style={[styles.actionBtnIcon, { backgroundColor: `${colors.warning}30` }]}>
+                <MaterialCommunityIcons name="logout" size={22} color={colors.warning} />
               </View>
-              <Text style={[styles.actionBtnLabel, { color: '#FF9800' }]}>Kilépés</Text>
+              <Text style={[styles.actionBtnLabel, { color: colors.warning }]}>Kilépés</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionBtn} onPress={() => setDeleteModalVisible(true)}>
-              <View style={[styles.actionBtnIcon, { backgroundColor: '#FFEBEE' }]}>
-                <MaterialCommunityIcons name="delete-outline" size={22} color="#F44336" />
+              <View style={[styles.actionBtnIcon, { backgroundColor: `${colors.error}30` }]}>
+                <MaterialCommunityIcons name="delete-outline" size={22} color={colors.error} />
               </View>
-              <Text style={[styles.actionBtnLabel, { color: '#F44336' }]}>Fioók Törlése</Text>
+              <Text style={[styles.actionBtnLabel, { color: colors.error }]}>Fiók Törlése</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Recent games */}
           <Text style={styles.sectionTitle}>Legutóbbi 5 játék</Text>
-          {eredmenyek.length === 0 ? (
+          {loading ? <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 20 }}/> : eredmenyek.length === 0 ? (
             <View style={styles.emptyGames}>
-              <MaterialCommunityIcons name="gamepad-variant-outline" size={48} color="#E1BEE7" />
+              <MaterialCommunityIcons name="gamepad-variant-outline" size={48} color={colors.text_secondary} />
               <Text style={styles.emptyGamesText}>Még nincs játszott játékod.</Text>
             </View>
           ) : (
             eredmenyek.slice(0, 5).map((item, index) => {
-              const colors = ['#8E24AA', '#3F51B5', '#00838F', '#E65100', '#2E7D32'];
-              const col = colors[index % colors.length];
-              const bgs = ['#F3E5F5', '#E8EAF6', '#E0F7FA', '#FFF3E0', '#E8F5E9'];
-              const bg = bgs[index % bgs.length];
+              const colorsArray = [colors.primary, colors.secondary, '#00838F', colors.warning, '#2E7D32'];
+              const col = colorsArray[index % colorsArray.length];
               return (
                 <View key={index} style={[styles.gameCard, { borderLeftColor: col }]}>
-                  <View style={[styles.gameIconWrap, { backgroundColor: bg }]}>
+                  <View style={[styles.gameIconWrap, { backgroundColor: `${col}30` }]}>
                     <MaterialCommunityIcons name="trophy-variant-outline" size={20} color={col} />
                   </View>
                   <View style={styles.gameInfo}>
@@ -395,9 +398,8 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
                       {item.Eredmenyek_datum ? item.Eredmenyek_datum.split('T')[0] : 'Ismeretlen dátum'}
                     </Text>
                   </View>
-                  <View style={[styles.gameBadge, { backgroundColor: bg }]}>
-                    <Text style={[styles.gameBadgeText, { color: col }]}>{item.Eredmenyek_pont ?? 0}</Text>
-                    <Text style={[styles.gameBadgeUnit, { color: col }]}>pont</Text>
+                  <View style={[styles.gameBadge, { backgroundColor: `${col}30` }]}>
+                    <Text style={[styles.gameBadgeText, { color: col }]}>{item.Eredmenyek_pont ?? 0} Ft</Text>
                   </View>
                 </View>
               );
@@ -407,21 +409,21 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
         </View>
       </ScrollView>
 
-      {/* JelszÃ³ vÃ¡ltoztatÃ¡s Modal */}
+      {/* Jelszó változtatás Modal */}
       <Modal animationType="fade" transparent visible={passwordModalVisible} onRequestClose={() => setPasswordModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <MaterialCommunityIcons name="lock-reset" size={40} color="#8E24AA" />
+            <MaterialCommunityIcons name="lock-reset" size={40} color={colors.primary} />
             <Text style={styles.modalTitle}>Jelszó Változtatás</Text>
-            <TextInput style={styles.modalInput} placeholder="Jelenlegi jelszó" placeholderTextColor="#999" secureTextEntry value={currentPassword} onChangeText={setCurrentPassword} />
-            <TextInput style={styles.modalInput} placeholder="Új Jelszó" placeholderTextColor="#999" secureTextEntry value={newPassword} onChangeText={setNewPassword} />
-            <TextInput style={styles.modalInput} placeholder="Új Jelszó megerősitése" placeholderTextColor="#999" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
+            <TextInput style={styles.modalInput} placeholder="Jelenlegi jelszó" placeholderTextColor={colors.text_secondary} secureTextEntry value={currentPassword} onChangeText={setCurrentPassword} />
+            <TextInput style={styles.modalInput} placeholder="Új Jelszó" placeholderTextColor={colors.text_secondary} secureTextEntry value={newPassword} onChangeText={setNewPassword} />
+            <TextInput style={styles.modalInput} placeholder="Új Jelszó megerősitése" placeholderTextColor={colors.text_secondary} secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
             <View style={styles.modalButtons}>
               <TouchableOpacity style={styles.modalCancelButton} onPress={() => { setPasswordModalVisible(false); setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); }}>
                 <Text style={styles.modalCancelText}>Mégse</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.modalConfirmButton} onPress={handleChangePassword} disabled={passwordLoading}>
-                {passwordLoading ? <ActivityIndicator color="white" size="small" /> : <Text style={styles.modalButtonText}>Mentés</Text>}
+                {passwordLoading ? <ActivityIndicator color={colors.text_inverted} size="small" /> : <Text style={styles.modalButtonText}>Mentés</Text>}
               </TouchableOpacity>
             </View>
           </View>
@@ -432,16 +434,16 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
       <Modal animationType="fade" transparent visible={deleteModalVisible} onRequestClose={() => setDeleteModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <MaterialCommunityIcons name="delete-alert" size={40} color="#F44336" />
+            <MaterialCommunityIcons name="delete-alert" size={40} color={colors.error} />
             <Text style={styles.modalTitle}>Fiók törlése</Text>
             <Text style={styles.modalWarning}>⚠️ Figyelem! A fiók törlése végleges és visszavonhatatlan. Minden adatod törlődik!</Text>
-            <TextInput style={styles.modalInput} placeholder="Add meg a jelszavad" placeholderTextColor="#999" secureTextEntry value={deletePassword} onChangeText={setDeletePassword} />
+            <TextInput style={styles.modalInput} placeholder="Add meg a jelszavad" placeholderTextColor={colors.text_secondary} secureTextEntry value={deletePassword} onChangeText={setDeletePassword} />
             <View style={styles.modalButtons}>
               <TouchableOpacity style={styles.modalCancelButton} onPress={() => { setDeleteModalVisible(false); setDeletePassword(''); }}>
                 <Text style={styles.modalCancelText}>Mégse</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalConfirmButton, { backgroundColor: '#F44336' }]} onPress={handleDeleteAccount} disabled={deleteLoading}>
-                {deleteLoading ? <ActivityIndicator color="white" size="small" /> : <Text style={styles.modalButtonText}>Törlés</Text>}
+              <TouchableOpacity style={[styles.modalConfirmButton, { backgroundColor: colors.error }]} onPress={handleDeleteAccount} disabled={deleteLoading}>
+                {deleteLoading ? <ActivityIndicator color={colors.text_inverted} size="small" /> : <Text style={styles.modalButtonText}>Törlés</Text>}
               </TouchableOpacity>
             </View>
           </View>
@@ -452,8 +454,8 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
       <Modal animationType="fade" transparent visible={logoutConfirmModalVisible} onRequestClose={() => setLogoutConfirmModalVisible(false)}>
         <View style={styles.alertModalOverlay}>
           <View style={styles.alertModal}>
-            <MaterialCommunityIcons name="logout" size={60} color="#FF9800" />
-            <Text style={[styles.alertTitle, { color: '#FF9800' }]}>Kijelentkezés</Text>
+            <MaterialCommunityIcons name="logout" size={60} color={colors.warning} />
+            <Text style={[styles.alertTitle, { color: colors.warning }]}>Kijelentkezés</Text>
             <Text style={styles.alertMessage}>Biztosan ki szeretnél jelentkezni?</Text>
             <View style={styles.alertButtonContainer}>
               <TouchableOpacity style={[styles.alertButton, styles.cancelButton]} onPress={() => setLogoutConfirmModalVisible(false)}>
@@ -471,13 +473,13 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
       <Modal animationType="fade" transparent visible={alertModalVisible} onRequestClose={() => setAlertModalVisible(false)}>
         <View style={styles.alertModalOverlay}>
           <View style={styles.alertModal}>
-            {alertType === 'error' && <MaterialCommunityIcons name="alert-circle" size={60} color="#F44336" />}
-            {alertType === 'success' && <MaterialCommunityIcons name="check-circle" size={60} color="#4CAF50" />}
-            {alertType === 'warning' && <MaterialCommunityIcons name="alert" size={60} color="#FF9800" />}
-            {alertType === 'info' && <MaterialCommunityIcons name="information" size={60} color="#2196F3" />}
-            <Text style={[styles.alertTitle, { color: alertType === 'error' ? '#F44336' : alertType === 'success' ? '#4CAF50' : alertType === 'warning' ? '#FF9800' : '#2196F3' }]}>{alertTitle}</Text>
+            {alertType === 'error' && <MaterialCommunityIcons name="alert-circle" size={60} color={colors.error} />}
+            {alertType === 'success' && <MaterialCommunityIcons name="check-circle" size={60} color={colors.success} />}
+            {alertType === 'warning' && <MaterialCommunityIcons name="alert" size={60} color={colors.warning} />}
+            {alertType === 'info' && <MaterialCommunityIcons name="information" size={60} color={colors.primary} />}
+            <Text style={[styles.alertTitle, { color: alertType === 'error' ? colors.error : alertType === 'success' ? colors.success : alertType === 'warning' ? colors.warning : colors.primary }]}>{alertTitle}</Text>
             <Text style={styles.alertMessage}>{alertMessage}</Text>
-            <TouchableOpacity style={[styles.alertButton, { backgroundColor: alertType === 'error' ? '#F44336' : alertType === 'success' ? '#4CAF50' : alertType === 'warning' ? '#FF9800' : '#2196F3' }]} onPress={() => setAlertModalVisible(false)}>
+            <TouchableOpacity style={[styles.alertButton, { backgroundColor: alertType === 'error' ? colors.error : alertType === 'success' ? colors.success : alertType === 'warning' ? colors.warning : colors.primary }]} onPress={() => setAlertModalVisible(false)}>
               <Text style={styles.alertButtonText}>Rendben</Text>
             </TouchableOpacity>
           </View>
@@ -487,17 +489,17 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   headerGradient: {
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: BORDER_RADIUS.lg,
+    borderBottomRightRadius: BORDER_RADIUS.lg,
     ...Platform.select({
       default: {
-        shadowColor: '#6C5CE7',
+        shadowColor: colors.primary,
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.3,
         shadowRadius: 10,
@@ -506,20 +508,20 @@ const styles = StyleSheet.create({
     })
   },
   headerArea: {
-    paddingHorizontal: 20,
-    paddingBottom: 28,
+    paddingHorizontal: SPACING.md,
+    paddingBottom: SPACING.lg,
   },
   headerTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 10,
-    marginBottom: 20,
+    paddingTop: SPACING.sm,
+    marginBottom: SPACING.md,
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: rf(22, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_inverted,
     letterSpacing: 0.5,
   },
   settingsButton: {
@@ -532,7 +534,7 @@ const styles = StyleSheet.create({
   },
   avatarSection: {
     alignItems: 'center',
-    marginBottom: 18,
+    marginBottom: SPACING.md,
   },
   avatarCircle: {
     width: 80,
@@ -540,81 +542,95 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     backgroundColor: 'rgba(255,255,255,0.25)',
     borderWidth: 3,
-    borderColor: '#fff',
+    borderColor: colors.text_inverted,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: SPACING.sm,
   },
   avatarInitial: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: rf(34, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_inverted,
   },
   userName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 6,
+    fontSize: rf(22, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_inverted,
+    marginBottom: SPACING.xs,
   },
   rankBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 20,
-    gap: 4,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    borderRadius: BORDER_RADIUS.full,
+    gap: SPACING.xs,
   },
   rankText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: '600',
+    fontSize: rf(12, width),
+    color: colors.text_inverted,
+    fontWeight: '500',
   },
   xpBarContainer: {
-    marginTop: 4,
+    marginTop: SPACING.xs,
   },
   xpBarRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 6,
+    marginBottom: SPACING.xs,
   },
   xpLabel: {
-    fontSize: 12,
+    fontSize: rf(12, width),
     color: 'rgba(255,255,255,0.8)',
-    fontWeight: '600',
+    fontWeight: FONT_WEIGHTS.medium as '500',
   },
   xpTrack: {
     height: 8,
     backgroundColor: 'rgba(255,255,255,0.25)',
-    borderRadius: 4,
+    borderRadius: BORDER_RADIUS.sm,
     overflow: 'hidden',
   },
   xpFill: {
     height: '100%',
-    backgroundColor: '#FFD700',
-    borderRadius: 4,
+    backgroundColor: colors.accent,
+    borderRadius: BORDER_RADIUS.sm,
   },
   contentContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.lg,
+  },
+  themeSwitcherRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.lg,
+  },
+  themeSwitcherText: {
+    fontSize: rf(16, width),
+    fontWeight: FONT_WEIGHTS.medium as '500',
+    color: colors.text,
   },
   statsRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginBottom: 18,
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 14,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md,
     alignItems: 'center',
     ...Platform.select({
-      web: { boxShadow: '0px 2px 12px rgba(108,92,231,0.08)' },
+      web: { boxShadow: `0px 2px 12px ${colors.primary}14` },
       default: {
-        shadowColor: '#6C5CE7',
+        shadowColor: colors.primary,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
+        shadowOpacity: isDark ? 0.2 : 0.08,
         shadowRadius: 8,
         elevation: 3,
       }
@@ -626,37 +642,37 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   statValue: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: '#1A1A2E',
+    fontSize: rf(10, width),
+    fontWeight: FONT_WEIGHTS.black as '900',
+    color: colors.text,
     marginBottom: 2,
   },
   statLabel: {
-    fontSize: 11,
-    color: '#9CA3AF',
+    fontSize: rf(11, width),
+    color: colors.text_secondary,
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: FONT_WEIGHTS.medium as '500',
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
+    gap: SPACING.sm,
+    marginBottom: SPACING.lg,
   },
   actionBtn: {
     flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 14,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md,
     alignItems: 'center',
     ...Platform.select({
-      web: { boxShadow: '0px 2px 12px rgba(108,92,231,0.08)' },
+      web: { boxShadow: `0px 2px 12px ${colors.primary}14` },
       default: {
-        shadowColor: '#6C5CE7',
+        shadowColor: colors.primary,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
+        shadowOpacity: isDark ? 0.2 : 0.08,
         shadowRadius: 8,
         elevation: 3,
       }
@@ -668,33 +684,35 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   actionBtnLabel: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: rf(12, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
   },
   sectionTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: '#1A1A2E',
-    marginBottom: 12,
+    fontSize: rf(17, width),
+    fontWeight: FONT_WEIGHTS.black as '900',
+    color: colors.text,
+    marginBottom: SPACING.sm,
     paddingHorizontal: 2,
   },
   emptyGames: {
     alignItems: 'center',
-    paddingVertical: 30,
+    paddingVertical: SPACING.xl,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
   },
   emptyGamesText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#bbb',
+    marginTop: SPACING.sm,
+    fontSize: rf(14, width),
+    color: colors.text_secondary,
   },
   gameCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 14,
-    marginBottom: 10,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md,
+    marginBottom: SPACING.sm,
     flexDirection: 'row',
     alignItems: 'center',
     borderLeftWidth: 4,
@@ -703,7 +721,7 @@ const styles = StyleSheet.create({
       default: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.06,
+        shadowOpacity: isDark ? 0.15 : 0.06,
         shadowRadius: 5,
         elevation: 2,
       }
@@ -715,189 +733,158 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: SPACING.sm,
   },
   gameInfo: {
     flex: 1,
   },
   gamePont: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#222',
+    fontSize: rf(15, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text,
     marginBottom: 3,
   },
   gameDate: {
-    fontSize: 12,
-    color: '#999',
+    fontSize: rf(12, width),
+    color: colors.text_secondary,
   },
   gameBadge: {
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
     alignItems: 'center',
     minWidth: 54,
   },
   gameBadgeText: {
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  gameBadgeUnit: {
-    fontSize: 10,
-    fontWeight: '600',
-    marginTop: 1,
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    fontSize: rf(15, width),
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
     width: '88%',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 22,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
     elevation: 10,
     alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: rf(20, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
     textAlign: 'center',
-    marginVertical: 12,
-    color: '#333',
+    marginVertical: SPACING.sm,
+    color: colors.text,
   },
   modalWarning: {
-    color: '#F44336',
+    color: colors.error,
     textAlign: 'center',
-    marginBottom: 15,
-    fontSize: 13,
+    marginBottom: SPACING.md,
+    fontSize: rf(13, width),
     lineHeight: 18,
   },
   modalInput: {
-    backgroundColor: '#F5F7FA',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    marginBottom: 10,
-    color: '#333',
+    backgroundColor: colors.background,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    fontSize: rf(15, width),
+    marginBottom: SPACING.sm,
+    color: colors.text,
     width: '100%',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   modalButtons: {
     flexDirection: 'row',
-    marginTop: 10,
-    gap: 10,
+    marginTop: SPACING.sm,
+    gap: SPACING.sm,
     width: '100%',
   },
   modalCancelButton: {
     flex: 1,
-    padding: 13,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 12,
+    padding: SPACING.md,
+    backgroundColor: colors.background,
+    borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
   },
   modalCancelText: {
-    fontWeight: 'bold',
-    color: '#555',
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_secondary,
   },
   modalConfirmButton: {
     flex: 1,
-    padding: 13,
-    backgroundColor: '#6C5CE7',
-    borderRadius: 12,
+    padding: SPACING.md,
+    backgroundColor: colors.primary,
+    borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
   },
   modalButtonText: {
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_inverted,
   },
   alertModalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   alertModal: {
     width: '85%',
     maxWidth: 320,
-    backgroundColor: '#fff',
-    borderRadius: 22,
-    padding: 26,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
     alignItems: 'center',
     elevation: 10,
   },
   alertTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: rf(20, width),
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
     textAlign: 'center',
-    marginVertical: 12,
+    marginVertical: SPACING.sm,
   },
   alertMessage: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: rf(14, width),
+    color: colors.text_secondary,
     textAlign: 'center',
-    marginVertical: 10,
+    marginVertical: SPACING.sm,
     lineHeight: 20,
   },
   alertButtonContainer: {
     flexDirection: 'row',
-    marginTop: 15,
-    gap: 10,
+    marginTop: SPACING.md,
+    gap: SPACING.sm,
     width: '100%',
   },
   alertButton: {
     flex: 1,
-    paddingVertical: 13,
-    borderRadius: 12,
+    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: colors.background,
   },
   confirmButton: {
-    backgroundColor: '#6C5CE7',
+    backgroundColor: colors.primary,
   },
   cancelButtonText: {
-    fontWeight: 'bold',
-    color: '#555',
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_secondary,
   },
   confirmButtonText: {
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_inverted,
   },
   alertButtonText: {
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: FONT_WEIGHTS.bold as 'bold',
+    color: colors.text_inverted,
   },
-  // legacy stubs (unused but kept to avoid import errors)
-  iconButton: { width: 0, height: 0 },
-  profileInfoContainer: { alignItems: 'center' },
-  avatarWrapper: {},
-  avatarContainer: { width: 0, height: 0 },
-  onlineIndicator: {},
-  titleBadge: {},
-  titleText: {},
-  bioText: {},
-  totalXpCard: {},
-  xpIconContainer: {},
-  xpTextContainer: {},
-  xpValue: {},
-  headerRow: {},
-  settingsText: {},
-  achievementsContainer: {},
-  achievementItem: {},
-  achievementIcon: {},
-  achievementTextContainer: {},
-  achievementTitle: {},
-  achievementDesc: {},
-  achievementProgress: {},
-  achievementProgressFill: {},
-  actionButtonsContainer: {},
-  actionIconButton: {},
-  primaryActionButton: {},
 });
 
 export default Felhasznalo;

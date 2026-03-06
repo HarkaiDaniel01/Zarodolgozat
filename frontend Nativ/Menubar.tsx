@@ -1,17 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Platform, Animated, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Kategoria from './Kategoria';
 import Profil from './Profil';
 import Rekordok from './Rekordok';
+import { useTheme } from './ThemeContext';
+import { SPACING, BORDER_RADIUS, rf } from './theme';
+const { width: _screenWidth } = Dimensions.get('window');
+// import COLORS from './theme';
 import Cim from './Cim';
 
 type TabType = 'jatek' | 'rekordok' | 'profil';
 
+const TabBarButton = ({ tab, activeTab, onPress, icon, label }: any) => {
+  const { colors } = useTheme();
+  const isActive = activeTab === tab;
+  const animatedValue = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: isActive ? 1 : 0,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  }, [isActive]);
+
+  const containerStyle = {
+    transform: [
+      {
+        translateY: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -10],
+        }),
+      },
+    ],
+  };
+
+  const iconColor = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [colors.text_secondary, colors.primary],
+  });
+
+  const textColor = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [colors.text_secondary, colors.primary],
+  });
+
+  return (
+    <TouchableOpacity style={styles.tab} onPress={onPress}>
+      <Animated.View style={[styles.tabIconContainer, containerStyle]}>
+        <Animated.View style={[styles.tabIconCircle, {
+          backgroundColor: animatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['transparent', colors.primary_light],
+          })
+        }]}>
+          <MaterialCommunityIcons name={icon} size={28} color={isActive ? colors.primary : colors.text_secondary} />
+        </Animated.View>
+      </Animated.View>
+      <Animated.Text style={[styles.tabText, { color: textColor }]}>
+        {label}
+      </Animated.Text>
+    </TouchableOpacity>
+  );
+};
+
 function MyTabs(): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<TabType>('jatek');
   const [hideTabBar, setHideTabBar] = useState<boolean>(false);
 
@@ -47,7 +105,7 @@ function MyTabs(): React.JSX.Element {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       
       <View style={{ flex: 1 }}>
         {activeTab === 'jatek' ? (
@@ -61,49 +119,29 @@ function MyTabs(): React.JSX.Element {
 
       {/* Custom Tab Bar */}
       {!hideTabBar && (
-        <View style={styles.tabBarContainer}>
-          <View style={[styles.tabBar, Platform.OS === 'android' && { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }]}>
-            <TouchableOpacity
-              style={styles.tab}
+        <View style={[styles.tabBarContainer, { backgroundColor: colors.surface, borderTopColor: colors.border }]}>
+          <View style={[styles.tabBar, { paddingBottom: insets.bottom > 0 ? insets.bottom : SPACING.sm }]}>
+            <TabBarButton
+              tab="jatek"
+              activeTab={activeTab}
               onPress={() => setActiveTab('jatek')}
-            >
-              <MaterialCommunityIcons 
-                name={activeTab === 'jatek' ? "home" : "home-outline"} 
-                size={28} 
-                color={activeTab === 'jatek' ? "#6C5CE7" : "#B0BEC5"} 
-              />
-              <Text style={[styles.tabText, activeTab === 'jatek' && styles.activeTabText]}>
-                Kezdőlap
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.tab}
+              icon={activeTab === 'jatek' ? "home" : "home-outline"}
+              label="Kezdőlap"
+            />
+            <TabBarButton
+              tab="rekordok"
+              activeTab={activeTab}
               onPress={() => setActiveTab('rekordok')}
-            >
-               <MaterialCommunityIcons 
-                name={activeTab === 'rekordok' ? "trophy" : "trophy-outline"} 
-                size={28} 
-                color={activeTab === 'rekordok' ? "#6C5CE7" : "#B0BEC5"} 
-              />
-              <Text style={[styles.tabText, activeTab === 'rekordok' && styles.activeTabText]}>
-                Eredmények
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.tab}
+              icon={activeTab === 'rekordok' ? "trophy" : "trophy-outline"}
+              label="Eredmények"
+            />
+            <TabBarButton
+              tab="profil"
+              activeTab={activeTab}
               onPress={() => setActiveTab('profil')}
-            >
-              <MaterialCommunityIcons 
-                name={activeTab === 'profil' ? "account" : "account-outline"} 
-                size={28} 
-                color={activeTab === 'profil' ? "#6C5CE7" : "#B0BEC5"} 
-              />
-              <Text style={[styles.tabText, activeTab === 'profil' && styles.activeTabText]}>
-                Fiók
-              </Text>
-            </TouchableOpacity>
+              icon={activeTab === 'profil' ? "account" : "account-outline"}
+              label="Fiók"
+            />
           </View>
         </View>
       )}
@@ -114,47 +152,41 @@ function MyTabs(): React.JSX.Element {
 const styles = StyleSheet.create({
   tabBarContainer: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    alignItems: 'center',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF', // ✅ white helyett string
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    elevation: 10,
-    width: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.15,
-        shadowRadius: 10,
-      },
-      web: {
-        boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
-      }
-    }),
+    paddingTop: SPACING.sm,
   },
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    paddingVertical: SPACING.xs,
+  },
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabIconCircle: {
+    width: 56,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tabText: {
-    fontSize: 10,
-    color: '#B0BEC5',
+    fontSize: rf(10, _screenWidth),
     fontWeight: '700',
+    marginTop: 4,
     textTransform: 'uppercase',
-  },
-  activeTabText: {
-    color: '#6C5CE7',
   },
 });
 

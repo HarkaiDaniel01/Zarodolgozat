@@ -12,7 +12,8 @@ import {
   TextStyle,
   Modal,
   Image,
-  Platform
+  Platform,
+  useWindowDimensions
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,7 +21,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Cim from "./Cim";
-import Kerdesek from "./Kerdesek"; 
+import Kerdesek from "./Kerdesek";
+import { useTheme } from './ThemeContext';
+import { rf } from './theme';
 
 interface KategoriaProps {
   setHideTabBar: (value: boolean) => void;
@@ -38,6 +41,9 @@ interface UserData {
 }
 
 const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile }) => {
+  const { colors, isDark } = useTheme();
+  const { width } = useWindowDimensions();
+  const styles = getStyles(colors, isDark, width);
   const [adatok, setAdatok] = useState<KategoriaItem[]>([]);
   const [tolt, setTolt] = useState<boolean>(true);
   const [hiba, setHiba] = useState<boolean>(false);
@@ -88,15 +94,17 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
     return 'help-circle-outline';
   };
 
-  const [szinek] = useState<string[]>([
-    "#E8F5E9", "#FFF3E0", "#E3F2FD", "#F3E5F5", "#E0F7FA", 
-    "#FCE4EC", "#FBE9E7", "#EFEBE9", "#ECEFF1"
-  ]);
+  const szinek = isDark
+    ? ["#1E4D35", "#4A3318", "#1A3060", "#3A1E60", "#0F3D50",
+       "#501830", "#4A2810", "#3D2E18", "#202840"]
+    : ["#E8F5E9", "#FFF3E0", "#E3F2FD", "#F3E5F5", "#E0F7FA",
+       "#FCE4EC", "#FBE9E7", "#EFEBE9", "#ECEFF1"];
 
-  const [iconSzinek] = useState<string[]>([
-    "#4CAF50", "#FF9800", "#2196F3", "#9C27B0", "#00BCD4", 
-    "#E91E63", "#FF5722", "#795548", "#607D8B"
-  ]);
+  const iconSzinek = isDark
+    ? ["#7EEBB0", "#FFC55A", "#70B8FF", "#CF8FFF", "#5DD6E8",
+       "#FF8DB8", "#FF8C6B", "#C4B49A", "#99ADC0"]
+    : ["#4CAF50", "#FF9800", "#2196F3", "#9C27B0", "#00BCD4",
+       "#E91E63", "#FF5722", "#795548", "#607D8B"];
   
   const kategoriaValaszt = async (kategoriaId: number, kategoriaNev: string): Promise<void> => {
     if (kategoriaNev === "Speedrun") kategoriaValasztSpeedrun(kategoriaId);
@@ -250,8 +258,15 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
 
   const { level } = calculateLevelInfo(userData?.jatszottJatekok);
 
-  if (tolt) return <View style={styles.center}><ActivityIndicator size="large" color="#8E24AA" /></View>;
-  if (hiba) return <View style={styles.center}><Text>Hiba az adatok letöltésekor.</Text></View>;
+  const specialColors = {
+    speedrun:  { bg: isDark ? '#3A1E60' : '#F3E5F5', icon: isDark ? '#CF8FFF' : '#9C27B0' },
+    endless:   { bg: isDark ? '#501830' : '#FCE4EC', icon: isDark ? '#FF8DB8' : '#E91E63' },
+    gyakorlas: { bg: isDark ? '#1E4D35' : '#E8F5E9', icon: isDark ? '#7EEBB0' : '#4CAF50' },
+    geniusz:   { bg: isDark ? '#202840' : '#E8EAF6', icon: isDark ? '#99ADC0' : '#3F51B5' },
+  };
+
+  if (tolt) return <View style={styles.center}><ActivityIndicator size="large" color={colors.primary} /></View>;
+  if (hiba) return <View style={styles.center}><Text style={{ color: colors.text }}>Hiba az adatok letöltésekor.</Text></View>;
 
   return (
     <View style={styles.container}>
@@ -262,9 +277,11 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
               <View style={styles.greetingRow}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.greetingTitle}>
-                    {userData ? `Helló, ${userData.nev}! 👋` : 'Helló! 👋'}
+                    {userData ? `Helló, ${userData.nev}! 👋` : 'Nincs bejelentkezve 👤'}
                   </Text>
-                  <Text style={styles.greetingSubtitle}>Kész vagy a kihívásra ma? 🎯</Text>
+                  <Text style={styles.greetingSubtitle}>
+                    {userData ? 'Kész vagy a kihívásra ma? 🎯' : 'Jelentkezz be az eredményeid mentéséhez!'}
+                  </Text>
                 </View>
                 <TouchableOpacity
                   style={styles.greetingIconBtn}
@@ -317,42 +334,42 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
                         <Text style={styles.sectionTitle}>Speciális módok</Text>
                         <View style={{gap: 15}}>
                         <TouchableOpacity
-                            style={[styles.specialCard, { backgroundColor: '#F3E5F5' }]}
+                            style={[styles.specialCard, { backgroundColor: specialColors.speedrun.bg }]}
                             onPress={() => kategoriaValaszt(0, 'Speedrun')}
                         >
-                            <View style={[styles.specialIconContainer, { backgroundColor: '#9C27B0' }]}>
+                            <View style={[styles.specialIconContainer, { backgroundColor: specialColors.speedrun.icon }]}>
                                 <MaterialCommunityIcons name="timer-outline" size={24} color="#fff" />
                             </View>
                             <View style={styles.textContainer}>
-                                <Text style={[styles.specialCardText, { color: '#9C27B0' }]}>Gyorsasági kihívás</Text>
+                                <Text style={[styles.specialCardText, { color: specialColors.speedrun.icon }]}>Gyorsasági kihívás</Text>
                             </View>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="#9C27B0" />
+                            <MaterialCommunityIcons name="chevron-right" size={24} color={specialColors.speedrun.icon} />
                         </TouchableOpacity>
                         
                         <TouchableOpacity
-                            style={[styles.specialCard, { backgroundColor: '#FCE4EC' }]}
+                            style={[styles.specialCard, { backgroundColor: specialColors.endless.bg }]}
                             onPress={() => kategoriaValaszt(-1, 'Endless')}
                         >
-                            <View style={[styles.specialIconContainer, { backgroundColor: '#E91E63' }]}>
+                            <View style={[styles.specialIconContainer, { backgroundColor: specialColors.endless.icon }]}>
                                 <MaterialCommunityIcons name="infinity" size={24} color="#fff" />
                             </View>
                             <View style={styles.textContainer}>
-                                <Text style={[styles.specialCardText, { color: '#E91E63' }]}>Megállás nélkül</Text>
+                                <Text style={[styles.specialCardText, { color: specialColors.endless.icon }]}>Megállás nélkül</Text>
                             </View>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="#E91E63" />
+                            <MaterialCommunityIcons name="chevron-right" size={24} color={specialColors.endless.icon} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={[styles.specialCard, { backgroundColor: '#E8F5E9' }]}
+                            style={[styles.specialCard, { backgroundColor: specialColors.gyakorlas.bg }]}
                             onPress={() => kategoriaValaszt(-2, 'Gyakorlas')}
                         >
-                            <View style={[styles.specialIconContainer, { backgroundColor: '#4CAF50' }]}>
+                            <View style={[styles.specialIconContainer, { backgroundColor: specialColors.gyakorlas.icon }]}>
                                 <MaterialCommunityIcons name="school" size={24} color="#fff" />
                             </View>
                             <View style={styles.textContainer}>
-                                <Text style={[styles.specialCardText, { color: '#4CAF50' }]}>Gyakorlás</Text>
+                                <Text style={[styles.specialCardText, { color: specialColors.gyakorlas.icon }]}>Gyakorlás</Text>
                             </View>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="#4CAF50" />
+                            <MaterialCommunityIcons name="chevron-right" size={24} color={specialColors.gyakorlas.icon} />
                         </TouchableOpacity>
 
                         {/* Hardcore mód kapcsoló */}
@@ -374,8 +391,8 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
                                 <MaterialCommunityIcons name="skull-crossbones" size={24} color="#fff" />
                             </View>
                             <View style={styles.textContainer}>
-                                <Text style={[styles.specialCardText, { color: isHardcore ? '#F44336' : '#555' }]}>Ultranehéz mód</Text>
-                                <Text style={{ fontSize: 12, color: isHardcore ? '#F44336' : '#999' }}>{isHardcore ? '✅ Bekapcsolva' : 'Koppints a bekapcsoláshoz'}</Text>
+                                <Text style={[styles.specialCardText, { color: isHardcore ? '#F44336' : colors.text_secondary }]}>Ultranehéz mód</Text>
+                                <Text style={{ fontSize: rf(12, width), color: isHardcore ? '#F44336' : colors.text_secondary }}>{isHardcore ? '✅ Bekapcsolva' : 'Koppints a bekapcsoláshoz'}</Text>
                             </View>
                             <Switch
                               value={isHardcore}
@@ -393,16 +410,16 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
 
                         {geniuszKategoria && (
                         <TouchableOpacity
-                            style={[styles.specialCard, { backgroundColor: '#E8EAF6' }]}
+                            style={[styles.specialCard, { backgroundColor: specialColors.geniusz.bg }]}
                             onPress={() => kategoriaValaszt(geniuszKategoria, 'Géniusz')}
                         >
-                            <View style={[styles.specialIconContainer, { backgroundColor: '#3F51B5' }]}>
+                            <View style={[styles.specialIconContainer, { backgroundColor: specialColors.geniusz.icon }]}>
                                 <MaterialCommunityIcons name="brain" size={24} color="#fff" />
                             </View>
                             <View style={styles.textContainer}>
-                                <Text style={[styles.specialCardText, { color: '#3F51B5' }]}>Géniusz Mód</Text>
+                                <Text style={[styles.specialCardText, { color: specialColors.geniusz.icon }]}>Géniusz Mód</Text>
                             </View>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="#3F51B5" />
+                            <MaterialCommunityIcons name="chevron-right" size={24} color={specialColors.geniusz.icon} />
                         </TouchableOpacity>
                         )}
                         </View>
@@ -431,18 +448,18 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
       >
         <View style={styles.modalOverlay}>
           <View style={[styles.modeModal, { backgroundColor: '#1a1a2e' }]}>
-            <Text style={{ fontSize: 48 }}>🐣</Text>
+            <Text style={{ fontSize: rf(48, width) }}>🐣</Text>
             <Text style={[styles.modeTitle, { color: '#FFD700' }]}>Easter Egg!</Text>
-<Text style={[styles.modeMessage, { color: '#aaa' }]}>
-  Megtaláltad a titkot! 🎉{'\n\n'}Ez az alkalmazást
-</Text>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 5 }}>
-              Daróczi Gergő és Harkai Dániel
-            </Text>
-<Text style={[styles.modeMessage, { color: '#aaa', marginTop: 5 }]}>
-  fejlesztették szeretettel. 💜{'\n\n'}Köszönjük, hogy játszol! 🚀
-  tipp:Géniusz módot 20030826 a felhasznalónévhez
-</Text>
+                <Text style={[styles.modeMessage, { color: '#aaa' }]}>
+                  Megtaláltad a titkot! 🎉{'\n\n'}Ez az alkalmazást
+                </Text>
+                            <Text style={{ fontSize: rf(20, width), fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 5 }}>
+                              Daróczi Gergő és Harkai Dániel
+                            </Text>
+                <Text style={[styles.modeMessage, { color: '#aaa', marginTop: 5 }]}>
+                  fejlesztették szeretettel. 💜{'\n\n'}Köszönjük, hogy játszol! 🚀
+                  tipp:Géniusz módhoz írd be 20030826 a felhasználónévhez a jelszóhoz semmit, és máris elérhetővé válik! 😉
+                </Text>
             <TouchableOpacity
               style={[styles.modeButton, { backgroundColor: '#FFD700' }]}
               onPress={() => setEasterEggVisible(false)}
@@ -490,16 +507,16 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
 
 const PRIMARY = '#6C5CE7';
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   greetingCard: {
     marginHorizontal: 16,
     marginTop: 12,
     marginBottom: 8,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 20,
     ...Platform.select({
@@ -518,14 +535,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   greetingTitle: {
-    fontSize: 18,
+    fontSize: rf(18, width),
     fontWeight: '800',
-    color: '#1A1A2E',
+    color: colors.text,
     marginBottom: 4,
   },
   greetingSubtitle: {
-    fontSize: 13,
-    color: '#6B7280',
+    fontSize: rf(13, width),
+    color: colors.text_secondary,
   },
   greetingIconBtn: {
     width: 52,
@@ -537,16 +554,16 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   sectionLabel: {
-    fontSize: 20,
+    fontSize: rf(20, width),
     fontWeight: '800',
-    color: '#1A1A2E',
+    color: colors.text,
     marginBottom: 2,
   },
   headerContent: {
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 8,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   headerRow: {
     flexDirection: 'row',
@@ -555,7 +572,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerTitle: {
-      fontSize: 20,
+      fontSize: rf(20, width),
       fontWeight: 'bold',
       color: '#333',
   },
@@ -576,12 +593,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   welcomeText: {
-    fontSize: 16,
+    fontSize: rf(16, width),
     fontWeight: 'bold',
     color: '#333',
   },
   levelText: {
-    fontSize: 12,
+    fontSize: rf(12, width),
     color: '#8E24AA',
     fontWeight: '600',
   },
@@ -621,7 +638,7 @@ const styles = StyleSheet.create({
   questTag: {
     backgroundColor: '#fff',
     color: '#8E24AA',
-    fontSize: 10,
+    fontSize: rf(10, width),
     fontWeight: 'bold',
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -629,7 +646,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   questTitle: {
-    fontSize: 18,
+    fontSize: rf(18, width),
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 15,
@@ -640,11 +657,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   progressText: {
-    fontSize: 12,
+    fontSize: rf(12, width),
     color: '#666',
   },
   progressValue: {
-    fontSize: 12,
+    fontSize: rf(12, width),
     color: '#8E24AA',
     fontWeight: 'bold',
   },
@@ -668,7 +685,7 @@ const styles = StyleSheet.create({
   continueButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: rf(14, width),
   },
   exploreHeader: {
     flexDirection: 'row',
@@ -677,19 +694,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   exploreTitle: {
-    fontSize: 28,
+    fontSize: rf(28, width),
     fontWeight: '900',
     color: PRIMARY,
     letterSpacing: 0.5,
   },
   exploreSubtitle: {
-    fontSize: 16,
+    fontSize: rf(16, width),
     fontWeight: '600',
     color: '#6B7280',
     marginTop: 4,
   },
   viewAllText: {
-    fontSize: 14,
+    fontSize: rf(14, width),
     color: '#8E24AA',
     fontWeight: '600',
   },
@@ -723,19 +740,19 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(255,255,255,0.6)',
+    backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.9)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
   },
   cardText: {
     fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
+    fontSize: rf(16, width),
+    marginTop: -15,
     textAlign: 'center',
   },
   cardSubText: {
-    fontSize: 10,
+    fontSize: rf(10, width),
     color: '#666',
     marginBottom: 15,
     textAlign: 'center',
@@ -750,12 +767,12 @@ const styles = StyleSheet.create({
   startButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 13,
+    fontSize: rf(13, width),
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: rf(20, width),
     fontWeight: '800',
-    color: '#1A1A2E',
+    color: colors.text,
     marginBottom: 15,
     marginLeft: 5,
   },
@@ -781,7 +798,7 @@ const styles = StyleSheet.create({
   },
   specialCardText: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: rf(16, width),
   },
   hardcoreBtn: {
     borderRadius: 20,
@@ -789,7 +806,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderWidth: 2,
     borderColor: '#E0E0E0',
     borderStyle: 'dashed',
@@ -814,7 +831,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   modalOverlay: {
     flex: 1,
@@ -836,14 +853,14 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
   },
   modeTitle: {
-    fontSize: 22,
+    fontSize: rf(22, width),
     fontWeight: '800',
     textAlign: 'center',
     marginVertical: 15,
   },
   modeMessage: {
-    fontSize: 15,
-    color: '#555',
+    fontSize: rf(15, width),
+    color: colors.text_secondary,
     textAlign: 'center',
     marginBottom: 25,
     lineHeight: 22,
@@ -858,7 +875,7 @@ const styles = StyleSheet.create({
   modeButtonText: {
     fontWeight: 'bold',
     color: '#fff',
-    fontSize: 16,
+    fontSize: rf(16, width),
     letterSpacing: 0.5,
   }
 });

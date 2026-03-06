@@ -15,6 +15,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from "./Cim";
+import { useTheme } from './ThemeContext';
+import { rf } from './theme';
 
 interface LoginProps {
   onNavigateToRegister: () => void;
@@ -24,18 +26,27 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) => {
   const { width, height } = useWindowDimensions();
   const isSmallScreen = width < 380;
-  const isTablet = width >= 600; // Adjusted for common tablet breakpoints
+  const isTablet = width >= 600;
+  const { colors, isDark } = useTheme();
+  const styles = getStyles(colors, isDark, width);
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const [alertTitle, setAlertTitle] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertType, setAlertType] = useState<'info' | 'success' | 'error'>('info');
 
   const handleLogin = async (): Promise<void> => {
+    let valid = true;
+    setUsernameError("");
+    setPasswordError("");
+    setError("");
+
     if (username === "20030826") {
       const unlocked = await AsyncStorage.getItem("geniuszUnlocked");
       if (unlocked === "true") {
@@ -54,9 +65,20 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
     }
 
     if (!username || !password) {
-      setError("Kérlek töltsd ki mindkét mezőt!");
+      if (!username) setUsernameError("A felhasználónév megadása kötelező!");
+      if (!password) setPasswordError("A jelszó megadása kötelező!");
       return;
     }
+
+    if (username.length < 3) {
+      setUsernameError("A felhasználónév legalább 3 karakter legyen!");
+      valid = false;
+    }
+    if (password.length < 4) {
+      setPasswordError("A jelszó legalább 4 karakter legyen!");
+      valid = false;
+    }
+    if (!valid) return;
 
     setError("");
 
@@ -123,7 +145,8 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Ismeretlen hiba";
       console.log("Login Error:", err);
-      setError(errorMessage);
+      setUsernameError("Hibás felhasználónév vagy jelszó!");
+      setPasswordError("Hibás felhasználónév vagy jelszó!");
       setAlertTitle('Hiba');
       setAlertMessage(errorMessage);
       setAlertType('error');
@@ -147,13 +170,13 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
             <View style={styles.iconCircle}>
               <MaterialCommunityIcons name="brain" size={isSmallScreen ? 34 : 40} color="#fff" />
             </View>
-            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 26 : 32 }]}>KvízMester</Text>
-            <Text style={styles.appSubtitle}>Teszteld a tudásod!</Text>
+            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 12 : 24, textAlign: 'center' }]}>Te is lehetsz Milliomomos</Text>
+            <Text style={[styles.appSubtitle, { textAlign: 'center' }]}>Teszteld a tudásod!</Text>
           </View>
 
           <View style={[styles.card, { width: isTablet ? 480 : '100%', maxWidth: 480 }]}>
-            <Text style={[styles.title, { fontSize: isSmallScreen ? 20 : 24 }]}>Üdvözlünk újra!</Text>
-            <Text style={styles.subtitle}>Kérlek add meg a bejelentkezési adataid</Text>
+            <Text style={[styles.title, { fontSize: isSmallScreen ? 20 : 24 , textAlign: 'center' }]}>Üdvözlünk újra!</Text>
+            <Text style={[styles.subtitle, { textAlign: 'center' }]}>Kérlek add meg a bejelentkezési adataid</Text>
 
             {error ? (
               <View style={styles.errorContainer}>
@@ -164,35 +187,37 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
 
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>FELHASZNÁLÓNÉV</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons name="account-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
+              <View style={[styles.inputContainer, usernameError ? styles.inputContainerError : null]}>
+                <MaterialCommunityIcons name="account-outline" size={20} color={usernameError ? "#EF4444" : "#9CA3AF"} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Felhasználónév"
                   placeholderTextColor="#9CA3AF"
                   value={username}
-                  onChangeText={setUsername}
+                  onChangeText={(t) => { setUsername(t); setUsernameError(""); }}
                   autoCapitalize="none"
                 />
               </View>
+              {usernameError ? <Text style={styles.fieldError}>{usernameError}</Text> : null}
             </View>
 
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>JELSZÓ</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons name="lock-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
+              <View style={[styles.inputContainer, passwordError ? styles.inputContainerError : null]}>
+                <MaterialCommunityIcons name="lock-outline" size={20} color={passwordError ? "#EF4444" : "#9CA3AF"} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Jelszó"
                   placeholderTextColor="#9CA3AF"
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={(t) => { setPassword(t); setPasswordError(""); }}
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
                   <MaterialCommunityIcons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#9CA3AF" />
                 </TouchableOpacity>
               </View>
+              {passwordError ? <Text style={styles.fieldError}>{passwordError}</Text> : null}
             </View>
 
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin} activeOpacity={0.85}>
@@ -246,10 +271,10 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
 
 const PRIMARY = '#6C5CE7';
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -281,16 +306,16 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontWeight: '800',
-    color: '#1A1A2E',
+    color: colors.text,
     letterSpacing: 0.5,
   },
   appSubtitle: {
-    color: '#6B7280',
-    fontSize: 15,
+    color: colors.text_secondary,
+    fontSize: rf(15, width),
     marginTop: 4,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 28,
     ...Platform.select({
@@ -306,19 +331,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '700',
-    color: '#1A1A2E',
+    color: colors.text,
     marginBottom: 6,
   },
   subtitle: {
-    color: '#6B7280',
-    fontSize: 14,
+    color: colors.text_secondary,
+    fontSize: rf(14, width),
     marginBottom: 24,
   },
   fieldGroup: {
     marginBottom: 16,
   },
   fieldLabel: {
-    fontSize: 11,
+    fontSize: rf(11, width),
     fontWeight: '700',
     color: '#9CA3AF',
     letterSpacing: 0.8,
@@ -327,20 +352,32 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: isDark ? colors.surface : '#F3F4F6',
     borderRadius: 12,
     paddingHorizontal: 14,
     height: 52,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
   },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    color: '#1A1A2E',
-    fontSize: 15,
+    color: colors.text,
+    fontSize: rf(15, width),
+  },
+  inputContainerError: {
+    borderColor: '#EF4444',
+    borderWidth: 1.5,
+    backgroundColor: '#FEF2F2',
+  },
+  fieldError: {
+    color: '#EF4444',
+    fontSize: rf(12, width),
+    fontWeight: '500',
+    marginTop: 5,
+    marginLeft: 4,
   },
   eyeIcon: {
     padding: 4,
@@ -364,7 +401,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: rf(16, width),
     fontWeight: '700',
     letterSpacing: 0.3,
   },
@@ -382,7 +419,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     color: '#9CA3AF',
     fontWeight: '600',
-    fontSize: 12,
+    fontSize: rf(12, width),
     letterSpacing: 0.5,
   },
   registerButton: {
@@ -391,12 +428,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   registerText: {
-    color: '#6B7280',
-    fontSize: 14,
+    color: colors.text_secondary,
+    fontSize: rf(14, width),
   },
   registerTextBold: {
     color: PRIMARY,
-    fontSize: 14,
+    fontSize: rf(14, width),
     fontWeight: '700',
   },
   errorContainer: {
@@ -413,7 +450,7 @@ const styles = StyleSheet.create({
     color: '#DC2626',
     marginLeft: 8,
     flex: 1,
-    fontSize: 13,
+    fontSize: rf(13, width),
     fontWeight: '500',
   },
   alertOverlay: {
@@ -425,7 +462,7 @@ const styles = StyleSheet.create({
   alertContainer: {
     width: '85%',
     maxWidth: 320,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 28,
     alignItems: 'center',
@@ -436,14 +473,14 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
   },
   alertTitle: {
-    fontSize: 19,
+    fontSize: rf(19, width),
     fontWeight: '700',
     textAlign: 'center',
     marginVertical: 12,
   },
   alertMessage: {
-    fontSize: 14,
-    color: '#6B7280',
+    fontSize: rf(14, width),
+    color: colors.text_secondary,
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 20,
@@ -458,12 +495,12 @@ const styles = StyleSheet.create({
   alertButtonText: {
     fontWeight: '700',
     color: '#fff',
-    fontSize: 15,
+    fontSize: rf(15, width),
   },
   // legacy kept
   forgotPassword: { alignSelf: 'flex-end' },
-  forgotPasswordText: { color: PRIMARY, fontSize: 13 },
-  registerButtonText: { color: PRIMARY, fontSize: 14 },
+  forgotPasswordText: { color: PRIMARY, fontSize: rf(13, width) },
+  registerButtonText: { color: PRIMARY, fontSize: rf(14, width) },
   gradientButton: { paddingVertical: 15 },
 });
 

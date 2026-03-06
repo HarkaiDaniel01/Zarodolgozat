@@ -17,6 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cim from "./Cim";
+import { useTheme } from './ThemeContext';
 
 const customStyles = StyleSheet.create({
   fullScreen: {
@@ -221,7 +222,9 @@ const customStyles = StyleSheet.create({
 
 const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, isGyakorlas, isHardcore }: any) => {
   const { height, width } = useWindowDimensions(); 
-  const isLargeScreen = width > 600; 
+  const isLargeScreen = width > 600;
+  const { colors, isDark } = useTheme();
+  const styles = getStyles(colors, isDark);
   
   const [szamlalo, setSzamlalo] = useState<number>(0);
   const [valaszok, setValaszok] = useState<string[]>([]);
@@ -545,43 +548,34 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     const timerIconSize = isSmallScreen ? 12 : 16;
 
     return (
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: '#F4F6FB' }]}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F4F6FB" />
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            {
-              paddingTop: isSmallScreen ? 10 : 20,
-            },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={[styles.contentContainer, isTablet && { maxWidth: 800 }, isLargeTablet && { maxWidth: 1000 }]}>
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+        <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={colors.background} />
+        <View style={[styles.contentContainer, isTablet && { maxWidth: 800, alignSelf: 'center', width: '100%' }, isLargeTablet && { maxWidth: 1000, alignSelf: 'center', width: '100%' }]}>
             {/* ========== FEJLÉC ========== */}
             <View style={styles.newHeaderRow}>
               <TouchableOpacity
                 style={styles.exitDoorBtn}
                 onPress={handleExit}
               >
-                <MaterialCommunityIcons name="door-open" size={24} color="#FF6B6B" />
-                <Text style={styles.exitDoorText}>Kilépés</Text>
+                <MaterialCommunityIcons name="door-open" size={isSmallScreen ? 18 : 24} color="#FF6B6B" />
+                {!isSmallScreen && <Text style={styles.exitDoorText}>Kilépés</Text>}
               </TouchableOpacity>
 
-              <Text style={[styles.newHeaderText, { flex: 1, textAlign: 'center' }]}>
+              <Text style={[styles.newHeaderText, { flex: 1, textAlign: 'center', fontSize: isSmallScreen ? 14 : 17 }]}>
                 Kérdés {szamlalo + 1} / {isEndless ? '∞' : kerdesekList.length}
               </Text>
 
-              <View style={styles.exitDoorSpacer} />
+              <View style={{ width: isSmallScreen ? 40 : 90 }} />
             </View>
 
 
             {/* ========== IDŐMÉRŐ (CSAK SPEEDRUN) ========== */}
             {isSpeedrun && (
               <View style={{ 
-                marginHorizontal: 20, 
-                marginBottom: 15, 
-                height: 10, 
-                backgroundColor: '#E0E0E0', 
+                marginHorizontal: 8, 
+                marginBottom: 8, 
+                height: 8, 
+                backgroundColor: isDark ? '#444' : '#E0E0E0', 
                 borderRadius: 5, 
                 overflow: 'hidden' 
               }}>
@@ -624,9 +618,15 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
             {/* ========== KÉRDÉS KÁRTYA ========== */}
             <View style={styles.newQuestionCard}>
-              <Text style={styles.newQuestionText}>
-                {kerdesekList[szamlalo].kerdesek_kerdes}
-              </Text>
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 8 }}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+              >
+                <Text style={[styles.newQuestionText, { fontSize: responsiveFontSizes.question }]}>
+                  {kerdesekList[szamlalo].kerdesek_kerdes}
+                </Text>
+              </ScrollView>
             </View>
 
             {/* ========== VÁLASZOK ========== */}
@@ -640,19 +640,27 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                 
                 let answerStyle: any = styles.newAnswerBtn;
                 let textStyle: any = styles.newAnswerText;
+                let letterBoxStyle: any = styles.answerLetterBox;
+                let letterTextStyle: any = styles.answerLetterText;
 
                 if (eredmenyMutat) {
                   if (isCorrect) {
                     answerStyle = [styles.newAnswerBtn, styles.newAnswerBtnCorrect];
                     textStyle = [styles.newAnswerText, styles.newAnswerTextCorrect];
+                    letterBoxStyle = [styles.answerLetterBox, styles.answerLetterBoxCorrect];
+                    letterTextStyle = [styles.answerLetterText, styles.answerLetterTextCorrect];
                   } else if (isSelectedSubstitute) {
                     answerStyle = [styles.newAnswerBtn, styles.newAnswerBtnWrong];
                     textStyle = [styles.newAnswerText, styles.newAnswerTextWrong];
+                    letterBoxStyle = [styles.answerLetterBox, styles.answerLetterBoxWrong];
+                    letterTextStyle = [styles.answerLetterText, styles.answerLetterTextWrong];
                   }
                 } else {
                   if (isSelectedSubstitute) {
                     answerStyle = [styles.newAnswerBtn, styles.newAnswerBtnSelected];
                     textStyle = [styles.newAnswerText, styles.newAnswerTextSelected];
+                    letterBoxStyle = [styles.answerLetterBox, styles.answerLetterBoxSelected];
+                    letterTextStyle = [styles.answerLetterText, styles.answerLetterTextSelected];
                   }
                 }
 
@@ -664,7 +672,10 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                     onPress={() => valaszEllenoriz(elem)}
                     style={[{ opacity: isHidden ? 0 : 1 }, answerStyle]}
                   >
-                    <Text style={textStyle}>
+                    <View style={[letterBoxStyle, { width: isSmallScreen ? 28 : 34, height: isSmallScreen ? 28 : 34, borderRadius: isSmallScreen ? 14 : 17, marginRight: isSmallScreen ? 10 : 14 }]}>
+                      <Text style={[letterTextStyle, { fontSize: isSmallScreen ? 12 : 14 }]}>{betuk[index]}</Text>
+                    </View>
+                    <Text style={[textStyle, { fontSize: responsiveFontSizes.answerText }]}>
                       {elem}
                       {kozonsegMegjelol && szazalek[index] 
                         ? `  (${szazalek[index]})` 
@@ -675,59 +686,60 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               })}
             </View>
 
-            {/* ========== KONTROL SÁV (SEGÍTSÉGEK) ========== */}
+            {/* ========== SEGÍTSÉGEK ========== */}
             <View style={styles.newLifelinesContainer}>
-              <Text style={styles.newLifelinesTitle}>ELÉRHETŐ SEGÍTSÉGEK</Text>
+              <Text style={[styles.newLifelinesTitle, { fontSize: isSmallScreen ? 9 : 11 }]}>ELÉRHETŐ SEGÍTSÉGEK</Text>
               <View style={styles.newLifelinesRow}>
                 {/* FELEZŐ (50:50) segítség */}
                 <TouchableOpacity
                   style={[
                     styles.newLifelineBtn,
                     !felezoSegitsegAktiv && { opacity: 0.5 },
+                    { width: isSmallScreen ? 46 : 56, height: isSmallScreen ? 46 : 56, borderRadius: isSmallScreen ? 23 : 28 }
                   ]}
                   onPress={felezoSegitseg}
                   disabled={!felezoSegitsegAktiv}
                 >
-                  <Text style={{ color: '#8E24AA', fontWeight: 'bold', fontSize: 14 }}>50:50</Text>
+                  <Text style={{ color: '#8E24AA', fontWeight: 'bold', fontSize: isSmallScreen ? 11 : 14 }}>50:50</Text>
                 </TouchableOpacity>
 
-                {/* TELEFON segítség - MOST VILLANYKÖRTE */}
+                {/* TELEFON segítség */}
                 <TouchableOpacity
                   style={[
                     styles.newLifelineBtn,
                     !telefonSegitsegAktiv && { opacity: 0.5 },
+                    { width: isSmallScreen ? 46 : 56, height: isSmallScreen ? 46 : 56, borderRadius: isSmallScreen ? 23 : 28 }
                   ]}
                   onPress={telefonSegitseg}
                   disabled={!telefonSegitsegAktiv}
                 >
                   <MaterialCommunityIcons
                     name="phone"
-                    size={24}
+                    size={isSmallScreen ? 20 : 24}
                     color="#8E24AA"
                   />
                 </TouchableOpacity>
 
-                {/* KÖZÖNSÉG segítség - MOST EMBEREK */}
+                {/* KÖZÖNSÉG segítség */}
                 <TouchableOpacity
                   style={[
                     styles.newLifelineBtn,
                     !kozonsegSegitsegAktiv && { opacity: 0.5 },
+                    { width: isSmallScreen ? 46 : 56, height: isSmallScreen ? 46 : 56, borderRadius: isSmallScreen ? 23 : 28 }
                   ]}
                   onPress={kozonsegSegitseg}
                   disabled={!kozonsegSegitsegAktiv}
                 >
                   <MaterialCommunityIcons
                     name="account-group-outline"
-                    size={24}
+                    size={isSmallScreen ? 20 : 24}
                     color="#8E24AA"
                   />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-        </ScrollView>
 
-      {/* Idő lejárt Modal */}
       {/* IDŐ LEJÁRT Modal */}
       <Modal
         animationType="fade"
@@ -1373,7 +1385,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     };
     return (
       <SafeAreaView style={styles.centerContainer}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
+        <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={colors.background} />
         <View style={styles.winnerCard}>
             <MaterialCommunityIcons name="trophy" size={80} color="#FFD700" />
             <Text style={styles.winnerTitle}>Játék Vége!</Text>
@@ -1398,13 +1410,13 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     return (
         <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color="#8E24AA" />
-            <Text style={{marginTop: 15, color: '#333', fontSize: 16}}>Betöltés...</Text>
+            <Text style={{marginTop: 15, color: colors.text, fontSize: 16}}>Betöltés...</Text>
         </View>
     );
   }
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   gradientContainer: {
     flex: 1,
   },
@@ -1417,11 +1429,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: 20,
-    maxWidth: 600,
-    width: '100%',
-    alignSelf: 'center',
-    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    paddingTop: 10,
+    paddingBottom: 6,
   },
   // Modal styles
   modalOverlay: {
@@ -1431,7 +1441,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timeoutModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 30,
     alignItems: 'center',
@@ -1453,7 +1463,7 @@ const styles = StyleSheet.create({
   },
   timeoutText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.text_secondary,
     textAlign: 'center',
     marginBottom: 25,
     lineHeight: 22,
@@ -1472,7 +1482,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   wrongAnswerModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 25,
     alignItems: 'center',
@@ -1497,7 +1507,7 @@ const styles = StyleSheet.create({
   },
   correctAnswerLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.text_secondary,
     marginBottom: 5,
     fontWeight: '600',
   },
@@ -1507,7 +1517,7 @@ const styles = StyleSheet.create({
     color: '#D32F2F',
   },
   descriptionBox: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: isDark ? colors.background : '#F5F5F5',
     padding: 15,
     borderRadius: 10,
     marginVertical: 10,
@@ -1515,7 +1525,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 14,
-    color: '#555',
+    color: colors.text_secondary,
     lineHeight: 20,
     textAlign: 'justify',
   },
@@ -1543,7 +1553,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   gameEndModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 25,
     alignItems: 'center',
@@ -1560,7 +1570,7 @@ const styles = StyleSheet.create({
   gameEndText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.text,
     marginVertical: 10,
     textAlign: 'center',
   },
@@ -1578,7 +1588,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   confirmSaveModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 25,
     alignItems: 'center',
@@ -1594,14 +1604,14 @@ const styles = StyleSheet.create({
   },
   confirmSaveText: {
     fontSize: 16,
-    color: '#333',
+    color: colors.text,
     marginVertical: 10,
     textAlign: 'center',
     fontWeight: '600',
   },
   confirmSaveQuestion: {
     fontSize: 14,
-    color: '#666',
+    color: colors.text_secondary,
     marginVertical: 10,
     textAlign: 'center',
     fontStyle: 'italic',
@@ -1632,7 +1642,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginPromptModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 25,
     alignItems: 'center',
@@ -1648,7 +1658,7 @@ const styles = StyleSheet.create({
   },
   loginPromptText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.text_secondary,
     marginVertical: 10,
     textAlign: 'center',
     lineHeight: 20,
@@ -1679,7 +1689,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   phoneHelpModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 25,
     alignItems: 'center',
@@ -1700,7 +1710,7 @@ const styles = StyleSheet.create({
   },
   phoneHelpLabel: {
     fontSize: 14,
-    color: '#666',
+    color: colors.text_secondary,
     marginBottom: 10,
   },
   phoneHelpAnswer: {
@@ -1729,7 +1739,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   exitConfirmModal: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 25,
     alignItems: 'center',
@@ -1745,7 +1755,7 @@ const styles = StyleSheet.create({
   },
   exitConfirmText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.text_secondary,
     marginVertical: 15,
     textAlign: 'center',
     lineHeight: 20,
@@ -1765,7 +1775,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   exitCancelButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: isDark ? '#4B5563' : '#E0E0E0',
   },
   exitDestructiveButton: {
     backgroundColor: '#FF6B6B',
@@ -1773,7 +1783,7 @@ const styles = StyleSheet.create({
   exitConfirmButtonText: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#333',
+    color: colors.text,
   },
   exitConfirmDestructiveButtonText: {
     fontWeight: 'bold',
@@ -1781,15 +1791,15 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   newQuestionCard: {
-    backgroundColor: '#fff',
+    flex: 1.5,
+    backgroundColor: colors.surface,
     borderRadius: 24,
-    padding: 28,
-    marginHorizontal: 16,
-    marginTop: 10,
-    marginBottom: 24,
-    minHeight: 170,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 0,
+    marginHorizontal: 8,
+    marginTop: 6,
+    marginBottom: 10,
+    overflow: 'hidden',
     shadowColor: '#6C5CE7',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.07,
@@ -1800,23 +1810,25 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: '700',
     textAlign: 'center',
-    color: '#1A1A2E',
+    color: colors.text,
     lineHeight: 28,
   },
   newAnswersContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 10,
+    flex: 3,
+    paddingHorizontal: 8,
+    justifyContent: 'space-between',
   },
   newAnswerBtn: {
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: colors.surface,
     borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 6,
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -1838,8 +1850,41 @@ const styles = StyleSheet.create({
   newAnswerText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#374151',
+    color: colors.text,
     flex: 1,
+  },
+  answerLetterBox: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#EDE9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+    flexShrink: 0,
+  },
+  answerLetterBoxSelected: {
+    backgroundColor: '#6C5CE7',
+  },
+  answerLetterBoxCorrect: {
+    backgroundColor: '#22C55E',
+  },
+  answerLetterBoxWrong: {
+    backgroundColor: '#EF4444',
+  },
+  answerLetterText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#6C5CE7',
+  },
+  answerLetterTextSelected: {
+    color: '#fff',
+  },
+  answerLetterTextCorrect: {
+    color: '#fff',
+  },
+  answerLetterTextWrong: {
+    color: '#fff',
   },
   newAnswerTextSelected: {
     color: '#4C1D95',
@@ -1851,14 +1896,15 @@ const styles = StyleSheet.create({
     color: '#DC2626',
   },
   newLifelinesContainer: {
-    marginTop: 16,
-    paddingHorizontal: 16,
-    paddingBottom: 30,
+    flex: 1,
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   newLifelinesTitle: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#9CA3AF',
+    color: colors.text_secondary,
     marginBottom: 14,
     textAlign: 'center',
     letterSpacing: 1.2,
@@ -1873,11 +1919,11 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
     shadowColor: '#6C5CE7',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -1892,8 +1938,8 @@ const styles = StyleSheet.create({
   newHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 6,
+    marginBottom: 8,
+    paddingHorizontal: 4,
   },
   newHeaderIconBtn: {
     width: 40,
@@ -1911,13 +1957,13 @@ const styles = StyleSheet.create({
   exitDoorBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF2F2',
+    backgroundColor: isDark ? 'rgba(239,68,68,0.15)' : '#FEF2F2',
     borderRadius: 20,
     paddingVertical: 9,
     paddingHorizontal: 16,
     marginRight: 5,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: isDark ? 'rgba(239,68,68,0.3)' : '#FECACA',
   },
   exitDoorText: {
     color: '#EF4444',
@@ -1931,22 +1977,22 @@ const styles = StyleSheet.create({
   newHeaderText: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#1A1A2E',
+    color: colors.text,
   },
   progressDotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
-    gap: 6,
+    marginBottom: 8,
+    gap: 5,
     flexWrap: 'wrap',
-    paddingHorizontal: 20,
+    paddingHorizontal: 8,
   },
   progressDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: isDark ? '#4B5563' : '#E5E7EB',
   },
   progressDotActive: {
     backgroundColor: '#6C5CE7',
@@ -1962,6 +2008,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.background,
   },
   winnerCard: {
     flex: 1,
@@ -1972,7 +2019,7 @@ const styles = StyleSheet.create({
   winnerTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#1A1A2E',
+    color: colors.text,
     marginVertical: 15,
   },
   winnerPrize: {
@@ -1999,7 +2046,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   secondaryBtn: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.surface,
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 14,
@@ -2007,7 +2054,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   secondaryBtnText: {
-    color: '#374151',
+    color: colors.text,
     fontWeight: '700',
     fontSize: 16,
   },

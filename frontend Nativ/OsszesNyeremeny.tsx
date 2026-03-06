@@ -1,10 +1,12 @@
 ﻿import React, { useState, useEffect, JSX } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Platform, useWindowDimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Cim from './Cim';
+import { useTheme } from './ThemeContext';
+import { rf } from './theme';
 
 interface OsszesNyeremenyProps {
   onBack: () => void;
@@ -36,6 +38,9 @@ const CARD_COLORS = [
 ];
 
 const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
+  const { colors, isDark } = useTheme();
+  const { width } = useWindowDimensions();
+  const styles = getStyles(colors, isDark, width);
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<WinningItem[]>([]);
 
@@ -78,13 +83,12 @@ const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle} numberOfLines={1}>{item.kategoria_nev}</Text>
           <View style={styles.dateRow}>
-            <MaterialCommunityIcons name="calendar-outline" size={12} color="#999" />
+            <MaterialCommunityIcons name="calendar-outline" size={12} color={colors.text_secondary} />
             <Text style={styles.cardDate}> {formatDate(item.Eredmenyek_datum)}</Text>
           </View>
         </View>
         <View style={[styles.amountBadge, { backgroundColor: color.bg }]}>
-          <Text style={[styles.amountText, { color: color.icon }]}>{item.Eredmenyek_pont}</Text>
-          <Text style={[styles.amountUnit, { color: color.icon }]}>pont</Text>
+          <Text style={[styles.amountText, { color: color.icon }]}>{item.Eredmenyek_pont} Ft</Text>
         </View>
       </View>
     );
@@ -113,7 +117,7 @@ const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
             <View style={styles.statDivider} />
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{totalPont}</Text>
-              <Text style={styles.statLabel}>Összpont</Text>
+              <Text style={styles.statLabel}>Össznyeremény</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statBox}>
@@ -126,13 +130,13 @@ const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
 
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#6C5CE7" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       ) : (
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item, index) => item.Eredmenyek_id ? item.Eredmenyek_id.toString() : index.toString()}
+          keyExtractor={(item: WinningItem, index: number) => item.Eredmenyek_id ? item.Eredmenyek_id.toString() : `nyeremeny-${index}`}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
@@ -148,10 +152,10 @@ const OsszesNyeremeny: React.FC<OsszesNyeremenyProps> = ({ onBack }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: colors.background,
   },
   header: {
     paddingBottom: 20,
@@ -180,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: rf(20, width),
     fontWeight: 'bold',
     color: '#fff',
     letterSpacing: 0.5,
@@ -208,12 +212,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statValue: {
-    fontSize: 22,
+    fontSize: rf(16, width),
     fontWeight: 'bold',
     color: '#fff',
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: rf(11, width),
     color: 'rgba(255,255,255,0.75)',
     marginTop: 2,
   },
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 14,
     marginBottom: 10,
@@ -262,9 +266,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardTitle: {
-    fontSize: 15,
+    fontSize: rf(15, width),
     fontWeight: '700',
-    color: '#222',
+    color: colors.text,
     marginBottom: 4,
   },
   dateRow: {
@@ -272,8 +276,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardDate: {
-    fontSize: 12,
-    color: '#999',
+    fontSize: rf(12, width),
+    color: colors.text_secondary,
   },
   amountBadge: {
     borderRadius: 12,
@@ -284,10 +288,10 @@ const styles = StyleSheet.create({
   },
   amountText: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: rf(16, width),
   },
   amountUnit: {
-    fontSize: 10,
+    fontSize: rf(10, width),
     fontWeight: '600',
     marginTop: 1,
   },
@@ -299,14 +303,14 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: rf(18, width),
     fontWeight: 'bold',
-    color: '#555',
+    color: colors.text,
   },
   emptyText: {
     marginTop: 8,
-    fontSize: 14,
-    color: '#aaa',
+    fontSize: rf(14, width),
+    color: colors.text_secondary,
     textAlign: 'center',
     lineHeight: 20,
   },

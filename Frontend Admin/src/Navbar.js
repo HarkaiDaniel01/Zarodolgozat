@@ -118,7 +118,7 @@ const Navbar = () => {
           {bejelentkezve && isAdmin && (
             <ul className="navbar-nav">
               <li className="nav-item">
-                <Link className="nav-link" to="/kategoriakezel">Kategoriák</Link>
+                <Link className="nav-link" to="/kategoriakezel">Kategóriák</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/kerdeskezel">Kérdések</Link>

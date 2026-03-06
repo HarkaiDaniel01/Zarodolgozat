@@ -1,9 +1,11 @@
 import React, { useState, useEffect, JSX } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Platform, useWindowDimensions } from 'react-native';
 import Cim from './Cim';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from './ThemeContext';
+import { rf } from './theme';
 
 interface RecordItem {
   jatekos_id: number;
@@ -12,6 +14,9 @@ interface RecordItem {
 }
 
 const Rekordok: React.FC = () => {
+  const { colors, isDark } = useTheme();
+  const { width } = useWindowDimensions();
+  const styles = getStyles(colors, isDark, width);
   const [rekordok, setRekordok] = useState<RecordItem[]>([]);
   const [tolt, setTolt] = useState<boolean>(true);
   const [hiba, setHiba] = useState<string | null>(null);
@@ -46,8 +51,8 @@ const Rekordok: React.FC = () => {
   if (tolt) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#FFC107" />
-        <Text style={{marginTop: 10, color: '#666'}}>Ranglista betöltése...</Text>
+        <ActivityIndicator size="large" color={colors.warning} />
+        <Text style={{marginTop: 10, color: colors.text_secondary}}>Ranglista betöltése...</Text>
       </View>
     );
   }
@@ -55,9 +60,9 @@ const Rekordok: React.FC = () => {
   if (hiba) {
     return (
       <View style={styles.center}>
-        <MaterialCommunityIcons name="alert-circle" size={50} color="red" />
+        <MaterialCommunityIcons name="alert-circle" size={50} color={colors.error} />
         <Text style={styles.hibaText}>Hiba történt: {hiba}</Text>
-        <Text onPress={onRefresh} style={{color: '#2196F3', marginTop: 10, fontWeight: 'bold'}}>Próbáld újra</Text>
+        <Text onPress={onRefresh} style={{color: colors.primary, marginTop: 10, fontWeight: 'bold'}}>Próbáld újra</Text>
       </View>
     );
   }
@@ -135,7 +140,7 @@ const Rekordok: React.FC = () => {
             <View style={styles.listAvatar}>
               <MaterialCommunityIcons name="account" size={20} color="#8E24AA" />
             </View>
-            <Text style={styles.nev}>{item.jatekos_nev}</Text>
+            <Text style={styles.nev} numberOfLines={1} ellipsizeMode="tail">{item.jatekos_nev}</Text>
           </View>
           
           {/* Score */}
@@ -179,16 +184,16 @@ const Rekordok: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   headerArea: {
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 15,
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   headerRow: {
     flexDirection: 'row',
@@ -197,9 +202,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   headerTitle: {
-    fontSize: 26,
+    fontSize: rf(26, width),
     fontWeight: '900',
-    color: '#1A1A2E',
+    color: colors.text,
     letterSpacing: 0.3,
   },
   tabContainer: {
@@ -225,18 +230,18 @@ const styles = StyleSheet.create({
   activeTabText: {
     color: '#8E24AA',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: rf(14, width),
   },
   inactiveTabText: {
     color: '#999',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: rf(14, width),
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F4F6FB',
+    backgroundColor: colors.background,
   },
   lista: {
     paddingHorizontal: 20,
@@ -300,7 +305,7 @@ const styles = StyleSheet.create({
   badgeBronze: {
     position: 'absolute', bottom: -5, backgroundColor: '#FF9800', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff'
   },
-  badgeText: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
+  badgeText: { color: '#fff', fontSize: rf(12, width), fontWeight: 'bold' },
 
   podiumBar: {
     width: '100%',
@@ -318,27 +323,27 @@ const styles = StyleSheet.create({
   },
   podiumName: {
       color: '#424242',
-      fontSize: 12,
+      fontSize: rf(12, width),
       fontWeight: 'bold',
       textAlign: 'center',
       marginBottom: 4,
   },
   podiumNameFirst: {
     color: '#3E2723',
-    fontSize: 14,
+    fontSize: rf(14, width),
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
   },
   podiumScore: {
     color: '#6C5CE7',
-    fontSize: 11,
+    fontSize: rf(11, width),
     fontWeight: 'bold',
     textAlign: 'center',
   },
   podiumScoreFirst: {
     color: '#6C5CE7',
-    fontSize: 12,
+    fontSize: rf(12, width),
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -348,11 +353,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 18,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#F0F0F7',
+    borderColor: colors.border,
     ...Platform.select({
       web: { boxShadow: '0px 2px 8px rgba(108,92,231,0.07)' },
       default: {
@@ -371,7 +376,7 @@ const styles = StyleSheet.create({
       marginRight: 10,
   },
   rankText: {
-      fontSize: 16,
+      fontSize: rf(16, width),
       fontWeight: 'bold',
       color: '#9E9E9E',
   },
@@ -389,10 +394,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nev: {
-    fontSize: 15,
+    fontSize: rf(15, width),
     fontWeight: '700',
-    color: '#1A1A2E',
+    color: colors.text,
     marginLeft: 12,
+    flex: 1,
+    flexShrink: 1,
   },
   scoreContainer: {
     backgroundColor: '#EDE9FF',
@@ -401,13 +408,13 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   pont: {
-    fontSize: 13,
+    fontSize: rf(13, width),
     fontWeight: '700',
     color: '#6C5CE7',
   },
   hibaText: {
-    fontSize: 16,
-    color: 'red',
+    fontSize: rf(16, width),
+    color: colors.error,
     textAlign: 'center',
   },
   bottomButtonContainer: {
@@ -431,7 +438,7 @@ const styles = StyleSheet.create({
   startQuizButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: rf(16, width),
   }
 });
 
