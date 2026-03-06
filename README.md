@@ -1,7 +1,5 @@
 # Te is lehetsz Milliomos! – Kvíz Játék
 
-> Ez a szoftver kizárólagosan a szerzők saját szellemi terméke, minden jog fenntartva.
-
 ---
 
 ## Bevezetés
@@ -14,8 +12,8 @@ A **„Te is lehetsz Milliomos!"** egy webes és mobilos kvíz alkalmazás, amel
 
 | Név | Szerep |
 |---|---|
-| **Dani** | Backend (játéklogika, eredmények, kérdések lekérése), React Native mobilapp |
-| **Gergő** | Backend (admin panel, játékos kezelés, kategória/kérdés CRUD), React webes admin frontend |
+| **Dani** | Backend (játéklogika, eredmények, kérdések lekérése), React frontend |
+| **Gergő** | Backend (admin panel, játékos kezelés, kategória/kérdés CRUD),React Native mobilapp ,React webes admin  |
 
 ---
 
@@ -243,3 +241,6 @@ npm start
 | React Native mobilalkalmazás | ✅ | |
 | React webes admin panel | | ✅ |
 | Adatbázis tervezés | ✅ | ✅ |
+
+
+> Ez a szoftver kizárólagosan a szerzők saját szellemi terméke, minden jog fenntartva.
