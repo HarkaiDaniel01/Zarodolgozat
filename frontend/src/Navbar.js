@@ -164,6 +164,9 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-right">
+        <Link to="/apk" className="link">
+          📱 Letöltés
+        </Link>
         {loggedIn ? (
           <button className="logoutButton" onClick={handleLogout}>
             Kijelentkezés

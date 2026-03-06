@@ -15,6 +15,7 @@ import Statisztika from './Statisztika';
 import EredmenyekPontszam from './EredmenyekPontszam';
 import PontszamStatisztika from './PontszamStatisztika';
 import PontszamRekordok from './PontszamRekordok';
+import ApkLetoltes from './ApkLetoltes';
 
 
 
@@ -45,6 +46,8 @@ function App() {
           <Route path="/pontszamStatisztika" element={<PontszamStatisztika/>} />
 
           <Route path="/pontszamRekordok" element={<PontszamRekordok/>} />
+
+          <Route path="/apk" element={<ApkLetoltes/>} />
           
         </Routes>
       </div>
