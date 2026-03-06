@@ -279,7 +279,7 @@ const Kategoria=()=>{
             
         {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}} >
 
-                <h1>Te is lehetsz milliomos!</h1>
+                <h1>A Tudás Torna!</h1>
                 <h2>Válassz kategóriát!</h2>
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
