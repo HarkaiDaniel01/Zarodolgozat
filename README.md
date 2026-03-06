@@ -1,4 +1,4 @@
-# Te is lehetsz Milliomos! – Kvíz Játék
+#Lehetsz Milliomos! – Kvíz Játék
 
 ---
 
