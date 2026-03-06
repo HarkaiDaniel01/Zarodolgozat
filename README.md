@@ -151,8 +151,8 @@ npm start
 | ![Kategória választó](./Githubkepek/Kategoria2.png) | Játékmód és kategória választó Mobilon|
 | ![Kérdés](./Githubkepek/Kerdes1.png) | Aktív kvíz kérdés segítségekkel Weben |
 | ![Kérdés](./Githubkepek/Kerdes2.png) | Aktív kvíz kérdés segítségekkel Mobilon |
-| ![Ranglista](./Githubkepek/Rekordok1.png) | Globális nyeremény ranglista  Weben|
-| ![Ranglista](./Githubkepek/Rekordok2.png) | Globális nyeremény ranglista  Mobilon|
+| ![Ranglista](./Githubkepek/Rekord1.png) | Globális nyeremény ranglista  Weben|
+| ![Ranglista](./Githubkepek/Rekord2.png) | Globális nyeremény ranglista  Mobilon|
 | ![Profil](./Githubkepek/Profil.png) | Felhasználói profil, szint, XP sáv |
 | ![Admin panel](./Githubkepek/Admin.png) | Webes admin kezelőfelület |
 
