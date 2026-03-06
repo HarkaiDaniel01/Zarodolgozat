@@ -36,6 +36,7 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
   const [userData, setUserData] = useState<UserData | null>(null);
   const [eredmenyek, setEredmenyek] = useState<EredmenyItem[]>([]);
   const [refresh, setRefresh] = useState<number>(0);
+  const [role, setRole] = useState<string>('');
   
   const [passwordModalVisible, setPasswordModalVisible] = useState<boolean>(false);
   const [currentPassword, setCurrentPassword] = useState<string>('');
@@ -92,6 +93,8 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
       try {
         const token = await AsyncStorage.getItem('token');
         const userId = await AsyncStorage.getItem('userid');
+        const storedRole = await AsyncStorage.getItem('role');
+        setRole(storedRole || '');
         
         if (!token || !userId) {
           if (onLogout) onLogout();
@@ -299,8 +302,17 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
                 </Text>
               </View>
               <Text style={styles.userName}>{userData?.nev || 'Betöltés...'}</Text>
+              <View style={styles.roleBadge}>
+                <MaterialCommunityIcons
+                  name={role === 'Admin' ? 'shield-crown-outline' : 'account-outline'}
+                  size={13}
+                  color={role === 'Admin' ? colors.accent : 'rgba(255,255,255,0.9)'}
+                />
+                <Text style={[styles.roleText, role === 'Admin' && { color: colors.accent }]}>
+                  {role === 'Admin' ? 'Rendszergazda' : 'Felhasználó'}
+                </Text>
+              </View>
               <View style={styles.rankBadge}>
-                <MaterialCommunityIcons name="medal" size={13} color={colors.accent} />
                 <Text style={styles.rankText}>{getRankName(level)}</Text>
               </View>
             </View>
@@ -557,6 +569,21 @@ const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.cr
     fontWeight: FONT_WEIGHTS.bold as 'bold',
     color: colors.text_inverted,
     marginBottom: SPACING.xs,
+  },
+  roleBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    borderRadius: BORDER_RADIUS.full,
+    gap: SPACING.xs,
+    marginBottom: SPACING.xs,
+  },
+  roleText: {
+    fontSize: rf(12, width),
+    color: 'rgba(255,255,255,0.9)',
+    fontWeight: '600' as '600',
   },
   rankBadge: {
     flexDirection: 'row',

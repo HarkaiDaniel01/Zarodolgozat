@@ -2,6 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { logout, checkTokenAndLogout } from './utils/authUtils';
+import Cim from './Cim';
 
 const Navbar = () => {
   const [bejelentkezve, setBejelentkezve] = useState(false);
@@ -75,7 +76,7 @@ const Navbar = () => {
     if (!felhasznalo) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/admin/check-admin/${felhasznalo}`);
+      const response = await fetch(`${Cim.Cim}/admin/check-admin/${felhasznalo}`);
       
       // Ha 401 vagy 403, akkor lejárt a token
       if (response.status === 401 || response.status === 403) {

@@ -41,9 +41,9 @@ export const darkColors = {
   warning: '#FFB74D',
   error: '#E57373',
 
-  gradient_start: '#5A4BD1',
-  gradient_mid: '#4A148C',
-  gradient_end: '#311B92',
+  gradient_start: '#2D2060',
+  gradient_mid: '#1E1545',
+  gradient_end: '#130D30',
 };
 
 export const FONT_SIZES = {

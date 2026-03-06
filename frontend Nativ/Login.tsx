@@ -100,9 +100,7 @@ const Login: React.FC<LoginProps> = ({ onNavigateToRegister, onLoginSuccess }) =
       const data = await response.json();
 
       await AsyncStorage.setItem("token", data.token);
-      if (data.role) {
-        await AsyncStorage.setItem("role", data.role);
-      }
+      await AsyncStorage.setItem("role", Number(data.jatekos_admin) === 1 ? "admin" : "user");
       await AsyncStorage.setItem("userid", String(data.user.id));
 
       const taroltEredmeny = await AsyncStorage.getItem("taroltEredmeny");

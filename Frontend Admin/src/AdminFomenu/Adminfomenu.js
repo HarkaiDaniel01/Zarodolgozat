@@ -26,7 +26,18 @@ const Menu1 = () => {
                 <p className="dashboard-subtitle">Mit szeretnél kezelni?</p>
             </div>
             
+            
             <div className="dashboard-cards">
+                 <Link to="/kategoriakezel" className="dashboard-card">
+                    <div className="card-icon">
+                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="30" cy="30" r="30" fill="white" fillOpacity="0.9"/>
+                            <path d="M22.5 18H18V42H22.5V18ZM33 18H28.5V42H33V18ZM45 18H40.5V42H45V18Z" fill="#66A5AD"/>
+                        </svg>
+                    </div>
+                    <h2 className="card-title">Kategória kezelése</h2>
+                    <p className="card-description">Kategóriák felvitele, módosítása és törlése</p>
+                </Link>
                 <Link to="/kerdeskezel" className="dashboard-card">
                     <div className="card-icon">
                         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,16 +49,7 @@ const Menu1 = () => {
                     <p className="card-description">Kérdések felvitele, módosítása és törlése</p>
                 </Link>
 
-                <Link to="/kategoriakezel" className="dashboard-card">
-                    <div className="card-icon">
-                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="30" cy="30" r="30" fill="white" fillOpacity="0.9"/>
-                            <path d="M22.5 18H18V42H22.5V18ZM33 18H28.5V42H33V18ZM45 18H40.5V42H45V18Z" fill="#66A5AD"/>
-                        </svg>
-                    </div>
-                    <h2 className="card-title">Kategória kezelése</h2>
-                    <p className="card-description">Kategóriák felvitele, módosítása és törlése</p>
-                </Link>
+               
                 <Link to="/engedelykeres" className="dashboard-card">
                     <div className="card-icon">
                         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
