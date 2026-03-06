@@ -145,10 +145,14 @@ npm start
 
 | Képernyő | Leírás |
 |---|---|
-| ![Bejelentkezés](./Githubkepek/Login.png) |Admin Bejelentkezési képernyő |
-| ![Kategória választó](./Githubkepek/Kategoria.png) | Játékmód és kategória választó |
-| ![Kérdés](./Githubkepek/Kerdes.png) | Aktív kvíz kérdés segítségekkel |
-| ![Ranglista](./Githubkepek/Rekordok.png) | Globális nyeremény ranglista |
+| ![Bejelentkezés](./Githubkepek/Login1.png) |Admin Bejelentkezési képernyő Weben|
+| ![Bejelentkezés](./Githubkepek/Login2.png) |Admin Bejelentkezési képernyő Mobilon|
+| ![Kategória választó](./Githubkepek/Kategoria1.png) | Játékmód és kategória választó Weben |
+| ![Kategória választó](./Githubkepek/Kategoria2.png) | Játékmód és kategória választó Mobilon|
+| ![Kérdés](./Githubkepek/Kerdes1.png) | Aktív kvíz kérdés segítségekkel Weben |
+| ![Kérdés](./Githubkepek/Kerdes2.png) | Aktív kvíz kérdés segítségekkel Mobilon |
+| ![Ranglista](./Githubkepek/Rekordok1.png) | Globális nyeremény ranglista  Weben|
+| ![Ranglista](./Githubkepek/Rekordok2.png) | Globális nyeremény ranglista  Mobilon|
 | ![Profil](./Githubkepek/Profil.png) | Felhasználói profil, szint, XP sáv |
 | ![Admin panel](./Githubkepek/Admin.png) | Webes admin kezelőfelület |
 
