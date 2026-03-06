@@ -303,15 +303,8 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
               </View>
               <Text style={styles.userName}>{userData?.nev || 'Betöltés...'}</Text>
               <View style={styles.roleBadge}>
-                <MaterialCommunityIcons
-                  name={role === 'Admin' ? 'shield-crown-outline' : 'account-outline'}
-                  size={13}
-                  color={role === 'Admin' ? colors.accent : 'rgba(255,255,255,0.9)'}
-                />
-                <Text style={[styles.roleText, role === 'Admin' && { color: colors.accent }]}>
-                  {role === 'Admin' ? 'Rendszergazda' : 'Felhasználó'}
-                </Text>
-              </View>
+                <Text style={styles.roleText}>{role === 'admin' ? 'Adminisztrátor' : 'Játékos'}</Text>
+              </View> 
               <View style={styles.rankBadge}>
                 <Text style={styles.rankText}>{getRankName(level)}</Text>
               </View>

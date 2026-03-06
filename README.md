@@ -143,16 +143,16 @@ npm start
 
 ## Képernyőképek
 
-> 📸 **Képek helye:** ide illesszétek be a képernyőképeket (pl. `./docs/` mappából)
+> 📸 **Képek helye:** ide illesszétek be a képernyőképeket (pl. `./Githubkepek/` mappából)
 
 | Képernyő | Leírás |
 |---|---|
-| ![Bejelentkezés](./Githubkepek/login.png) | Bejelentkezési képernyő |
-| ![Kategória választó](./docs/kategoria.png) | Játékmód és kategória választó |
-| ![Kérdés](./docs/kerdes.png) | Aktív kvíz kérdés segítségekkel |
-| ![Ranglista](./docs/rekordok.png) | Globális nyeremény ranglista |
-| ![Profil](./docs/profil.png) | Felhasználói profil, szint, XP sáv |
-| ![Admin panel](./docs/admin.png) | Webes admin kezelőfelület |
+| ![Bejelentkezés](./Githubkepek/Login.png) | Bejelentkezési képernyő |
+| ![Kategória választó](./Githubkepek/Kategoria.png) | Játékmód és kategória választó |
+| ![Kérdés](./Githubkepek/Kerdes.png) | Aktív kvíz kérdés segítségekkel |
+| ![Ranglista](./Githubkepek/Rekordok.png) | Globális nyeremény ranglista |
+| ![Profil](./Githubkepek/Profil.png) | Felhasználói profil, szint, XP sáv |
+| ![Admin panel](./Githubkepek/Admin.png) | Webes admin kezelőfelület |
 
 ---
 
