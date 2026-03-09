@@ -5,7 +5,9 @@ const MyPlot = ({datum, eredmeny, cim}) => {
 
 
   return (
-    <Plot
+
+    <div style={{ width: "100%", height: "400px" }}>
+      <Plot
       data={[
         {
           x: datum,
@@ -22,11 +24,10 @@ const MyPlot = ({datum, eredmeny, cim}) => {
         
       ]}
       layout={{
+        autosize: true,
         paper_bgcolor: 'black',
         plot_bgcolor: 'black',
         font: { color: 'white' }, 
-        width: 390,
-        height: 390,
         title: {
           text: cim
         },
@@ -43,18 +44,26 @@ const MyPlot = ({datum, eredmeny, cim}) => {
           
         },
 
-        margin: { t: 50, b: 50, l: 100, r: 30 },
+        margin: { t: 50, b: 80, l: 100, r: 50 },
         
       }}
 
       config={{
+        responsive: true,
         displayModeBar: false,
         scrollZoom: false,      
         doubleClick: false,     
         editable: false,        
         displaylogo: false
       }}
+
+      useResizeHandler={true}
+      style={{ width: "100%", height: "100%" }}
+
     />
+    </div>
+
+    
   );
 };
 

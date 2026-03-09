@@ -260,7 +260,7 @@ const Felhasznalo = () => {
 
             <h4 style={{marginTop : "30px"}}>Eredmények:</h4>
 
-            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px", color: "#F5F7FA"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <div className="tablazat"><table className="table table-dark table-striped table-bordered">
+            {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px", color: "#F5F7FA"}}>Még nincsenek eredményeid<br></br> Játsz és mentsd el az eredményeidet!</div> : <div className="tablazat  table-responsive"><table className="table table-dark table-striped table-bordered">
                 <thead>
                     <tr>
                     <th>Dátum</th>

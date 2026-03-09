@@ -3,7 +3,7 @@ h2 {
   font-family: Cambria, Cochin;
   color:#F5F7FA;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 32px;
 }
 
 h1{
@@ -12,7 +12,7 @@ h1{
   color:#F5F7FA;
   font-weight: bold;
   margin-bottom: 40px;
-  font-size: 2.5rem;
+  font-size: 40px;
 }
 
 .kartya{
@@ -69,6 +69,7 @@ input{
 }
 .gombok{
   width: 30px;
+  
 }
 
 .doboz {
@@ -176,13 +177,13 @@ input{
 }
 
 .gombDoboz {
-  margin: 15px auto;
+  margin: 15px auto;  
   width: 300px;
 }
 
 body {
   background-color: #f4f4f7;
-  background-image: url("Kepek/hatterTeszt.png");
+  background-image: url("Kepek/kvizjatekHatter2.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -280,19 +281,12 @@ td, th {
   font-size: 16px !important;
 } 
 
-/*.swal2-popup {
+.swal2-popup {
   background: #1E2433;
   color: #FFFFFF;
   border-radius: 20px;
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 0 40px rgba(0,0,0,0.6);
-}*/
-
-.swal2-popup {
-  background: #1F2540;
-  color: #FFFFFF;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .swal2-confirm, .swal2-cancel {
@@ -389,88 +383,6 @@ td, th {
   .tablazat{
     margin:0 auto;
     table-layout: fixed;
-  }
-
-  
-
-}
-
-@media (max-width: 479px) {
-  .doboz {
-    width: 350px;
-    margin: 10px auto 0 auto;
-  }
-  
-
-  .tablazat td, .tablazat th {
-    padding: 0.3rem;
-  }
-
-  .segitsegGomb, .segitsegGombLetiltva {
-    max-width: 100px;
-  }
-
-  .kerdes {
-  height: 200px;
-  overflow-y: auto;
-  }
-
-}
-
-@media (max-width: 374px) {
-  .doboz {
-    width: 290px;
-    margin-top: 10px;
-  }
-
-  .gombDoboz {
-    width: 275px;
-  }
-
-
-  .tablazat td, .tablazat th {
-    padding: 0.3rem;
-  }
-
-  .segitsegGomb, .segitsegGombLetiltva {
-    max-width: 100px;
-  }
-
-  .kategoriaGomb {
-    width: 250px;
-    margin: 15px auto;
-    
-  }
-
-  h1 {
-    font-size: 2.4rem;
-    margin-bottom: 20px;
-  }
-
-  h2 {
-    margin-bottom: 10px;
-  }
-
-  .gombDoboz > .gomb {
-    width: 250px;
-    margin: 10px auto;
-  }
-
-  .atlatszoGomb {
-    width: 250px;
-  }
-
-  .gombLetiltva {
-    width: 250px;
-    margin: 10px auto;
-  }
-
-  .segitsegGomb, .segitsegGombLetiltva {
-    max-width: 80px;
-  }
-
-  h2 {
-    font-size: 1.8rem;
   }
 
 }

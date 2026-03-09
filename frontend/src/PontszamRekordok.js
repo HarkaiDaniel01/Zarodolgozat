@@ -58,10 +58,10 @@ const PontszamRekordok = () => {
                 <div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}}>
                     <h1>Pontszám Rekordok</h1>
 
-                    {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px", color: "#F5F7FA"}}>Még senkinek sincs eredménye<br></br> Játsz és légy az első!</div> : <table className="table table-dark table-striped table-bordered">
+                    {adatok.length === 0 ? <div style={{textAlign:"center", fontWeight:"bold", margin:"20px", color: "#F5F7FA"}}>Még senkinek sincs eredménye<br></br> Játsz és légy az első!</div> : <div className="tablazat  table-responsive"><table className="table table-dark table-striped table-bordered">
                         <thead>
                             <tr>
-                            <th>Helyezés</th>
+                            <th></th>
                             <th>Játékos</th>
                             <th style={{textAlign:"right"}}>Eredmény</th>
                             </tr>
@@ -80,7 +80,7 @@ const PontszamRekordok = () => {
                         </tbody>
 
                         </table>
-            
+                        </div>
             
                     }
                 </div>

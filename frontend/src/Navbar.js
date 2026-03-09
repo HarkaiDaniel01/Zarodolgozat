@@ -69,7 +69,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="navbar">
+    <nav className="navbar navbar-expand">
       <div className="navbar-left">
         <button ref={buttonRef} className="hamburger" onClick={toggleMenu}>
           ☰
@@ -164,7 +164,7 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-right">
-        <Link to="/apk" className="link">
+        <Link to="/apk" className="link" style={{"min-width": "100px"}}>
           📱 Letöltés
         </Link>
         {loggedIn ? (
