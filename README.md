@@ -45,6 +45,7 @@ A nem bejelentkezett felhasználók összes funkcióját elérik és az alábbi 
 
 ## Architektúra
 
+
 ```
 ┌─────────────────────┐     HTTP/JSON      ┌──────────────────────┐
 │  React Native App   │ ◄────────────────► │  Express.js Backend  │ 
