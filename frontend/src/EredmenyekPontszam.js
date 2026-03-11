@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Cim from "./Cim";
 import React from "react";
 import MyPlot from "./MyPlot";
+import Swal from "sweetalert2";
 //import { data } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 
@@ -202,27 +203,39 @@ const EredmenyekPontszam = () => {
 
         const eredmenyTorles = async (eredmeny_id) => {
 
-            const biztos=window.confirm(`Biztosan törölni szeretnéd az erdményt?`)
-            if (biztos){
-            //alert("Jó")
-                const response=await fetch(Cim.Cim+"/eredmenyTorles/"+eredmeny_id,{
-                    method: "delete",
-                    headers: {
-                        "Content-Type": "application/json"
-                            }
-                   })
-                const data=await response.json()
-                if (response.ok){
-                    alert(data["message"])
+            /*const biztos=window.confirm(`Biztosan törölni szeretnéd az erdményt?`)if (biztos)*/
+            Swal.fire({
+                title: "Törlés",
+                html: "Biztosan törölni szeretnéd az eredményt?",
+                icon: "warning",
+                confirmButtonText: `Igen`,
+                cancelButtonText: 'Nem',
+                showCancelButton: true
+            }).then( async(result) => {
+                if (result.isConfirmed){
+                    const response=await fetch(Cim.Cim+"/eredmenyTorles/"+eredmeny_id,{
+                        method: "delete",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    const data=await response.json()
+                    if (response.ok){
+                        Swal.fire({
+                            title: "Sikeres törlés",
+                            icon: "success",
+                            confirmButtonText: "Rendben",
+                        });
+                    }
+                    else{
+                        alert(data["error"])
+                    }
                 }
-                else{
-                    alert(data["error"])
-                }
-            }
 
-            leToltes();
-            osszPontszamBetolt();
-
+                leToltes();
+                osszPontszamBetolt();
+        
+            })
 
 
         }

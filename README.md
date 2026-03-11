@@ -1,10 +1,10 @@
-#Lehetsz Milliomos! – Kvíz Játék
+# A Tudás Torna! – Kvíz Játék
 
 ---
 
 ## Bevezetés
 
-A **„Te is lehetsz Milliomos!"** egy webes és mobilos kvíz alkalmazás, amely a közismert tévéshow hangulatát hozza el a felhasználók számára. A játék során a felhasználók különböző témakörök – például történelem, természettudomány, sport és kultúra – kérdéseire válaszolhatnak, miközben egyre nagyobb virtuális nyereményt gyűjthetnek össze. A kérdések nehézségi szintje fokozatosan nő: könnyű, közepes és nehéz kategóriák biztosítják, hogy mind a kezdők, mind a tapasztalt kvízjátékosok megtalálják a számukra megfelelő kihívást. Az alkalmazás ranglistán keresztül lehetővé teszi a játékosok összehasonlítását, a profil oldalon pedig mindenki nyomon követheti saját fejlődését, szintjét és korábbi eredményeit.
+A **„Tudás Torna"** egy webalapú kvíz játék alkalmazás, amely lehetővé teszi a felhasználóknak, hogy teszteljék tudásukat és bővítsék ismereteiket. Az alkalmazás célja egy könnyen használható felület biztosítása, amely játékos formában segíti a tudás felmérését és fejlesztését. A játék során a felhasználók különböző témakörök – például történelem, földrajz, irodalom, sport, zene stb. – kérdéseire válaszolhatnak, miközben egyre nagyobb virtuális nyereményt és pontokat gyűjthetnek össze. A kérdések nehézségi szintje fokozatosan nő. Az alkalmazás ranglistán keresztül lehetővé teszi a játékosok számára a versenyzést, az Eredmények oldalon pedig mindenki nyomon követheti saját fejlődését és korábbi eredményeit. A projekt részeként egy mobilalkalmazás is készült, amely hasonló élményt nyújt a felhasználó számára, azonban a felhasználói felület és egyes funkciók eltérnek.
 
 ---
 
@@ -12,28 +12,30 @@ A **„Te is lehetsz Milliomos!"** egy webes és mobilos kvíz alkalmazás, amel
 
 | Név | Szerep |
 |---|---|
-| **Dani** | Backend (játéklogika, eredmények, kérdések lekérése), React frontend |
-| **Gergő** | Backend (admin panel, játékos kezelés, kategória/kérdés CRUD),React Native mobilapp ,React webes admin  |
+| **Harkai Dániel** | Backend (játéklogika, kategóriák, kérdések és eredmények lekérése, eredmények felvitele), React webes frontend |
+| **Daróczi Gergő** | Backend (admin panel, játékos kezelés, kategória/kérdés CRUD),React Native mobilapp ,React webes admin  |
 
 ---
 
 ## Fő funkciók
 
 ### Nem bejelentkezett felhasználó
-- Kategóriák és játékmódok böngészése
-- Ranglista megtekintése (top játékosok nyeremény alapján)
 - Regisztráció
+- Bejelentkezés
+- Kategória választás
+- Kérdések megválaszolása
+- Segítségek használata (telefon, közönség, felező)
+- Kilépés az adott kvízből
 
 ### Bejelentkezett felhasználó
-- Kategória kiválasztása és kvíz indítása (könnyű / közepes / nehéz / vegyes)
-- Segítségek használata (50/50, közönségszavazás, telefonos segítség)
-- Eredmény mentése játék végén
-- Profil megtekintése (szint, XP, nyeremény összesítő)
-- Játékelőzmények és statisztikák megtekintése
-- Jelszó módosítása, saját fiók törlése
-- Sötét / Világos téma váltása
+A nem bejelentkezett felhasználók összes funkcióját elérik és az alábbi kiegészítő lehetőségekkel rendelkeznek:
 
-### Rendszergazda (Admin)
+- Eredmények elmentése
+- Eredmények megtekintése és törlése
+- Statisztikák megtekintése grafikon formájában
+- Részvétel az eredménytáblán (ranglistán)
+
+### Admin
 - Összes játékos listájának kezelése (szerep adása/elvétele, törlés)
 - Kérdések hozzáadása, szerkesztése, törlése
 - Kategóriák hozzáadása, szerkesztése, törlése
@@ -58,6 +60,7 @@ A **„Te is lehetsz Milliomos!"** egy webes és mobilos kvíz alkalmazás, amel
 
 | Réteg | Technológia |
 |---|---|
+| Frontend webes felület | React |
 | Mobilalkalmazás | React Native + Expo (TypeScript) |
 | Webes admin felület | React |
 | Backend API | Node.js + Express.js |
@@ -112,7 +115,15 @@ npx expo start
 
 Ezután Expo Go alkalmazással (Android/iOS) vagy emulátorral megnyitható.
 
-### 5. Webes Admin felület indítása
+### 5. Webes felület indítása
+
+```bash
+cd "frontend"
+npm install
+npm start
+```
+
+### 6. Webes Admin felület indítása
 
 ```bash
 cd "Frontend Admin"
@@ -141,12 +152,10 @@ npm start
 
 ## Képernyőképek
 
-> 📸 **Képek helye:** ide illesszétek be a képernyőképeket (pl. `./Githubkepek/` mappából)
-
 | Képernyő | Leírás |
 |---|---|
-| ![Bejelentkezés](./Githubkepek/Login1.png) |Admin Bejelentkezési képernyő Weben|
-| ![Bejelentkezés](./Githubkepek/Login2.png) |Admin Bejelentkezési képernyő Mobilon|
+| ![Bejelentkezés](./Githubkepek/Login1.png) | Bejelentkezési képernyő Weben|
+| ![Bejelentkezés](./Githubkepek/Login2.png) | Bejelentkezési képernyő Mobilon|
 | ![Kategória választó](./Githubkepek/Kategoria1.png) | Játékmód és kategória választó Weben |
 | ![Kategória választó](./Githubkepek/Kategoria2.png) | Játékmód és kategória választó Mobilon|
 | ![Kérdés](./Githubkepek/Kerdes1.png) | Aktív kvíz kérdés segítségekkel Weben |
@@ -160,7 +169,7 @@ npm start
 
 ## API végpontok
 
-### Játéklogika – `Backend.js` (Dani)
+### Játéklogika – `Backend.js` (Harkai Dániel)
 
 | Metódus | Végpont | Leírás | Body / Params |
 |---|---|---|---|
@@ -189,7 +198,7 @@ npm start
 
 ---
 
-### Authentikáció & Felhasználókezelés – `Admin.js` (Gergő)
+### Authentikáció & Felhasználókezelés – `Admin.js` (Daróczi Gergő)
 
 | Metódus | Végpont | Leírás | Body / Params |
 |---|---|---|---|
@@ -206,7 +215,7 @@ npm start
 
 ---
 
-### Kérdés CRUD – `Kerdes.js` (Gergő)
+### Kérdés CRUD – `Kerdes.js` (Daróczi Gergő)
 
 | Metódus | Végpont | Leírás | Body / Params |
 |---|---|---|---|
@@ -217,7 +226,7 @@ npm start
 
 ---
 
-### Kategória CRUD – `Kategoria.js` (Gergő)
+### Kategória CRUD – `Kategoria.js` (Daróczi Gergő)
 
 | Metódus | Végpont | Leírás | Body / Params |
 |---|---|---|---|
@@ -227,7 +236,7 @@ npm start
 
 ---
 
-### Játékos CRUD – `Jatekos.js` (Gergő)
+### Játékos CRUD – `Jatekos.js` (Daróczi Gergő)
 
 | Metódus | Végpont | Leírás | Body / Params |
 |---|---|---|---|
@@ -238,11 +247,12 @@ npm start
 
 ## Munkamegosztás összefoglalás
 
-| Terület | Dani | Gergő |
+| Terület | Harkai Dániel | Daróczi Gergő |
 |---|---|---|
-| Backend – játéklogika, kérdések, eredmények | ✅ | |
+| React frontend webes felület | ✅ | |
+| Backend – játéklogika, kategóriák, kérdések, eredmények | ✅ | |
 | Backend – admin, auth (JWT/bcrypt), CRUD | | ✅ |
-| React Native mobilalkalmazás | ✅ | |
+| React Native mobilalkalmazás |  | ✅ |
 | React webes admin panel | | ✅ |
 | Adatbázis tervezés | ✅ | ✅ |
 

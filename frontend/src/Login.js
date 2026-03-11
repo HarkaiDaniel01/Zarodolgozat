@@ -174,7 +174,7 @@ const styles = {
     width: '100%',
     padding: '10px',
     borderRadius: '6px',
-    border: '1px solid #ccc',
+    border: '2px solid #ccc',
     fontSize: '1rem',
     backgroundColor: "#2A2F3A",
     color: "#F2F2F2"
