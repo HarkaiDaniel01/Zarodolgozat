@@ -650,6 +650,176 @@ app.delete('/eredmenyTorlesAdmin/:id', (req, res) => {
     });
 });
 
+// ======================== KÉRDÉS HIBAJELENTÉS VÉGPONTOK ========================
+// Hibajelentés beküldése
+app.post('/kerdes-hibajelentes', (req, res) => {
+    const { kerdes_id, jatekos_id, leiras } = req.body;
+    
+    if (!kerdes_id || !leiras) {
+        return res.status(400).json({ error: "Kérdés ID és leírás szükséges" });
+    }
+    
+    const sql = `
+        INSERT INTO kerdes_hibajelentes (hibajelentes_kerdes_id, hibajelentes_jatekos_id, hibajelentes_leiras)
+        VALUES (?, ?, ?)
+    `;
+    
+    pool.query(sql, [kerdes_id, jatekos_id || null, leiras], (err, result) => {
+        if (err) {
+            console.error("Hiba a hibajelentés beküldésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        return res.status(201).json({ message: "Hibajelentés sikeresen beküldve!", id: result.insertId });
+    });
+});
+
+// Összes hibajelentés lekérése (Admin)
+app.get('/kerdes-hibajelentes', (req, res) => {
+    const sql = `
+        SELECT 
+            h.hibajelentes_id,
+            h.hibajelentes_kerdes_id,
+            h.hibajelentes_jatekos_id,
+            h.hibajelentes_leiras,
+            DATE_FORMAT(h.hibajelentes_datum, '%Y-%m-%d %H:%i:%s') AS hibajelentes_datum,
+            h.hibajelentes_status,
+            h.hibajelentes_admin_megjegyzes,
+            k.kerdesek_kerdes,
+            k.kerdesek_helyesValasz,
+            COALESCE(j.jatekos_nev, 'Ismeretlen') AS jatekos_nev
+        FROM kerdes_hibajelentes h
+        INNER JOIN kerdesek k ON h.hibajelentes_kerdes_id = k.kerdesek_id
+        LEFT JOIN jatekos j ON h.hibajelentes_jatekos_id = j.jatekos_id
+        ORDER BY h.hibajelentes_datum DESC
+    `;
+    
+    pool.query(sql, (err, result) => {
+        if (err) {
+            console.error("Hiba a hibajelentések lekérdezésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        return res.status(200).json(result);
+    });
+});
+
+// Egyetlen hibajelentés lekérése
+app.get('/kerdes-hibajelentes/:id', (req, res) => {
+    const id = req.params.id;
+    
+    const sql = `
+        SELECT 
+            h.hibajelentes_id,
+            h.hibajelentes_kerdes_id,
+            h.hibajelentes_jatekos_id,
+            h.hibajelentes_leiras,
+            DATE_FORMAT(h.hibajelentes_datum, '%Y-%m-%d %H:%i:%s') AS hibajelentes_datum,
+            h.hibajelentes_status,
+            h.hibajelentes_admin_megjegyzes,
+            k.kerdesek_kerdes,
+            k.kerdesek_helyesValasz,
+            COALESCE(j.jatekos_nev, 'Ismeretlen') AS jatekos_nev
+        FROM kerdes_hibajelentes h
+        INNER JOIN kerdesek k ON h.hibajelentes_kerdes_id = k.kerdesek_id
+        LEFT JOIN jatekos j ON h.hibajelentes_jatekos_id = j.jatekos_id
+        WHERE h.hibajelentes_id = ?
+    `;
+    
+    pool.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error("Hiba a hibajelentés lekérdezésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ error: "Hibajelentés nem található" });
+        }
+        return res.status(200).json(result[0]);
+    });
+});
+
+// Hibajelentés állapotának módosítása
+app.put('/kerdes-hibajelentes/:id', (req, res) => {
+    const id = req.params.id;
+    const { status, admin_megjegyzes, admin_id } = req.body;
+    
+    const validStatuses = ['új', 'megoldva', 'elutasítva', 'vizsgálat alatt'];
+    
+    if (status && !validStatuses.includes(status)) {
+        return res.status(400).json({ error: "Érvénytelen státusz" });
+    }
+    
+    const sql = `
+        UPDATE kerdes_hibajelentes 
+        SET hibajelentes_status = ?,
+            hibajelentes_admin_megjegyzes = ?,
+            hibajelentes_admin_id = ?
+        WHERE hibajelentes_id = ?
+    `;
+    
+    pool.query(sql, [status || 'új', admin_megjegyzes || null, admin_id || null, id], (err, result) => {
+        if (err) {
+            console.error("Hiba a hibajelentés módosításakor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Hibajelentés nem található" });
+        }
+        return res.status(200).json({ message: "Hibajelentés sikeresen módosítva!" });
+    });
+});
+
+// Hibajelentés törlése
+app.delete('/kerdes-hibajelentes/:id', (req, res) => {
+    const id = req.params.id;
+    
+    const sql = `DELETE FROM kerdes_hibajelentes WHERE hibajelentes_id = ?`;
+    
+    pool.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error("Hiba a hibajelentés törlésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Hibajelentés nem található" });
+        }
+        return res.status(200).json({ message: "Hibajelentés sikeresen törölve!" });
+    });
+});
+
+
+
+//========= Felhasználó-specifikus Hibabejentések végpontjai =========
+
+// GET - Felhasználó összes általános hibabejentése
+app.get('/hibabejentes/:jatekosId', (req, res) => {
+    const { jatekosId } = req.params;
+    
+    if (!jatekosId) {
+        return res.status(400).json({ error: "jatekosId kötelező" });
+    }
+    
+    const sql = `
+        SELECT 
+            hibajelentes_id,
+            hibajelentes_leiras AS hiba_szovege,
+            hibajelentes_datum AS hibaBejentes_datum,
+            hibajelentes_status AS status,
+            hibajelentes_admin_megjegyzes AS admin_valasz
+        FROM kerdes_hibajelentes
+        WHERE hibajelentes_jatekos_id = ?
+        ORDER BY hibajelentes_datum DESC
+    `;
+    
+    pool.query(sql, [jatekosId], (err, result) => {
+        if (err) {
+            console.error("Hiba a hibabejentések lekérdezésekor:", err);
+            return res.status(500).json({ error: "Adatbázis hiba" });
+        }
+        return res.status(200).json(result || []);
+    });
+});
+
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

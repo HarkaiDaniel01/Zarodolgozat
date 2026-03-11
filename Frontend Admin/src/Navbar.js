@@ -128,6 +128,9 @@ const Navbar = () => {
                 <Link className="nav-link" to="/eredmenyek">Eredmények</Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/hibajelentes">Hibajelentések</Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/engedelykeres">Felhasználók</Link>
               </li>
             </ul>

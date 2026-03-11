@@ -5,8 +5,9 @@ import Login from './Login';
 import Register from './Register';
 import Felhasznalo from './Felhasznalo';
 import OsszesNyeremeny from './OsszesNyeremeny';
+import HibaBejentesek from './HibaBejentesek';
 
-type CurrentScreen = 'loading' | 'register' | 'felhasznalo' | 'osszesNyeremeny' | 'login';
+type CurrentScreen = 'loading' | 'register' | 'felhasznalo' | 'osszesNyeremeny' | 'hibabejentesek' | 'login';
 
 const Profil: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<CurrentScreen>('loading');
@@ -32,6 +33,7 @@ const Profil: React.FC = () => {
   const navigateToLogin = (): void => setCurrentScreen('login');
   const navigateToFelhasznalo = (): void => setCurrentScreen('felhasznalo');
   const navigateToOsszesNyeremeny = (): void => setCurrentScreen('osszesNyeremeny');
+  const navigateToHibaBejentesek = (): void => setCurrentScreen('hibabejentesek');
 
   if (currentScreen === 'loading') {
     return <View style={{ flex: 1 }} />;
@@ -42,11 +44,15 @@ const Profil: React.FC = () => {
   }
 
   if (currentScreen === 'felhasznalo') {
-    return <Felhasznalo onLogout={navigateToLogin} onNavigateToWinnings={navigateToOsszesNyeremeny} />;
+    return <Felhasznalo onLogout={navigateToLogin} onNavigateToWinnings={navigateToOsszesNyeremeny} onNavigateToIssues={navigateToHibaBejentesek} />;
   }
 
   if (currentScreen === 'osszesNyeremeny') {
     return <OsszesNyeremeny onBack={navigateToFelhasznalo} />;
+  }
+
+  if (currentScreen === 'hibabejentesek') {
+    return <HibaBejentesek onBack={navigateToFelhasznalo} />;
   }
 
   return <Login onNavigateToRegister={navigateToRegister} onLoginSuccess={navigateToFelhasznalo} />;

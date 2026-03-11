@@ -10,7 +10,10 @@ import {
   ActivityIndicator,
   StatusBar,
   Animated,
-  Modal
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -252,10 +255,15 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const [gameEndMessage, setGameEndMessage] = useState('');
   const [confirmSaveModalVisible, setConfirmSaveModalVisible] = useState(false);
   const [confirmSaveModalInfo, setConfirmSaveModalInfo] = useState<{title: string, content: string}>({title: '', content: ''});
-  const [loginPromptModalVisible, setLoginPromptModalVisible] = useState(false);
+  const [exitModalVisible, setExitModalVisible] = useState(false);
+  const [hibajelentesModalVisible, setHibajelentesModalVisible] = useState(false);
+  const [hibaLeiras, setHibaLeiras] = useState('');
   const [phoneHelpModalVisible, setPhoneHelpModalVisible] = useState(false);
   const [phoneHelpAnswer, setPhoneHelpAnswer] = useState('');
-  const [exitModalVisible, setExitModalVisible] = useState(false);
+  const [loginPromptModalVisible, setLoginPromptModalVisible] = useState(false);
+  const [hibaVisszajelzesModalVisible, setHibaVisszajelzesModalVisible] = useState(false);
+  const [hibaVisszajelzesSzoveg, setHibaVisszajelzesSzoveg] = useState('');
+  const [hibaVisszajelzesSiker, setHibaVisszajelzesSiker] = useState(false);
 
   useEffect(() => {
     setKerdesekList(kerdesek);
@@ -495,6 +503,43 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     setExitModalVisible(true);
   };
 
+  const kuldHibaJelentes = async () => {
+    if (!hibaLeiras.trim()) {
+      setHibaVisszajelzesSzoveg('Kérlek írd le a hibát!');
+      setHibaVisszajelzesSiker(false);
+      setHibaVisszajelzesModalVisible(true);
+      return;
+    }
+
+    try {
+      const userId = await AsyncStorage.getItem('userid');
+      const response = await fetch(`${Cim.Cim}/kerdes-hibajelentes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kerdes_id: kerdesekList[szamlalo]?.kerdesek_id,
+          jatekos_id: userId,
+          leiras: hibaLeiras
+        }),
+      });
+
+      if (response.ok) {
+        setHibaVisszajelzesSzoveg('Hibajelentés sikeresen beküldve! Köszönjük!');
+        setHibaVisszajelzesSiker(true);
+        setHibajelentesModalVisible(false);
+        setHibaLeiras('');
+      } else {
+        setHibaVisszajelzesSzoveg('Hiba a hibajelentés beküldésekor');
+        setHibaVisszajelzesSiker(false);
+      }
+    } catch (error) {
+      console.log('Hibajelentés error:', error);
+      setHibaVisszajelzesSzoveg('Hiba a hibajelentés beküldésekor');
+      setHibaVisszajelzesSiker(false);
+    }
+    setHibaVisszajelzesModalVisible(true);
+  };
+
   useEffect(() => { 
     if (kerdesekList && szamlalo < kerdesekList.length) {
       valaszKever(); 
@@ -565,7 +610,13 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                 Kérdés {szamlalo + 1} / {isEndless ? '∞' : kerdesekList.length}
               </Text>
 
-              <View style={{ width: isSmallScreen ? 40 : 90 }} />
+              <TouchableOpacity
+                style={styles.exitDoorBtn}
+                onPress={() => setHibajelentesModalVisible(true)}
+              >
+                <MaterialCommunityIcons name="alert-circle-outline" size={isSmallScreen ? 18 : 24} color="#FFA500" />
+                {!isSmallScreen && <Text style={styles.exitDoorText}>Hiba</Text>}
+              </TouchableOpacity>
             </View>
 
 
@@ -1375,6 +1426,206 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
           </View>
         </View>
       </Modal>
+
+      {/* HIBA JELENTÉS Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={hibajelentesModalVisible}
+        onRequestClose={() => setHibajelentesModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+        <View style={styles.modalOverlay}>
+          <View
+            style={[
+              styles.confirmSaveModal,
+              {
+                width: isSmallScreen ? '95%' : '92%',
+                maxWidth: 560,
+              },
+            ]}
+          >
+            {/* Icon */}
+            <MaterialCommunityIcons
+              name="alert-circle"
+              size={isSmallScreen ? 50 : 60}
+              color="#FF9800"
+            />
+
+            {/* Cím */}
+            <Text
+              style={[
+                styles.confirmSaveTitle,
+                {
+                  fontSize: isSmallScreen ? 18 : 22,
+                  color: '#FF9800',
+                },
+              ]}
+            >
+              Hibát jelentesz?
+            </Text>
+
+            {/* Szöveg */}
+            <Text
+              style={[
+                styles.confirmSaveQuestion,
+                {
+                  fontSize: isSmallScreen ? 12 : 14,
+                  marginVertical: 15,
+                },
+              ]}
+            >
+              Segítsd a fejlődést és írd le a hibát, kérlek!
+            </Text>
+
+            {/* Input */}
+            <TextInput
+              style={[
+                {
+                  width: '100%',
+                  borderWidth: 1,
+                  borderColor: '#FF9800',
+                  borderRadius: 10,
+                  padding: 12,
+                  marginVertical: 10,
+                  minHeight: 80,
+                  textAlignVertical: 'top',
+                  color: colors.text,
+                  backgroundColor: isDark ? '#333' : '#FFF',
+                  fontSize: isSmallScreen ? 12 : 14,
+                },
+              ]}
+              placeholder="Pl: A helyes válasz hibás, vagy a kérdés értelmetlen..."
+              placeholderTextColor={isDark ? '#999' : '#999'}
+              multiline
+              numberOfLines={4}
+              value={hibaLeiras}
+              onChangeText={setHibaLeiras}
+            />
+
+            {/* Gombok */}
+            <View
+              style={[
+                styles.confirmSaveButtonContainer,
+                {
+                  gap: isSmallScreen ? 8 : 10,
+                  marginTop: 15,
+                },
+              ]}
+            >
+              {/* MÉGSE gomb */}
+              <TouchableOpacity
+                style={[
+                  styles.confirmSaveButton,
+                  styles.noButton,
+                  {
+                    paddingVertical: isSmallScreen ? 10 : 12,
+                  },
+                ]}
+                onPress={() => {
+                  setHibajelentesModalVisible(false);
+                  setHibaLeiras('');
+                }}
+              >
+                <Text
+                  style={[
+                    styles.confirmSaveButtonText,
+                    {
+                      fontSize: isSmallScreen ? 12 : 14,
+                    },
+                  ]}
+                >
+                  Mégse
+                </Text>
+              </TouchableOpacity>
+
+              {/* KÜLDÉS gomb */}
+              <TouchableOpacity
+                style={[
+                  styles.confirmSaveButton,
+                  styles.yesButton,
+                  {
+                    paddingVertical: isSmallScreen ? 10 : 12,
+                    backgroundColor: '#FF9800',
+                  },
+                ]}
+                onPress={kuldHibaJelentes}
+              >
+                <Text
+                  style={[
+                    styles.confirmSaveButtonText,
+                    {
+                      fontSize: isSmallScreen ? 12 : 14,
+                    },
+                  ]}
+                >
+                  Küldés
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        </KeyboardAvoidingView>
+      </Modal>
+      {/* HIBA VISSZAJELZÉS Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={hibaVisszajelzesModalVisible}
+        onRequestClose={() => setHibaVisszajelzesModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.confirmSaveModal, {
+            width: isSmallScreen ? '95%' : '92%',
+            maxWidth: 480,
+          }]}>
+            <MaterialCommunityIcons 
+              name={hibaVisszajelzesSiker ? "check-circle" : "alert-circle"} 
+              size={isSmallScreen ? 60 : 80} 
+              color={hibaVisszajelzesSiker ? "#4CAF50" : "#FF6B6B"} 
+            />
+            <Text style={[styles.confirmSaveTitle, {
+              fontSize: isSmallScreen ? 20 : 22,
+              color: hibaVisszajelzesSiker ? "#4CAF50" : "#FF6B6B",
+              marginBottom: 10
+            }]}>
+              {hibaVisszajelzesSiker ? "Sikeres küldés!" : "Hiba!"}
+            </Text>
+            <Text style={[styles.confirmSaveText, {
+              fontSize: isSmallScreen ? 14 : 16,
+              textAlign: 'center',
+              marginBottom: 20
+            }]}>
+              {hibaVisszajelzesSzoveg}
+            </Text>
+            
+            <TouchableOpacity
+              style={{
+                flex: 0,
+                paddingVertical: isSmallScreen ? 12 : 14,
+                paddingHorizontal: 40,
+                borderRadius: 10,
+                backgroundColor: hibaVisszajelzesSiker ? "#4CAF50" : "#FF6B6B",
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: '50%',
+                elevation: 3,
+              }}
+              onPress={() => setHibaVisszajelzesModalVisible(false)}
+            >
+              <Text style={{
+                fontSize: isSmallScreen ? 14 : 16,
+                color: '#FFFFFF',
+                fontWeight: 'bold',
+              }}>Rendben</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       </SafeAreaView>
     );
 

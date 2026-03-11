@@ -234,6 +234,7 @@ const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.cr
   listContainer: {
     padding: 16,
     paddingTop: 20,
+    paddingBottom: 120,
   },
   card: {
     backgroundColor: colors.surface,

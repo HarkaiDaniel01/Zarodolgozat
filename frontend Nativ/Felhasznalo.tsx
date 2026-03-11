@@ -12,6 +12,7 @@ import { FONT_WEIGHTS, SPACING, BORDER_RADIUS, rf } from './theme';
 interface FelhasznaloProps {
   onLogout: () => void;
   onNavigateToWinnings: () => void;
+  onNavigateToIssues: () => void;
 }
 
 interface UserData {
@@ -25,7 +26,7 @@ interface EredmenyItem {
   [key: string]: any;
 }
 
-const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinnings }) => {
+const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinnings, onNavigateToIssues }) => {
   const { width } = useWindowDimensions();
   const isTablet = width >= 600;
   const insets = useSafeAreaInsets();
@@ -350,13 +351,13 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
               <Text style={styles.statValue}>{userData?.jatszottJatekok ?? 0}</Text>
               <Text style={styles.statLabel}>Játszott Játékok</Text>
             </View>
-            <View style={styles.statCard}>
-              <View style={[styles.statIconWrap, { backgroundColor: `${colors.accent}30` }]}>
-                <MaterialCommunityIcons name="star-outline" size={22} color={colors.accent} />
+            
+            <TouchableOpacity style={styles.statCard} onPress={onNavigateToIssues}>
+              <View style={[styles.statIconWrap, { backgroundColor: `${colors.secondary}30` }]}>
+                <MaterialCommunityIcons name="alert-circle-outline" size={22} color={colors.secondary} />
               </View>
-              <Text style={styles.statValue}>{level}</Text>
-              <Text style={styles.statLabel}>szint</Text>
-            </View>
+              <Text style={[styles.statLabel, { fontWeight: 'bold', fontSize: 12, color: colors.text, marginTop: 4 }]}>Hibabejentések</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.actionRow}>
@@ -366,6 +367,8 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
               </View>
               <Text style={[styles.actionBtnLabel, { color: colors.primary }]}>Előzmények</Text>
             </TouchableOpacity>
+
+          
 
             <TouchableOpacity style={styles.actionBtn} onPress={handleLogout}>
               <View style={[styles.actionBtnIcon, { backgroundColor: `${colors.warning}30` }]}>

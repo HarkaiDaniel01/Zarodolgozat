@@ -3,7 +3,7 @@ import React from "react";
 const ApkLetoltes = () => {
   return (
     <div>
-      <h1>📱 A tudás torna! - Open Beta</h1>
+      <h1>📱 A tudás torna! - Nyílt Béta </h1>
 
       <div
         className="doboz"
@@ -18,7 +18,7 @@ const ApkLetoltes = () => {
         {/* Ikon / Banner */}
         <div style={{ fontSize: "80px", marginBottom: "20px" }}>📲</div>
 
-        <h2 style={{ marginBottom: "20px" }}>Töltsd le a <em>A tudás torna!</em> Open Beta verzióját!</h2>
+        <h2 style={{ marginBottom: "20px" }}>Töltsd le a <em>A tudás torna!</em> Nyílt Béta verzióját!</h2>
 
         <p
           style={{
@@ -72,8 +72,8 @@ const ApkLetoltes = () => {
 
         {/* Letöltés gomb */}
         <a
-          href="/A%20tud%C3%A1s%20torna!%20-%20Open%20Beta.apk"
-          download="A Tudas Torna.apk"
+          href="/A_tudas_torna_Nyilt_Beta.apk"
+          download="A_Tudas_Torna_Nyilt_Beta.apk"
           style={{
             display: "inline-block",
             background: "linear-gradient(135deg, #3a86ff, #764ba2)",
@@ -98,7 +98,7 @@ const ApkLetoltes = () => {
               "0 4px 20px rgba(58,134,255,0.45)";
           }}
         >
-          ⬇️ A tudás torna! – Open Beta letöltése
+          ⬇️ A tudás torna! – Nyílt Béta letöltése
         </a>
 
         {/* Telepítési útmutató */}
@@ -151,6 +151,42 @@ const ApkLetoltes = () => {
           </ol>
         </div>
 
+        {/* Google Play Protect tipp */}
+        <div
+          style={{
+            background: "rgba(250, 200, 0, 0.1)",
+            border: "1px solid rgba(250, 200, 0, 0.35)",
+            borderRadius: "14px",
+            padding: "18px 24px",
+            maxWidth: "560px",
+            margin: "25px auto 0 auto",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "14px",
+            textAlign: "left",
+          }}
+        >
+          <span style={{ fontSize: "30px", lineHeight: "1" }}>💡</span>
+          <div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: "bold",
+                color: "#fbbf24",
+                marginBottom: "6px",
+              }}
+            >
+              Google Play Protect figyelmeztetés
+            </div>
+            <div style={{ fontSize: "14px", color: "#fde68a", lineHeight: "1.6" }}>
+              Ha a Google Play Protect megállítja a telepítést, <strong>ne aggódj!</strong>{" "}
+              Ez azért történik, mert az alkalmazást a Google Play Áruházon kívülről telepíted.
+              A figyelmeztetésnél válaszd a{" "}
+              <strong>„Telepítés mindenképpen"</strong> lehetőséget a folytatáshoz.
+            </div>
+          </div>
+        </div>
+
         {/* Verzióinfó */}
         <div
           style={{
@@ -159,7 +195,7 @@ const ApkLetoltes = () => {
             color: "#6b7280",
           }}
         >
-          A tudás torna! - Open Beta &nbsp;|&nbsp; Jelenlegi verzió: <strong style={{ color: "#9ca3af" }}>v1.0.0</strong>{" "}
+          A tudás torna! &nbsp;|&nbsp; Jelenlegi verzió: <strong style={{ color: "#9ca3af" }}>v1.1.0b</strong>{" "}
           &nbsp;|&nbsp; Kompatibilitás:{" "}
           <strong style={{ color: "#9ca3af" }}>Android 8.0+</strong>
         </div>
