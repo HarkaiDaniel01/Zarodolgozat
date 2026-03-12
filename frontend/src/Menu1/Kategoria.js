@@ -304,7 +304,7 @@ const Kategoria=()=>{
 
                 
                 <h1>A Tudás Torna!</h1>
-                <h2>Válassz kategóriát!!</h2>
+                <h2>Válassz kategóriát!</h2>
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
                     
