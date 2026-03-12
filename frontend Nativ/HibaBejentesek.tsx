@@ -234,7 +234,6 @@ const HibaBejentesek: React.FC<HibaBejentesekProps> = ({ onBack }) => {
                   borderRadius: 16
                 }}>
                    <MaterialCommunityIcons 
-                    // @ts-ignore
                     name={selectedIssue.status === 'megoldva' ? "check-circle" : 
                           selectedIssue.status === 'elutasítva' ? "close-circle" : "clock-outline"} 
                     size={16} 

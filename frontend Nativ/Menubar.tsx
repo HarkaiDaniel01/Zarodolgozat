@@ -133,7 +133,7 @@ function MyTabs(): React.JSX.Element {
               activeTab={activeTab}
               onPress={() => setActiveTab('rekordok')}
               icon={activeTab === 'rekordok' ? "trophy" : "trophy-outline"}
-              label="Eredmények"
+              label="Ranglista"
             />
             <TabBarButton
               tab="profil"

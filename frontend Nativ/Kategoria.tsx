@@ -58,6 +58,7 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [hardcoreKattintas, setHardcoreKattintas] = useState<number>(0);
   const [easterEggVisible, setEasterEggVisible] = useState<boolean>(false);
+  const [kategoriaBetoltes, setKategoriaBetoltes] = useState<boolean>(false);
 
   const getIconName = (nev: string): any => {
     const nevKisbetus = nev.toLowerCase();
@@ -107,17 +108,23 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
        "#E91E63", "#FF5722", "#795548", "#607D8B"];
   
   const kategoriaValaszt = async (kategoriaId: number, kategoriaNev: string): Promise<void> => {
-    if (kategoriaNev === "Speedrun") kategoriaValasztSpeedrun(kategoriaId);
-    else if (kategoriaNev === "Endless") kategoriaValasztEndless(kategoriaId);
-    else if (kategoriaNev === "Gyakorlas") kategoriaValasztGyakorlas(kategoriaId);
-    else if (kategoriaNev === "Géniusz") kategoriaValasztGeniusz(kategoriaId);
-    else { 
-      setKategoria(kategoriaId);
-      const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu");
-      const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes");
-      const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez");
-      setKerdesek([...konnyu, ...kozepes, ...nehez]);
-      setKerdesekBetoltve(true);
+    if (kategoriaBetoltes) return;
+    setKategoriaBetoltes(true);
+    try {
+      if (kategoriaNev === "Speedrun") await kategoriaValasztSpeedrun(kategoriaId);
+      else if (kategoriaNev === "Endless") await kategoriaValasztEndless(kategoriaId);
+      else if (kategoriaNev === "Gyakorlas") await kategoriaValasztGyakorlas(kategoriaId);
+      else if (kategoriaNev === "Géniusz") await kategoriaValasztGeniusz(kategoriaId);
+      else { 
+        setKategoria(kategoriaId);
+        const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu");
+        const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes");
+        const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez");
+        setKerdesek([...konnyu, ...kozepes, ...nehez]);
+        setKerdesekBetoltve(true);
+      }
+    } finally {
+      setKategoriaBetoltes(false);
     }
   };
 
@@ -299,7 +306,7 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
               </View>
             </View>
             <View style={styles.headerContent}>
-                <Text style={styles.sectionLabel}>Kategóriák</Text>
+                <Text style={styles.sectionLabel}>Válaszon kategóriát!</Text>
             </View>
 
             <View style={styles.listWrapper}>
@@ -558,6 +565,7 @@ const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.cr
     fontWeight: '800',
     color: colors.text,
     marginBottom: 2,
+    textAlign: 'center',
   },
   headerContent: {
     paddingHorizontal: 20,

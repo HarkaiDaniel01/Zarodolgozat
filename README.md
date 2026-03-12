@@ -47,16 +47,20 @@ A nem bejelentkezett felhasználók összes funkcióját elérik és az alábbi 
 
 
 ```
-┌─────────────────────┐     HTTP/JSON      ┌──────────────────────┐
-│  React Native App   │ ◄────────────────► │  Express.js Backend  │ 
-│  (Expo / Mobile)    │                    │ (Node.js, port 3000) │
-└─────────────────────┘                    └──────────┬───────────┘
-                                                      │ mysql
-┌─────────────────────┐     HTTP/JSON                 ▼
-│  React Web Admin    │ ◄────────────────► ┌──────────────────────┐
-│  (Frontend Admin)   │                    │   MySQL Adatbázis    │
-└─────────────────────┘                    │     (phpMyAdmin)     │
-                                           └──────────────────────┘
+┌─────────────────────┐
+│  React Native App   │ ──┐
+│  (Expo / Mobile)    │   │
+└─────────────────────┘   │
+                          │  HTTP/JSON   ┌──────────────────────┐
+┌─────────────────────┐   ◄────────────► │  Express.js Backend  │
+│  React Web App      │ ──┤              │ (Node.js, port 3000) │
+│  (Frontend)         │   │              └──────────┬───────────┘
+└─────────────────────┘   │                         │ mysql
+                          │                         ▼
+┌─────────────────────┐   │              ┌──────────────────────┐
+│  React Web Admin    │ ──┘              │   MySQL Adatbázis    │
+│  (Frontend Admin)   │                  │     (phpMyAdmin)     │
+└─────────────────────┘                  └──────────────────────┘
 ```
 
 | Réteg | Technológia |
@@ -81,7 +85,7 @@ A nem bejelentkezett felhasználók összes funkcióját elérik és az alábbi 
 ### 1. Repository klónozása
 
 ```bash
-git clone https://github.com/felhasznalonev/zarodolgozat.git
+git clone https://github.com/HarkaiDaniel01/Zarodolgozat.git
 cd zarodolgozat
 ```
 
@@ -136,9 +140,7 @@ npm start
 
 ## Adatbázis struktúra
 
-> 📸 **Kép helye:** ide illesszétek be a phpMyAdmin táblák képernyőképét
-
-<!-- Példa: ![Adatbázis struktúra](./docs/db_structure.png) -->
+![Bejelentkezés](./Githubkepek/Adatbazis.png)
 
 ### Táblák
 

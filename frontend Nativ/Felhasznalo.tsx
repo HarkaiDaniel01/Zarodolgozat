@@ -85,7 +85,7 @@ const Felhasznalo: React.FC<FelhasznaloProps> = ({ onLogout, onNavigateToWinning
     if (lvl >= 15) return 'Profi 🏆';
     if (lvl >= 10) return 'Haladó ⭐';
     if (lvl >= 5) return 'Amatőr 🌿';
-    if (lvl >= 2) return 'Kezdő 🌱';
+    if (lvl >= 1) return 'Kezdő 🌱';
     return 'Friss kezdő 🐣';
   };
 
