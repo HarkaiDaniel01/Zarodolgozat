@@ -1,6 +1,7 @@
 import { useState,useRef, useEffect } from "react"
 import Cim from "../Cim"
 import Kerdesek from "./Kerdesek"
+import Swal from "sweetalert2"
 //import Swal from "sweetalert2"
 
 const Kategoria=()=>{
@@ -12,28 +13,46 @@ const Kategoria=()=>{
     const [ikonok] = useState(["⚔️", "🌍", "📚", "🎵", "⚽", "🎄", "🎲", "🧠", "🐱‍👤", "🎮"])
     const [kategoria, setKategoria] = useState(0)
     const isFetching = useRef(false);
+    const [kerdesLekeres, setKerdesLekeres] = useState(false)
 
  
     const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
         //alert(`Választott kategória: ${kategoriaId}`)
 
         if (isFetching.current) return
+        if (kerdesLekeres) return
         isFetching.current = true;
+        setKerdesLekeres(true);
 
-        if (kategoriaNev === "Vegyes") {
-            kategoriaValasztVegyes(kategoriaId)
-        } else if (kategoriaNev === "Géniusz") {
-            kategoriaValasztNehez(kategoriaId)
-        } else {
-            setKategoria(kategoriaId)
+        try {
 
-            const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
-            const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
-            const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+             if (kategoriaNev === "Vegyes") {
+                kategoriaValasztVegyes(kategoriaId)
+            } else if (kategoriaNev === "Géniusz") {
+                kategoriaValasztNehez(kategoriaId)
+            } else {
+                setKategoria(kategoriaId)
 
-            const kerdesek = [...konnyu, ...kozepes, ...nehez]
-            setKerdesek(kerdesek)
+                try {
+                    const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
+                    const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
+                    const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
 
+                    const kerdesek = [...konnyu, ...kozepes, ...nehez]
+                    setKerdesek(kerdesek)
+
+                    setKerdesekBetoltve(true)
+                    } catch {
+                        Swal.fire({
+                        title: `Hiba!`,
+                        html: `Hiba! Még nincs elég kérdés ehhez a témakörhöz!`,
+                        icon: `error`,
+                        confirmButtonText: `Rendben!`,
+                    });
+                
+                }
+
+            } 
 
             /*{kerdesek.map((elem,index)=>(
                         alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
@@ -43,13 +62,12 @@ const Kategoria=()=>{
                             D: ${elem.kerdesek_helytelenValasz3}`)
                     ))}*/
 
-
-        
-            setKerdesekBetoltve(true)
-        
+        } finally {
+            isFetching.current = false;
+            setKerdesLekeres(false)
         }
 
-        isFetching.current = false;
+        
     }
 
     /*const fejlesztesAlatt = () => {
@@ -67,14 +85,23 @@ const Kategoria=()=>{
     const kategoriaValasztVegyes = async (kategoriaId) => {
         //alert(`Választott kategória: ${kategoriaId}`)
 
-        setKategoria(kategoriaId)
-        const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes")
-        const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes")
-        const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes")
+        try {
+            setKategoria(kategoriaId)
+            const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes")
+            const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes")
+            const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes")
 
-        const kerdesek = [...konnyu, ...kozepes, ...nehez]
-        setKerdesek(kerdesek)
-
+            const kerdesek = [...konnyu, ...kozepes, ...nehez]
+            setKerdesek(kerdesek)
+            setKerdesekBetoltve(true)
+        } catch {
+            Swal.fire({
+                  title: `Hiba!`,
+                  html: `Hiba! Még nincs elég kérdés ehhez a témakörhöz!`,
+                  icon: `error`,
+                  confirmButtonText: `Rendben!`,
+                });
+        }
 
         /*{kerdesek.map((elem,index)=>(
                         alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
@@ -83,13 +110,6 @@ const Kategoria=()=>{
                             c: ${elem.kerdesek_helytelenValasz2}\n
                             D: ${elem.kerdesek_helytelenValasz3}`)
                     ))}*/
-
-
-        
-        setKerdesekBetoltve(true)
-        
-        
-
     }
 
     const kategoriaValasztNehez= async (kategoriaId) => {
@@ -128,8 +148,11 @@ const Kategoria=()=>{
             }
             
         catch (error){
-            console.log(error)
-            
+            Swal.fire({
+                  title: `Hiba!`,
+                  icon: `error`,
+                  confirmButtonText: `Rendben!`,
+                });
         }
  
         
@@ -279,7 +302,7 @@ const Kategoria=()=>{
             
         {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}} >
 
-
+                
                 <h1>A Tudás Torna!</h1>
                 <h2>Válassz kategóriát!!</h2>
                 <div className="gombDoboz">
@@ -303,7 +326,7 @@ const Kategoria=()=>{
                     <button className="kategoriaGomb">Honismeret</button>*/}
                 </div>
 
-                
+                <p className="figyelmeztetes"><b>Figyelem</b>: a játékban lévő nyeremények <b>csak játékpénz</b>ben értendők, valódi pénzt nem lehet nyerni!</p>
 
             </div>) : <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve = {setKerdesekBetoltve}/>}
 

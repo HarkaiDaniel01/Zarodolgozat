@@ -109,11 +109,11 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             //setTelefonMegjelol(true)
             const nevek = ["👦 Gergő", "👦 Dániel", "👦 Alex", "👧 Mia", "👦 Hunor", "👦 Sanyi", "👦Bence", "👵 Marika néni", "👦 Józsi"]
             const szoveg = 
-                [   "Egyértelmű BROOOOOOO",
+                [   "Ezt tudom!",
                     "Szerintem a helyes válasz", 
                     "Tesó! Jelöld meg ezt", 
                     `Lehet, hogy ${valaszok[0]} vagy ${valaszok[1]}, de ${valaszok[3]} is lehet... nem tudom... jelöld meg ezt`,
-                    `${kerdesek[szamlalo].kerdesek_leiras}... Én úgy gondolom, hogy ha a számításaim nem csalnak, akkor a helyes válasz`,
+                    `Én úgy gondolom, hogy ha a számításaim nem csalnak, akkor a helyes válasz`,
                     "Szerintem",
                     "Háááát... legyen akkor",
                     "Nekem mindegy, legyen ez",

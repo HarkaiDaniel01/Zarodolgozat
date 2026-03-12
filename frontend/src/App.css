@@ -351,6 +351,12 @@ td, th {
   overflow-y: auto;
 }
 
+.figyelmeztetes {
+  color:#F5F7FA; 
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
 
 @media (max-width:1000px){
   .kartya{

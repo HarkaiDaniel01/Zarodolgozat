@@ -90,6 +90,8 @@ const Register = () => {
           />
         </div>
 
+        <p className="figyelmeztetes">A regisztráció a pontjaid mentésére szolgál, e-mailt nem kérünk, jelszavad biztonságosan tároljuk.</p>
+
         <button type="submit" style={styles.button}>
           ✨ Regisztráció
         </button>
