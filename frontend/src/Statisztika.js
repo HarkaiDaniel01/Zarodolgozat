@@ -148,7 +148,7 @@ const Statisztika = () => {
             <div className="doboz">
                 <h1>{`Üdvözöllek ${jatekosNev}!`}</h1>
 
-                <h4 style={{marginTop : "30px"}}>Statisztika:</h4>
+                <h4 style={{marginTop : "30px"}}>Nyeremény statisztika:</h4>
 
                 <div style={{textAlign: "center"}}>
                     <Lenyilo kivalasztott={setKivalasztott}/>

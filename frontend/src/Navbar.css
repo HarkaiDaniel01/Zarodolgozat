@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(58,134,255,0.25);
+  background-color: rgba(20, 24, 40, 0.7);
   backdrop-filter: blur(10px);
   padding: 12px 25px;
   color: #ffffff;
@@ -69,20 +69,28 @@
 }
 
 .loginButton, .logoutButton {
-  background: rgba(255,255,255,0.15);
+  background: linear-gradient(135deg, #3A86FF, #6A4CFF);
   color: #ffffff;
   border: 1px solid rgba(255,255,255,0.3);
   border: none;
-  padding: 6px 15px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
-.loginButton:hover, .logoutButton:hover {
-  background: rgba(255,255,255,0.25);
+.loginButton:hover, .logoutButton:hover, .letoltes:hover {
+    transform: scale(1.02);
+}
+
+.letoltes {
+  background: linear-gradient(135deg, #3A86FF, #6A4CFF);
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 500;
 }
 
 .nav-item.dropdown {

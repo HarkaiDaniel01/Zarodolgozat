@@ -148,7 +148,7 @@ const PontszamStatisztika = () => {
             <div className="doboz">
                 <h1>{`Üdvözöllek ${jatekosNev}!`}</h1>
 
-                <h4 style={{marginTop : "30px"}}>Pontszám Statisztika:</h4>
+                <h4 style={{marginTop : "30px"}}>Pontszám statisztika:</h4>
 
                 <div style={{textAlign: "center"}}>
                     <Lenyilo kivalasztott={setKivalasztott}/>

@@ -2,7 +2,6 @@ import { useState,useRef, useEffect } from "react"
 import Cim from "../Cim"
 import Kerdesek from "./Kerdesek"
 import Swal from "sweetalert2"
-//import Swal from "sweetalert2"
 
 const Kategoria=()=>{
     const [adatok,setAdatok]=useState([])
@@ -15,9 +14,7 @@ const Kategoria=()=>{
     const isFetching = useRef(false);
     const [kerdesLekeres, setKerdesLekeres] = useState(false)
 
- 
     const kategoriaValaszt = async (kategoriaId, kategoriaNev) => {
-        //alert(`Választott kategória: ${kategoriaId}`)
 
         if (isFetching.current) return
         if (kerdesLekeres) return
@@ -27,243 +24,129 @@ const Kategoria=()=>{
         try {
 
              if (kategoriaNev === "Vegyes") {
-                kategoriaValasztVegyes(kategoriaId)
+                await kategoriaValasztVegyes(kategoriaId)
             } else if (kategoriaNev === "Géniusz") {
-                kategoriaValasztNehez(kategoriaId)
+                await kategoriaValasztNehez(kategoriaId)
             } else {
                 setKategoria(kategoriaId)
 
-                try {
-                    const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
-                    const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
-                    const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+                const [konnyu, kozepes, nehez] = await Promise.all([
+                    KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu"),
+                    KerdesekLetoltese(kategoriaId, "/kerdesekKozepes"),
+                    KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
+                ])
 
-                    const kerdesek = [...konnyu, ...kozepes, ...nehez]
-                    setKerdesek(kerdesek)
+                /*const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu")
+                const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
+                const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez")*/
 
-                    setKerdesekBetoltve(true)
-                    } catch {
-                        Swal.fire({
-                        title: `Hiba!`,
-                        html: `Hiba! Még nincs elég kérdés ehhez a témakörhöz!`,
-                        icon: `error`,
-                        confirmButtonText: `Rendben!`,
-                    });
-                
-                }
+                const kerdesek = [...konnyu, ...kozepes, ...nehez]
+                setKerdesek(kerdesek)
 
+                setKerdesekBetoltve(true)
             } 
 
-            /*{kerdesek.map((elem,index)=>(
-                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
-                            A: ${elem.kerdesek_helyesValasz}\n
-                            B: ${elem.kerdesek_helytelenValasz1}\n
-                            c: ${elem.kerdesek_helytelenValasz2}\n
-                            D: ${elem.kerdesek_helytelenValasz3}`)
-                    ))}*/
+        } catch (error) {
+            Swal.fire({
+                title: `Hiba!`,
+                html: error.message || `Adatbázis hiba!`,
+                icon: `error`,
+                confirmButtonText: `Rendben!`,
+                });
 
         } finally {
             isFetching.current = false;
             setKerdesLekeres(false)
         }
 
-        
     }
 
-    /*const fejlesztesAlatt = () => {
-        
-        Swal.fire({
-              title: `Fejlesztés alatt`,
-              html: ``,
-              icon: `info`,
-              confirmButtonText: `Oké`
-            });
-        
-
-    }*/
-
     const kategoriaValasztVegyes = async (kategoriaId) => {
-        //alert(`Választott kategória: ${kategoriaId}`)
 
-        try {
             setKategoria(kategoriaId)
-            const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes")
+
+            const [konnyu, kozepes, nehez] = await Promise.all([
+                    KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes"),
+                    KerdesekLetolteseVegyes("/kerdesekKozepesVegyes"),
+                    KerdesekLetolteseVegyes("/kerdesekNehezVegyes")
+            ])
+
+            /*const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes")
             const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes")
-            const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes")
+            const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes")*/
 
             const kerdesek = [...konnyu, ...kozepes, ...nehez]
             setKerdesek(kerdesek)
             setKerdesekBetoltve(true)
-        } catch {
-            Swal.fire({
-                  title: `Hiba!`,
-                  html: `Hiba! Még nincs elég kérdés ehhez a témakörhöz!`,
-                  icon: `error`,
-                  confirmButtonText: `Rendben!`,
-                });
-        }
-
-        /*{kerdesek.map((elem,index)=>(
-                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
-                            A: ${elem.kerdesek_helyesValasz}\n
-                            B: ${elem.kerdesek_helytelenValasz1}\n
-                            c: ${elem.kerdesek_helytelenValasz2}\n
-                            D: ${elem.kerdesek_helytelenValasz3}`)
-                    ))}*/
     }
 
     const kategoriaValasztNehez= async (kategoriaId) => {
 
         setKategoria(kategoriaId)
 
-        try{
+        const response=await fetch(Cim.Cim+ `/nehezVegyes`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
 
-            const response=await fetch(Cim.Cim+ `/nehezVegyes`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify()
-            })
-
-            const data=await response.json()
-            //alert(JSON.stringify(data))
-            //console.log(data)
-            if (response.ok)
-                {
-                    
-                
-
-                    setKerdesek(data)
-                    setKerdesekBetoltve(true)
-
-                    
-                }
-
-                    
-            else 
-                {
-                    
-                }
-            }
+        if (!response.ok){
+              throw new Error("Szerver hiba!")  
+        }  
             
-        catch (error){
-            Swal.fire({
-                  title: `Hiba!`,
-                  icon: `error`,
-                  confirmButtonText: `Rendben!`,
-                });
-        }
- 
-        
-    
+        const data=await response.json()
+        setKerdesek(data)
+        setKerdesekBetoltve(true)
+
     }
 
     const KerdesekLetoltese= async(kategoriaId, vegpont)=>{
 
-        try{
-
-            let bemenet = {
-                "kategoria" : kategoriaId
-            }
-
-            const response=await fetch(Cim.Cim+ vegpont, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(bemenet)
-            })
-
-            const data=await response.json()
-            //alert(JSON.stringify(data))
-            //console.log(data)
-            if (response.ok)
-                {
-                    
-                    /*{data.map((elem,index)=>(
-                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
-                            A: ${elem.kerdesek_helyesValasz}\n
-                            B: ${elem.kerdesek_helytelenValasz1}\n
-                            c: ${elem.kerdesek_helytelenValasz2}\n
-                            D: ${elem.kerdesek_helytelenValasz3}`)
-                    ))}*/
-
-                    return data
-
-                    //if (vegpont === "/kerdesekKonnyu") KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
-                    //if (vegpont === "/kerdesekKozepes") KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
-                    
-                    }
-
-                    
-            else 
-                {
-                    
-                }
-            }
-            
-        catch (error){
-            console.log(error)
-            
+        let bemenet = {
+            "kategoria" : kategoriaId
         }
+
+        const response = await fetch(Cim.Cim+ vegpont, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bemenet)
+        });
+
+        if (!response.ok)
+            {
+                throw new Error(`Hálózati hiba: ${response.status}`)
+            }
+
+        const data=await response.json()
+        return data
     }
 
     const KerdesekLetolteseVegyes= async(vegpont)=>{
 
-        try{
+        const response=await fetch(Cim.Cim+ vegpont, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
 
-            const response=await fetch(Cim.Cim+ vegpont, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify()
-            })
-
-            const data=await response.json()
-            //alert(JSON.stringify(data))
-            //console.log(data)
-            if (response.ok)
-                {
-                    
-                    /*{data.map((elem,index)=>(
-                        alert(`${elem.kerdesek_nehezseg} ${elem.kerdesek_kerdes}\n
-                            A: ${elem.kerdesek_helyesValasz}\n
-                            B: ${elem.kerdesek_helytelenValasz1}\n
-                            c: ${elem.kerdesek_helytelenValasz2}\n
-                            D: ${elem.kerdesek_helytelenValasz3}`)
-                    ))}*/
-
-                    return data
-
-                    //if (vegpont === "/kerdesekKonnyu") KerdesekLetoltese(kategoriaId, "/kerdesekKozepes")
-                    //if (vegpont === "/kerdesekKozepes") KerdesekLetoltese(kategoriaId, "/kerdesekNehez")
-                    
-                    }
-
-                    
-            else 
-                {
-                    
-                }
+        if (!response.ok)
+            {
+                throw new Error(`Hálozati hiba: ${response.status}`)
             }
-            
-        catch (error){
-            console.log(error)
-            
-        }
+
+        const data=await response.json()
+        return data
     }
-
-
-
 
     const leToltes=async ()=>{
         try{
             const response=await fetch(Cim.Cim + "/kategoria")
             const data=await response.json()
-            //alert(JSON.stringify(data))
-            //console.log(data)
+
             if (response.ok)
                 {
                     setAdatok(data)
@@ -288,60 +171,33 @@ const Kategoria=()=>{
 
     if (tolt)
         return (
-            <div style={{textAlign:"center"}}>Adatok betöltése folyamatban...</div>
+            <div className="doboz"><p className="figyelmeztetes">Adatok betöltése folyamatban...</p></div>
                 )
     else if (hiba)
         return (
-            <div>Hiba</div>
+            <div className="doboz"><p className="figyelmeztetes">Hiba</p></div>
                 )       
     
     else return (
 
-
         <div>
             
         {!kerdesekBetoltve ? (<div className="doboz" style={{marginTop:"40px", marginBottom:"40px"}} >
-
                 
                 <h1>A Tudás Torna!</h1>
                 <h2>Válassz kategóriát!</h2>
                 <div className="gombDoboz">
                 {adatok.map((elem,index)=>(
                     
-                        <button key={index} className="kategoriaGomb" onClick={() => kategoriaValaszt(elem.kategoria_id, elem.kategoria_nev)}>{index < ikonok.length ? ikonok[index] : "❔"} {elem.kategoria_nev}</button>
+                        <button key={index} disabled={kerdesLekeres} className="kategoriaGomb" onClick={() => kategoriaValaszt(elem.kategoria_id, elem.kategoria_nev)}>{index < ikonok.length ? ikonok[index] : "❔"} {elem.kategoria_nev}</button>
                     
                 ))} 
 
-                {/*<button className="gomb" onClick={() => kategoriaValasztVegyes()}>{ikonok[6]} Vegyes</button>
-                <button className="gomb" onClick={() => kategoriaValasztNehez()}>{ikonok[7]} Géniusz</button>*/}
-                    {/*<button className="kategoriaGomb">Programozás</button>
-                    <button className="kategoriaGomb">Környezetvédelem</button>
-                    <button className="kategoriaGomb">Informatika</button>
-                    <button className="kategoriaGomb">Videójátékok</button>
-                    <button className="kategoriaGomb">Időfutam</button>
-                    <button className="kategoriaGomb">Tudomány</button>
-                    <button className="kategoriaGomb">Filmek</button>
-                    <button className="kategoriaGomb">Matematika</button>
-                    <button className="kategoriaGomb">Logikai rejtvények</button>
-                    <button className="kategoriaGomb">Honismeret</button>*/}
                 </div>
 
                 <p className="figyelmeztetes"><b>Figyelem</b>: a játékban lévő nyeremények <b>csak játékpénz</b>ben értendők, valódi pénzt nem lehet nyerni!</p>
 
             </div>) : <Kerdesek kerdesek={kerdesek} kategoria={kategoria} kerdesekBetoltve = {setKerdesekBetoltve}/>}
-
-            
-        
-            
-            
-
-            
-
-
-            
-            
-
-
 
         </div>
     )
