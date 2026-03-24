@@ -78,13 +78,24 @@ router.delete("/:kategoria_id",
     if (validationError) return validationError;
     const { kategoria_id } = req.params;
     console.log("Töröl:", { kategoria_id });
-    const sql = `delete from kategoria where kategoria_id=?`;
-    pool.query(sql, [kategoria_id], (err) => {
+    pool.query(`DELETE FROM eredmenyek WHERE Eredmenyek_kategoria = ?`, [kategoria_id], (err) => {
       if (err) {
-        console.error("Adatbázis hiba:", err);
+        console.error("Adatbázis hiba (eredmenyek törlés):", err);
         return res.status(500).json({ error: "Adatbázis hiba történt." });
       }
-      return res.status(200).json({ message: "Sikeres Törlés! ☠️" });
+      pool.query(`DELETE FROM kerdesek WHERE kerdesek_kategoria = ?`, [kategoria_id], (err) => {
+        if (err) {
+          console.error("Adatbázis hiba (kerdesek törlés):", err);
+          return res.status(500).json({ error: "Adatbázis hiba történt." });
+        }
+        pool.query(`DELETE FROM kategoria WHERE kategoria_id = ?`, [kategoria_id], (err) => {
+          if (err) {
+            console.error("Adatbázis hiba (kategória törlés):", err);
+            return res.status(500).json({ error: "Adatbázis hiba történt." });
+          }
+          return res.status(200).json({ message: "Sikeres Törlés! ☠️" });
+        });
+      });
     });
   }
 );

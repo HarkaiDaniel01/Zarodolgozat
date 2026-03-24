@@ -101,12 +101,12 @@ const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
             <View style={styles.iconCircle}>
               <MaterialCommunityIcons name="account-plus" size={isSmallScreen ? 34 : 40} color="#fff" />
             </View>
-            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 26 : 32 }]}>KvízMester</Text>
+            <Text style={[styles.appTitle, { fontSize: isSmallScreen ? 26 : 32 }]}>A Tudás Torna!</Text>
             <Text style={styles.appSubtitle}>Csatlakozz a játékhoz!</Text>
           </View>
 
           <View style={[styles.card, { width: isTablet ? 480 : '100%', maxWidth: 480 }]}>
-            <Text style={[styles.title, { fontSize: isSmallScreen ? 20 : 24 }]}>Fiók létrehozása</Text>
+            <Text style={[styles.title, { fontSize: isSmallScreen ? 20 : 24, textAlign: 'center' }]}>Fiók létrehozása</Text>
             <Text style={styles.subtitle}>Kérlek töltsd ki az összes mezőt</Text>
 
             {error ? (
@@ -279,6 +279,7 @@ const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.cr
     color: colors.text_secondary,
     fontSize: rf(14, width),
     marginBottom: 22,
+    textAlign: 'center',
   },
   fieldGroup: {
     marginBottom: 15,

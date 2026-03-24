@@ -430,6 +430,11 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
       return;
     }
 
+    if (szamlalo <= 0) {
+      Alert.alert('Nincs menthető eredmény', '0 pontos eredményt nem lehet menteni.');
+      return;
+    }
+
     let saveContent = tartalom;
     if (isSpeedrun || isEndless) {
       saveContent = `Elért pontszám: ${szamlalo}`; 
@@ -445,6 +450,11 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   };
 
   const performSave = async () => {
+    if (szamlalo <= 0) {
+      Alert.alert('Nincs menthető eredmény', '0 pontos eredményt nem lehet menteni.');
+      return;
+    }
+
     try {
       const userId = await AsyncStorage.getItem('userid');
       const token = await AsyncStorage.getItem('token');
@@ -1003,7 +1013,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               </TouchableOpacity>
 
               {/* MENTÉS gomb (csak ha nem gyakorlás) */}
-              {!wrongAnswerInfo.isTraining && (
+              {!wrongAnswerInfo.isTraining && szamlalo > 0 && (
                 <TouchableOpacity
                   style={[
                     styles.wrongAnswerButton,
@@ -1642,7 +1652,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
             <Text style={styles.winnerTitle}>Játék Vége!</Text>
             <Text style={styles.winnerPrize}>{pontszam.toLocaleString('hu-HU')} Ft</Text>
             
-            {!mentve && !isGyakorlas ? (
+            {!mentve && !isGyakorlas && szamlalo > 0 ? (
             <TouchableOpacity style={styles.primaryBtn} onPress={handleSave}>
                 <Text style={styles.primaryBtnText}>Eredmény mentése</Text>
             </TouchableOpacity>

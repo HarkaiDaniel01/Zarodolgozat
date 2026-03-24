@@ -275,6 +275,31 @@ router.put('/jelszo-modositas',
   }
 );
 
+// Jelszó felülírása ellenőrzés nélkül (admin)
+router.put('/jelszo-feluliras/:jatekos_id',
+  param("jatekos_id").isInt().withMessage("Érvénytelen játékos ID!"),
+  body("uj_jelszo").isLength({ min: 4 }).withMessage("Az új jelszónak legalább 4 karakter hosszúnak kell lennie!"),
+  async (req, res) => {
+    const validationError = handleValidationErrors(req, res);
+    if (validationError) return validationError;
+    const { jatekos_id } = req.params;
+    const { uj_jelszo } = req.body;
+
+    const hashedPassword = await bcrypt.hash(uj_jelszo, 10);
+    const sql = `UPDATE jatekos SET jatekos_jelszo = ? WHERE jatekos_id = ?`;
+    pool.query(sql, [hashedPassword, jatekos_id], (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Hiba" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Felhasználó nem található" });
+      }
+      return res.status(200).json({ message: "Jelszó sikeresen felülírva!" });
+    });
+  }
+);
+
 // Saját fiók törlése
 router.delete('/sajat-fiok-torles/:jatekos_nev',
   async (req, res) => {

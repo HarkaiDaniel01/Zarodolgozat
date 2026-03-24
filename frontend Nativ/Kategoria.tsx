@@ -59,6 +59,7 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
   const [hardcoreKattintas, setHardcoreKattintas] = useState<number>(0);
   const [easterEggVisible, setEasterEggVisible] = useState<boolean>(false);
   const [kategoriaBetoltes, setKategoriaBetoltes] = useState<boolean>(false);
+  const [kevesKerdesModalVisible, setKevesKerdesModalVisible] = useState<boolean>(false);
 
   const getIconName = (nev: string): any => {
     const nevKisbetus = nev.toLowerCase();
@@ -92,6 +93,22 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
     if (nevKisbetus.includes('celebr') || nevKisbetus.includes('sztár') || nevKisbetus.includes('sztar')) return 'star';
     if (nevKisbetus.includes('internet') || nevKisbetus.includes('web')) return 'web';
     if (nevKisbetus.includes('anime') || nevKisbetus.includes('manga')) return 'television-shimmer';
+    if (nevKisbetus.includes('pénz') || nevKisbetus.includes('penz') || nevKisbetus.includes('gazdaság') || nevKisbetus.includes('gazdasag')) return 'cash-multiple';
+    if (nevKisbetus.includes('jog') || nevKisbetus.includes('törvény') || nevKisbetus.includes('torveny')) return 'scale-balance';
+    if (nevKisbetus.includes('űr') || nevKisbetus.includes('ur') || nevKisbetus.includes('csillagászat')) return 'rocket-launch';
+    if (nevKisbetus.includes('mitológia') || nevKisbetus.includes('mítosz')) return 'temple-greek';
+    if (nevKisbetus.includes('utazás') || nevKisbetus.includes('utazas') || nevKisbetus.includes('turista')) return 'airplane';
+    if (nevKisbetus.includes('nyelv')) return 'translate';
+    if (nevKisbetus.includes('pszicho') || nevKisbetus.includes('lélek')) return 'head-snowflake';
+    if (nevKisbetus.includes('építészet') || nevKisbetus.includes('epiteszet')) return 'office-building';
+    if (nevKisbetus.includes('divat') || nevKisbetus.includes('ruha')) return 'tshirt-crew';
+    if (nevKisbetus.includes('kert') || nevKisbetus.includes('virág')) return 'flower';
+    if (nevKisbetus.includes('hadsereg') || nevKisbetus.includes('katona') || nevKisbetus.includes('fegyver')) return 'tank';
+    if (nevKisbetus.includes('orvos') || nevKisbetus.includes('gyógyászat')) return 'medical-bag';
+    if (nevKisbetus.includes('tech') || nevKisbetus.includes('mobil') || nevKisbetus.includes('telefon')) return 'cellphone';
+    if (nevKisbetus.includes('filozófia') || nevKisbetus.includes('bölcsesség')) return 'lightbulb-on';
+    if (nevKisbetus.includes('időjárás') || nevKisbetus.includes('klima')) return 'weather-partly-cloudy';
+    if (nevKisbetus.includes('környezet') || nevKisbetus.includes('kornyezet')) return 'recycle';
     return 'help-circle-outline';
   };
 
@@ -120,8 +137,13 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
         const konnyu = await KerdesekLetoltese(kategoriaId, "/kerdesekKonnyu");
         const kozepes = await KerdesekLetoltese(kategoriaId, "/kerdesekKozepes");
         const nehez = await KerdesekLetoltese(kategoriaId, "/kerdesekNehez");
-        setKerdesek([...konnyu, ...kozepes, ...nehez]);
-        setKerdesekBetoltve(true);
+        const osszesKerdes = [...konnyu, ...kozepes, ...nehez];
+        if (osszesKerdes.length < 10) {
+          setKevesKerdesModalVisible(true);
+        } else {
+          setKerdesek(osszesKerdes);
+          setKerdesekBetoltve(true);
+        }
       }
     } finally {
       setKategoriaBetoltes(false);
@@ -133,8 +155,13 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
     const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes");
     const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes");
     const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes");
-    setKerdesek([...konnyu, ...kozepes, ...nehez]);
-    setKerdesekBetoltve(true);
+    const osszesKerdes = [...konnyu, ...kozepes, ...nehez];
+    if (osszesKerdes.length < 10) {
+      setKevesKerdesModalVisible(true);
+    } else {
+      setKerdesek(osszesKerdes);
+      setKerdesekBetoltve(true);
+    }
   };
 
   const kategoriaValasztSpeedrun = async (kategoriaId: number): Promise<void> => {
@@ -142,8 +169,13 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
     const konnyu = await KerdesekLetolteseVegyes("/kerdesekKonnyuVegyes");
     const kozepes = await KerdesekLetolteseVegyes("/kerdesekKozepesVegyes");
     const nehez = await KerdesekLetolteseVegyes("/kerdesekNehezVegyes");
-    setKerdesek([...konnyu, ...kozepes, ...nehez]);
-    setKerdesekBetoltve(true);
+    const osszesKerdes = [...konnyu, ...kozepes, ...nehez];
+    if (osszesKerdes.length < 10) {
+      setKevesKerdesModalVisible(true);
+    } else {
+      setKerdesek(osszesKerdes);
+      setKerdesekBetoltve(true);
+    }
   };
 
   const kategoriaValasztEndless = async (kategoriaId: number): Promise<void> => {
@@ -152,8 +184,12 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
       const response = await fetch(Cim.Cim + `/endless-kerdesek`, { method: "GET" });
       const data = await response.json();
       if (response.ok) {
-        setKerdesek(data); 
-        setKerdesekBetoltve(true); 
+        if (data.length < 10) {
+          setKevesKerdesModalVisible(true);
+        } else {
+          setKerdesek(data); 
+          setKerdesekBetoltve(true);
+        } 
       }
     } catch (error) { console.log('kategoriaValasztEndless Error:', error); }
   };
@@ -170,8 +206,12 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
       const response = await fetch(Cim.Cim + `/Gyakorlo-kerdesek`, { method: "GET" });
       const data = await response.json();
       if (response.ok) {
-        setKerdesek(data); 
-        setKerdesekBetoltve(true); 
+        if (data.length < 10) {
+          setKevesKerdesModalVisible(true);
+        } else {
+          setKerdesek(data); 
+          setKerdesekBetoltve(true); 
+        }
       }
     } catch (error) { console.log('kategoriaValasztGyakorlas Error:', error); }
   };
@@ -336,6 +376,12 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
                     </View>
                     )}
                     
+                    ListEmptyComponent={
+                      <View style={{ padding: 20, alignItems: 'center' }}>
+                        <Text style={{ color: colors.text, fontSize: 16 }}>Jelenleg nem elérhető</Text>
+                      </View>
+                    }
+
                     ListFooterComponent={
                     <View style={{marginTop: 20, paddingBottom: 100}}>
                         <Text style={styles.sectionTitle}>Speciális módok</Text>
@@ -445,6 +491,36 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
             isHardcore={isHardcore}
         />
       )}
+
+      {/* Kevés Kérdés Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={kevesKerdesModalVisible}
+        onRequestClose={() => setKevesKerdesModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modeModal}>
+            <MaterialCommunityIcons 
+              name="alert-circle-outline" 
+              size={60} 
+              color="#F44336" 
+            />
+            <Text style={[styles.modeTitle, { color: "#F44336" }]}>
+              Hoppá!
+            </Text>
+            <Text style={styles.modeMessage}>
+              Sajnos ebben a kategóriában jelenleg nincs elég kérdés a játék indításához (minimum 10 szükséges). Kérjük, válassz másikat! 😕
+            </Text>
+            <TouchableOpacity 
+              style={[styles.modeButton, { backgroundColor: "#F44336" }]}
+              onPress={() => setKevesKerdesModalVisible(false)}
+            >
+              <Text style={styles.modeButtonText}>Rendben</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Easter Egg Modal */}
       <Modal
@@ -783,6 +859,7 @@ const getStyles = (colors: any, isDark: boolean, width: number) => StyleSheet.cr
     color: colors.text,
     marginBottom: 15,
     marginLeft: 5,
+    textAlign: 'center',
   },
   specialCard: {
     borderRadius: 20,
