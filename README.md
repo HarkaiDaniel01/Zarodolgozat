@@ -6,6 +6,11 @@
 
 A **„Tudás Torna"** egy webalapú kvíz játék alkalmazás, amely lehetővé teszi a felhasználóknak, hogy teszteljék tudásukat és bővítsék ismereteiket. Az alkalmazás célja egy könnyen használható felület biztosítása, amely játékos formában segíti a tudás felmérését és fejlesztését. A játék során a felhasználók különböző témakörök – például történelem, földrajz, irodalom, sport, zene stb. – kérdéseire válaszolhatnak, miközben egyre nagyobb virtuális nyereményt és pontokat gyűjthetnek össze. A kérdések nehézségi szintje fokozatosan nő. Az alkalmazás ranglistán keresztül lehetővé teszi a játékosok számára a versenyzést, az Eredmények oldalon pedig mindenki nyomon követheti saját fejlődését és korábbi eredményeit. A projekt részeként egy mobilalkalmazás is készült, amely hasonló élményt nyújt a felhasználó számára, azonban a felhasználói felület és egyes funkciók eltérnek.
 
+Web applikáció: https://tudas-torna.netlify.app/
+
+Admin felület: https://tudas-torna-admin.netlify.app/bejelentkezes
+
+
 ---
 
 ## Készítők
