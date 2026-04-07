@@ -6,6 +6,11 @@
 
 A **„Tudás Torna"** egy webalapú kvíz játék alkalmazás, amely lehetővé teszi a felhasználóknak, hogy teszteljék tudásukat és bővítsék ismereteiket. Az alkalmazás célja egy könnyen használható felület biztosítása, amely játékos formában segíti a tudás felmérését és fejlesztését. A játék során a felhasználók különböző témakörök – például történelem, földrajz, irodalom, sport, zene stb. – kérdéseire válaszolhatnak, miközben egyre nagyobb virtuális nyereményt és pontokat gyűjthetnek össze. A kérdések nehézségi szintje fokozatosan nő. Az alkalmazás ranglistán keresztül lehetővé teszi a játékosok számára a versenyzést, az Eredmények oldalon pedig mindenki nyomon követheti saját fejlődését és korábbi eredményeit. A projekt részeként egy mobilalkalmazás is készült, amely hasonló élményt nyújt a felhasználó számára, azonban a felhasználói felület és egyes funkciók eltérnek.
 
+Web applikáció: https://tudas-torna.netlify.app/
+
+Admin felület: https://tudas-torna-admin.netlify.app/bejelentkezes
+
+
 ---
 
 ## Készítők
@@ -150,6 +155,7 @@ npm start
 | `kategoria` | `kategoria_id`, `kategoria_nev` |
 | `kerdesek` | `kerdesek_id`, `kerdesek_kerdes`, `kerdesek_helyesValasz`, `kerdesek_helytelenValasz1-3`, `kerdesek_kategoria`, `kerdesek_leiras`, `kerdesek_nehezseg` |
 | `eredmenyek` | `Eredmenyek_id`, `Eredmenyek_jatekos`, `Eredmenyek_kategoria`, `Eredmenyek_pont`, `Eredmenyek_pontszam`, `Eredmenyek_datum` |
+| `hibajelentések`| `hibajelentes_id`,`hibajelentes_kerdes_id`,`hibajelentes_leiras`,`hibajelentes_status`,`hibajelentes_admin_megjegyzes`,`hibajelentes_admin_id`|
 
 ---
 
@@ -246,6 +252,16 @@ npm start
 | `GET` | `/jatekos` | Összes játékos | – |
 | `POST` | `/jatekos` | Játékos hozzáadása | `{ jatekos_nev }` |
 
+---
+### Hibabejelentés – `Backend.js` (Daróczi Gergő)
+
+| Metódus | Végpont | Leírás | Body / Params |
+|---|---|---|---|
+| `GET` | `/adminhibajelentes` | Összes Hibabejelentés lekérése | – |
+| `GET` | `/userhibajelentes` | Felhasználó oldali hiba bejelentések megjelenitése | `:id` |
+| `POST` | `/ujhibajelentes` | Hibabejeltés beküldése felhasználó oldalról| `{kerdes_id, jatekos_id, leiras}` |
+| `PUT` | `/hibajelentesmodosit` | Hibabejeltés modósitása az admin oldalon | `:id` |
+| `DELETE` | `/hibajelentestorlese` | Hibabejeltés törlése az admin oldalon | `:id` |
 ---
 
 ## Munkamegosztás összefoglalás

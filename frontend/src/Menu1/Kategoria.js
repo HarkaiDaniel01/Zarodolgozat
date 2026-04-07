@@ -160,6 +160,7 @@ const Kategoria=()=>{
             }
         catch (error){
             console.log(error)
+            setTolt(false)
             setHiba(true)
         }
         
@@ -177,7 +178,6 @@ const Kategoria=()=>{
         return (
             <div className="doboz"><p className="figyelmeztetes">Hiba</p></div>
                 )       
-    
     else return (
 
         <div>

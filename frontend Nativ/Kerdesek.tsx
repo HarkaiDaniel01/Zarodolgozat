@@ -250,11 +250,11 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
   const [blinkAnim] = useState(new Animated.Value(1));
   const [kerdesekList, setKerdesekList] = useState(kerdesek);
   const [showWrongAnswerModal, setShowWrongAnswerModal] = useState(false);
-  const [wrongAnswerInfo, setWrongAnswerInfo] = useState<{rightAnswer: string, description: string, isTraining: boolean}>({rightAnswer: '', description: '', isTraining: false});
+  const [wrongAnswerInfo, setWrongAnswerInfo] = useState<{rightAnswer: string, description: string, isTraining: boolean, earnedSzamlalo: number, earnedPontszam: number}>({rightAnswer: '', description: '', isTraining: false, earnedSzamlalo: 0, earnedPontszam: 0});
   const [gameEndModalVisible, setGameEndModalVisible] = useState(false);
   const [gameEndMessage, setGameEndMessage] = useState('');
   const [confirmSaveModalVisible, setConfirmSaveModalVisible] = useState(false);
-  const [confirmSaveModalInfo, setConfirmSaveModalInfo] = useState<{title: string, content: string}>({title: '', content: ''});
+  const [confirmSaveModalInfo, setConfirmSaveModalInfo] = useState<{title: string, content: string, earnedSzamlalo: number, earnedPontszam: number}>({title: '', content: '', earnedSzamlalo: 0, earnedPontszam: 0});
   const [exitModalVisible, setExitModalVisible] = useState(false);
   const [hibajelentesModalVisible, setHibajelentesModalVisible] = useState(false);
   const [hibaLeiras, setHibaLeiras] = useState('');
@@ -350,7 +350,9 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
           setWrongAnswerInfo({
             rightAnswer: kerdesekList[szamlalo].kerdesek_helyesValasz,
             description: leiras,
-            isTraining: isGyakorlas
+            isTraining: isGyakorlas,
+            earnedSzamlalo: szamlalo,
+            earnedPontszam: pontszam,
           });
           setShowWrongAnswerModal(true);
         }
@@ -423,34 +425,42 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
     }
   };
 
-  const eredmenyMentes = async (cim: string, tartalom: string) => {
+  const eredmenyMentes = async (cim: string, tartalom: string, overrideSzamlalo?: number, overridePontszam?: number) => {
     if (isGyakorlas) {
       setGameEndMessage(`Elért pontszámod: ${szamlalo}`);
       setGameEndModalVisible(true);
       return;
     }
 
-    if (szamlalo <= 0) {
+    const effectiveSzamlalo = overrideSzamlalo ?? szamlalo;
+    const effectivePontszam = overridePontszam ?? pontszam;
+
+    if (effectiveSzamlalo <= 0) {
       Alert.alert('Nincs menthető eredmény', '0 pontos eredményt nem lehet menteni.');
       return;
     }
 
     let saveContent = tartalom;
     if (isSpeedrun || isEndless) {
-      saveContent = `Elért pontszám: ${szamlalo}`; 
+      saveContent = `Elért pontszám: ${effectiveSzamlalo}`; 
     } else {
-      saveContent = tartalom + `\nNyeremény: ${pontszam} Ft`;
+      saveContent = tartalom + `\nNyeremény: ${effectivePontszam} Ft`;
     }
 
     setConfirmSaveModalInfo({
       title: cim,
-      content: saveContent
+      content: saveContent,
+      earnedSzamlalo: effectiveSzamlalo,
+      earnedPontszam: effectivePontszam,
     });
     setConfirmSaveModalVisible(true);
   };
 
   const performSave = async () => {
-    if (szamlalo <= 0) {
+    const effectiveSzamlalo = confirmSaveModalInfo.earnedSzamlalo > 0 ? confirmSaveModalInfo.earnedSzamlalo : szamlalo;
+    const effectivePontszam = confirmSaveModalInfo.earnedSzamlalo > 0 ? confirmSaveModalInfo.earnedPontszam : pontszam;
+
+    if (effectiveSzamlalo <= 0) {
       Alert.alert('Nincs menthető eredmény', '0 pontos eredményt nem lehet menteni.');
       return;
     }
@@ -465,8 +475,8 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            nyeremeny: pontszam,
-            pontszam: szamlalo,
+            nyeremeny: effectivePontszam,
+            pontszam: effectiveSzamlalo,
             jatekos: userId,
             kategoria: kategoria,
             datum: maiDatum
@@ -474,7 +484,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
         });
       } else {
         await AsyncStorage.setItem("taroltEredmeny", JSON.stringify({
-          ePont: pontszam,
+          ePont: effectivePontszam,
           eKat: kategoria
         }));
         setLoginPromptModalVisible(true);
@@ -523,7 +533,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
 
     try {
       const userId = await AsyncStorage.getItem('userid');
-      const response = await fetch(`${Cim.Cim}/kerdes-hibajelentes`, {
+      const response = await fetch(`${Cim.Cim}/ujhibajelentes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1013,7 +1023,7 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
               </TouchableOpacity>
 
               {/* MENTÉS gomb (csak ha nem gyakorlás) */}
-              {!wrongAnswerInfo.isTraining && szamlalo > 0 && (
+              {!wrongAnswerInfo.isTraining && wrongAnswerInfo.earnedSzamlalo > 0 && (
                 <TouchableOpacity
                   style={[
                     styles.wrongAnswerButton,
@@ -1025,7 +1035,9 @@ const Kerdesek = ({ kerdesek, kategoria, kerdesekBetoltve, navigateToProfile, is
                   onPress={() => {
                     eredmenyMentes(
                       'Nem nyertél! 😿',
-                      `Helyes: ${wrongAnswerInfo.rightAnswer}\n\n${wrongAnswerInfo.description}`
+                      `Helyes: ${wrongAnswerInfo.rightAnswer}\n\n${wrongAnswerInfo.description}`,
+                      wrongAnswerInfo.earnedSzamlalo,
+                      wrongAnswerInfo.earnedPontszam,
                     );
                   }}
                 >

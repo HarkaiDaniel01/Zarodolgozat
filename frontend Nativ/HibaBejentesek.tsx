@@ -56,7 +56,7 @@ const HibaBejentesek: React.FC<HibaBejentesekProps> = ({ onBack }) => {
       const userId = await AsyncStorage.getItem('userid');
       if (!userId) return;
 
-      const response = await fetch(`${Cim.Cim}/hibabejentes/${userId}`, {
+      const response = await fetch(`${Cim.Cim}/userhibabejentes/${userId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });

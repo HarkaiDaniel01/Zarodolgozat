@@ -18,7 +18,7 @@ const ApkLetoltes = () => {
         {/* Ikon / Banner */}
         <div style={{ fontSize: "80px", marginBottom: "20px" }}>📲</div>
 
-        <h2 style={{ marginBottom: "20px" }}>Töltsd le a <em>A tudás torna!</em> Nyílt Béta verzióját!</h2>
+        <h2 style={{ marginBottom: "20px" }}>Töltsd le a <em>A tudás torna!</em> Teljes verzióját!</h2>
 
         <p
           style={{
@@ -72,8 +72,8 @@ const ApkLetoltes = () => {
 
         {/* Letöltés gomb */}
         <a
-          href="/A_tudas_torna_Nyilt_Beta.apk"
-          download="A_Tudas_Torna_Nyilt_Beta.apk"
+          href="/A_tudas_torna.apk"
+          download="A_tudas_torna.apk"
           style={{
             display: "inline-block",
             background: "linear-gradient(135deg, #3a86ff, #764ba2)",
@@ -98,7 +98,7 @@ const ApkLetoltes = () => {
               "0 4px 20px rgba(58,134,255,0.45)";
           }}
         >
-          ⬇️ A tudás torna! – Nyílt Béta letöltése
+          ⬇️ A tudás torna! letöltése
         </a>
 
         {/* Telepítési útmutató */}
@@ -195,7 +195,7 @@ const ApkLetoltes = () => {
             color: "#6b7280",
           }}
         >
-          A tudás torna! &nbsp;|&nbsp; Jelenlegi verzió: <strong style={{ color: "#9ca3af" }}>v1.1.0b</strong>{" "}
+          A tudás torna! &nbsp;|&nbsp; Jelenlegi verzió: <strong style={{ color: "#9ca3af" }}>v1.2.0v</strong>{" "}
           &nbsp;|&nbsp; Kompatibilitás:{" "}
           <strong style={{ color: "#9ca3af" }}>Android 8.0+</strong>
         </div>

@@ -14,11 +14,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     const [helyesValasz, setHelyesValasz] = useState()
     const [helytelenValaszMarad, setHelytelenValaszMarad] = useState()
     const [nyeremenyek] = useState([0, 5000, 50000, 100000, 500000, 750000, 1500000, 2000000, 10000000, 15000000, 50000000])
-
     const [pontozas, setPontozas] = useState(0)
     const [kerdesPont, setKerdesPont] = useState(0)
     const [felhasznaltSegitseg, setFelhasznaltSegitseg] = useState(0)
-
     const [telefonSegitsegAktiv, setTelefonSegitsegAktiv] = useState(true)
     const [felezoMegjelol, setFelezoMegjelol] = useState(false)
     const [kozonsegMegjelol, setKozonsegMegjelol] = useState(false)
@@ -27,12 +25,8 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     const [szazalek, setSzazalek] = useState([])
     const [megjeloltValasz, setMegjeloltValasz] = useState()
     const [valaszMegjelolve, setValaszMegjelolve] = useState(false)
-
     const [jatekosId, setJatekosId] = useState(null)
-
     const navigate = useNavigate();
-
-
 
     const showAlert = (cim, szoveg, ikon, gomb) => {
     Swal.fire({
@@ -44,9 +38,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     };
 
     /*const pontozasSzamol = () => {
-
-        
-
         let segitsegSzorzo = 1;
 
         switch (felhasznaltSegitseg) {
@@ -60,15 +51,12 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                         break;
         }
 
-
-
         const ujPontozas = Math.round(kerdesPont * segitsegSzorzo * szamlalo)
         setPontozas(ujPontozas)
         console.log(kerdesPont)
         console.log(segitsegSzorzo)
         console.log(szamlalo)
         console.log(ujPontozas)
-
 
     }*/
 
@@ -102,8 +90,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                 } else {
                     telefonValasz = helytelenValaszMarad
                 }
-                
-
             }
 
             //setTelefonMegjelol(true)
@@ -187,11 +173,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         }
     }
         
-
-        
-
-    
-
     const felezoSegitseg = () => {
 
         setTolt(false)
@@ -202,14 +183,8 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             setFelezoSegitsegAktiv(false)
             setFelhasznaltSegitseg(felhasznaltSegitseg + 1)
 
-            
-
-            
-            
             setTolt(true)
-            
         }
-  
     }
 
     const valaszEllenoriz = async (valasz) => {
@@ -226,11 +201,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             showAlert("Helyes válasz! 😺", "", "success", "Következő kérdés 🏆")
             const ujSzamlalo = szamlalo + 1
             setSzamlalo(ujSzamlalo)
-
-
-
-            
-            
             //szamlaloNovel()
 
             const ujKerdesPont = kerdesPont + kerdesek[szamlalo].kerdesek_nehezseg
@@ -255,8 +225,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             //console.log(segitsegSzorzo)
             //console.log(ujSzamlalo)
             //console.log(ujPontozas)
-            
-            
             //valaszKever()
         }
         else {
@@ -271,12 +239,9 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                 `A helyes válasz: <b>${kerdesek[szamlalo].kerdesek_helyesValasz}</b><br>💡 ${kerdesek[szamlalo].kerdesek_leiras}<br></br>${pontszam} Ft-ot nyertél! <br></br>A pontszámod: ${pontozas}<br></br>El szeretnéd menteni az eredményt?`,
                 `warning`);
 
-
-
             setSzamlalo(0)
             setPontszam(0)
 
-            
             kerdesekBetoltve(false)
 
         }
@@ -284,11 +249,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
         setMegjeloltValasz(null)
         setValaszMegjelolve(false)
         }, 1500);
-        
-        
-        
-            
-            
         
     }
 
@@ -315,9 +275,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             "error", 
             "Vissza a kategóriákhoz 🚪"
         )*/
-
-
-
 
         Swal.fire({
       title: cim,
@@ -362,9 +319,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
     });
     }, [jatekosId, kategoria, navigate, pontozas, pontszam]);
 
-
-
-
     const valaszKever = useCallback(() => {
 
         if (szamlalo < kerdesek.length) {
@@ -377,9 +331,6 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
                     kerdesek[szamlalo].kerdesek_helytelenValasz1, 
                     kerdesek[szamlalo].kerdesek_helytelenValasz2, 
                     kerdesek[szamlalo].kerdesek_helytelenValasz3]
-
-        
-
 
             let csere
             for (let i = 0; i < 100; i++) {
@@ -445,15 +396,11 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
                 
                 setSzamlalo(szamlalo + 1)
-                
-
-                
 
         } else {
             setSzamlalo(0)
             kerdesekBetoltve(false)
         }
-
         
     },[szamlalo])*/
 
@@ -525,12 +472,7 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
             <h4>Nyeremény: {pontszam} Ft</h4>
             <h4>Pontszám: {pontozas}</h4>
 
-            
-
-            
-
             </div>
-
 
             <div className="doboz d-flex justify-content-between" style={{marginTop:"30px"}}>
 
@@ -554,28 +496,14 @@ const Kerdesek = ({kerdesek, kategoria, kerdesekBetoltve}) => {
 
             </div>
 
-            
                 <button className="segitsegGomb" onClick={() => kilepes()} style={{margin:"30px auto", background:"red", color: "white"}}>🚪 Kilépés</button>
             
-            
-        
         </div>
         
-        
-
-    ) 
-
-
+            ) 
         }
-
-        
-
     } 
  
-    
-    
-    
-        
 }
 
 export default Kerdesek

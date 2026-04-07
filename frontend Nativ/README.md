@@ -1,6 +1,6 @@
 # Kvíz Alkalmazás – React Native Frontend
 
-Mobil kvíz játék React Native (Expo) alapokon, TypeScript-ben írva. A felhasználók kategóriánként tudáspróbán mérhetik össze magukat, a legjobb eredmények ranglistán jelennek meg.
+Mobil kvíz játék React Native (Expo) alapokon, TypeScript nyelven írva. A felhasználók kategóriánként tudáspróbán mérhetik össze magukat, a legjobb eredmények ranglistán jelennek meg.
 
 ---
 
@@ -98,9 +98,10 @@ A backend URL a `Cim.ts` fájlban módosítható.
 ├── Register.tsx          # Regisztrációs képernyő
 ├── Felhasznalo.tsx       # Felhasználói adatlap
 ├── OsszesNyeremeny.tsx   # Nyeremények összesítője
-├── ThemeContext.tsx       # Téma context (sötét/világos)
+├── ThemeContext.tsx      # Téma context (sötét/világos)
 ├── theme.ts              # Szín- és méretdefiníciók
 ├── Cim.ts                # Backend URL konfiguráció
+└── HibaBejelentesek.tsx  # Hibabejelentések megnézése
 └── assets/               # Képek, ikonok
 ```
 

@@ -652,7 +652,7 @@ app.delete('/eredmenyTorlesAdmin/:id', (req, res) => {
 
 // ======================== KÉRDÉS HIBAJELENTÉS VÉGPONTOK ========================
 // Hibajelentés beküldése
-app.post('/kerdes-hibajelentes', (req, res) => {
+app.post('/ujhibajelentes', (req, res) => {
     const { kerdes_id, jatekos_id, leiras } = req.body;
     
     if (!kerdes_id || !leiras) {
@@ -674,7 +674,7 @@ app.post('/kerdes-hibajelentes', (req, res) => {
 });
 
 // Összes hibajelentés lekérése (Admin)
-app.get('/kerdes-hibajelentes', (req, res) => {
+app.get('/adminhibajelentes', (req, res) => {
     const sql = `
         SELECT 
             h.hibajelentes_id,
@@ -702,42 +702,9 @@ app.get('/kerdes-hibajelentes', (req, res) => {
     });
 });
 
-// Egyetlen hibajelentés lekérése
-app.get('/kerdes-hibajelentes/:id', (req, res) => {
-    const id = req.params.id;
-    
-    const sql = `
-        SELECT 
-            h.hibajelentes_id,
-            h.hibajelentes_kerdes_id,
-            h.hibajelentes_jatekos_id,
-            h.hibajelentes_leiras,
-            DATE_FORMAT(h.hibajelentes_datum, '%Y-%m-%d %H:%i:%s') AS hibajelentes_datum,
-            h.hibajelentes_status,
-            h.hibajelentes_admin_megjegyzes,
-            k.kerdesek_kerdes,
-            k.kerdesek_helyesValasz,
-            COALESCE(j.jatekos_nev, 'Ismeretlen') AS jatekos_nev
-        FROM kerdes_hibajelentes h
-        INNER JOIN kerdesek k ON h.hibajelentes_kerdes_id = k.kerdesek_id
-        LEFT JOIN jatekos j ON h.hibajelentes_jatekos_id = j.jatekos_id
-        WHERE h.hibajelentes_id = ?
-    `;
-    
-    pool.query(sql, [id], (err, result) => {
-        if (err) {
-            console.error("Hiba a hibajelentés lekérdezésekor:", err);
-            return res.status(500).json({ error: "Adatbázis hiba" });
-        }
-        if (result.length === 0) {
-            return res.status(404).json({ error: "Hibajelentés nem található" });
-        }
-        return res.status(200).json(result[0]);
-    });
-});
 
 // Hibajelentés állapotának módosítása
-app.put('/kerdes-hibajelentes/:id', (req, res) => {
+app.put('/hibajelentesmodosit/:id', (req, res) => {
     const id = req.params.id;
     const { status, admin_megjegyzes, admin_id } = req.body;
     
@@ -768,7 +735,7 @@ app.put('/kerdes-hibajelentes/:id', (req, res) => {
 });
 
 // Hibajelentés törlése
-app.delete('/kerdes-hibajelentes/:id', (req, res) => {
+app.delete('/hibajelentestorlese/:id', (req, res) => {
     const id = req.params.id;
     
     const sql = `DELETE FROM kerdes_hibajelentes WHERE hibajelentes_id = ?`;
@@ -790,7 +757,7 @@ app.delete('/kerdes-hibajelentes/:id', (req, res) => {
 //========= Felhasználó-specifikus Hibabejentések végpontjai =========
 
 // GET - Felhasználó összes általános hibabejentése
-app.get('/hibabejentes/:jatekosId', (req, res) => {
+app.get('/userhibajelentes/:jatekosId', (req, res) => {
     const { jatekosId } = req.params;
     
     if (!jatekosId) {

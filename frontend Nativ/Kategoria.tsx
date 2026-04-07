@@ -305,6 +305,13 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
 
   const { level } = calculateLevelInfo(userData?.jatszottJatekok);
 
+  const handleKerdesekBetoltve = (value: boolean) => {
+    setKerdesekBetoltve(value);
+    if (!value) {
+      setIsGyakorlas(false);
+    }
+  };
+
   const specialColors = {
     speedrun:  { bg: isDark ? '#3A1E60' : '#F3E5F5', icon: isDark ? '#CF8FFF' : '#9C27B0' },
     endless:   { bg: isDark ? '#501830' : '#FCE4EC', icon: isDark ? '#FF8DB8' : '#E91E63' },
@@ -485,7 +492,7 @@ const Kategoria: React.FC<KategoriaProps> = ({ setHideTabBar, navigateToProfile 
         <Kerdesek 
             kerdesek={kerdesek} 
             kategoria={kategoria} 
-            kerdesekBetoltve={setKerdesekBetoltve} 
+            kerdesekBetoltve={handleKerdesekBetoltve} 
             navigateToProfile={navigateToProfile} 
             isGyakorlas={isGyakorlas} 
             isHardcore={isHardcore}

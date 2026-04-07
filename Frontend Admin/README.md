@@ -8,7 +8,7 @@ Ez a webes alkalmazás egy átfogó adminisztrációs felületet biztosít egy k
 - Daróczi Gergő
 
 
-## Fő Funkciók
+## Fő funkciók
 
 ### Nem bejelentkezett felhasználók számára
 - **Bejelentkezés:** Biztonságos belépés felhasználónév és jelszó megadásával.

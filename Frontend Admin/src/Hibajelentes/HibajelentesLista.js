@@ -36,7 +36,7 @@ const HibajelentesLista = () => {
   const lekérezHibajelentések = async () => {
     try {
       setTolt(true);
-      const response = await fetch(`${Cim.Cim}/kerdes-hibajelentes`);
+      const response = await fetch(`${Cim.Cim}/adminhibajelentes`);
       if (!response.ok) throw new Error('Hiba a lekérdezéskor');
       const data = await response.json();
       setHibajelentések(data);
@@ -65,7 +65,7 @@ const HibajelentesLista = () => {
     if (!result.isConfirmed) return;
 
     try {
-      const response = await fetch(`${Cim.Cim}/kerdes-hibajelentes/${id}`, {
+      const response = await fetch(`${Cim.Cim}/hibajelentestorlese/${id}`, {
         method: "DELETE",
       });
 
@@ -96,8 +96,8 @@ const HibajelentesLista = () => {
     if (!szerkesztettElem) return;
 
     try {
-        const adminId = localStorage.getItem('jatekos_id'); // Vagy ahol tárolod az admin ID-t
-        const response = await fetch(`${Cim.Cim}/kerdes-hibajelentes/${szerkesztettElem.hibajelentes_id}`, {
+        const adminId = localStorage.getItem('jatekos_id'); 
+        const response = await fetch(`${Cim.Cim}/hibajelentesmodosit/${szerkesztettElem.hibajelentes_id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -105,7 +105,7 @@ const HibajelentesLista = () => {
             body: JSON.stringify({
                 status: ujStatus,
                 admin_megjegyzes: ujMegjegyzes,
-                admin_id: adminId // Opcionális, ha a backend igényli
+                admin_id: adminId 
             }),
         });
 
