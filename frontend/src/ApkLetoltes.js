@@ -3,7 +3,7 @@ import React from "react";
 const ApkLetoltes = () => {
   return (
     <div>
-      <h1>📱 A tudás torna! - Nyílt Béta </h1>
+      <h1>📱 A tudás torna! </h1>
 
       <div
         className="doboz"
